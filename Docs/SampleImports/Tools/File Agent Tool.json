@@ -1,0 +1,51 @@
+{
+  "name": "File Agent Tool",
+  "type": 3,
+  "tag": "System IO",
+  "sort_index": 0,
+  "is_enabled": true,
+  "description": "A tool for performing System IO operations",
+  "prompt": "{{Input}}",
+  "system_prompt": "You are a helpful assistant who performs system IO actions that are requested of you.",
+  "model": "claude-haiku-4-5-20251001",
+  "chatbot_id": "",
+  "endpoint_url": "",
+  "endpoint_method": 0,
+  "endpoint_headers": "",
+  "endpoint_body": "",
+  "agent_functions": [
+    {
+      "uid": "efaz7we",
+      "name": "FileAgentTool",
+      "description": "",
+      "is_enabled": true,
+      "is_deleted": false,
+      "function_string": "import os\nimport shutil\nfrom typing import List, Union\nimport subprocess \n\ndef check_directory(path: str) -> bool:\n    \"\"\"\n    Check if a directory exists at `path`.\n    Returns True if it exists, False otherwise.\n    \"\"\"\n    print(f\"Checking if directory exists: {path}\")\n    return os.path.isdir(path)\n\ndef create_directory(path: str):\n    \"\"\"\n    Create a single directory at `path`.\n    Raises FileExistsError if it already exists.\n    \"\"\"\n    print(f\"Trying directory: {path}\")\n    os.mkdir(path)\n    print(f\"Directory created: {path}\")\n    return f\"Directory created: {path}\"\n\ndef create_file(path: str, content: str):\n    \"\"\"\n    Create or truncate a file at `path`, add content if provided.\n    \"\"\"\n    with open(path, 'w'):\n        if content:\n            with open(path, 'w') as f:\n                f.write(content)\n        else:\n            with open(path, 'w') as f:\n                pass\n    print(f\"File created: {path}\")\n    return f\"File created: {path}\"\n\ndef write_to_file(path: str, contents: str, append: bool):\n    \"\"\"\n    Write contents to a file. If append is True, append to the file.\n    \"\"\"\n    if path is None or path == \"\":\n        raise ValueError(\"File path must be provided.\")\n    mode = 'a' if append else 'w'\n    with open(path, mode) as f:\n        f.write(contents)\n    \n    print(f\"Written to file: {path}\")\n    return f\"Written to file: {path}\"\n\ndef read_file(path: str) -> str:\n    \"\"\"\n    Read and return the entire contents of the file at `path` as a string.\n    Raises FileNotFoundError if the file does not exist.\n    \"\"\"\n    if path is None or path == \"\" or not os.path.isfile(path):\n        raise FileNotFoundError(f\"File not found: {path!r}\")\n    response = \"\"\n    with open(path, \"r\") as f:\n        response = f.read()\n    print(f\"Read from file: {path}\")\n    return response\n\n\n\ndef read_all_files(dir_path: str, ignore: List[str] = None) -> str:\n    \"\"\"\n    Recursively scan dir_path INCLUDING the base directory and return all file paths.\n\n    :param dir_path: The root directory to scan.\n    :param ignore: List of substrings to ignore in file or directory names.\n    :return: Newline-separated string of absolute file paths.\n    \"\"\"\n\n    if not dir_path:\n        raise ValueError(\"Directory path must be provided.\")\n\n    if not os.path.isdir(dir_path):\n        raise NotADirectoryError(f\"Not a directory: {dir_path!r}\")\n\n    ignore_set = set(ignore or [])\n    ignore_set.update({\n        \"node_modules\",\n        \".git\",\n        \".idea\",\n        \".vscode\",\n        \".vs\",\n        \".gitignore\",\n        \".env\",\n        \".venv\",\n        \"__pycache__\",\n        \"__init__\",\n    })\n\n    file_paths: List[str] = []\n\n    for root, dirs, files in os.walk(dir_path):\n\n        # prune ignored directories (prevents descending into them)\n        dirs[:] = [\n            d for d in dirs\n            if not any(ig in d for ig in ignore_set)\n        ]\n\n        # process files in current directory (INCLUDING base directory)\n        for fname in files:\n            if any(ig in fname for ig in ignore_set):\n                continue\n\n            full_path = os.path.abspath(os.path.join(root, fname))\n            file_paths.append(full_path)\n\n    print(f\"Files found in {dir_path}: {len(file_paths)}\")\n    print(f\"Ignored list: {sorted(ignore_set)}\")\n\n    return \"\\n\".join(file_paths)\n\n\ndef copy_directory_contents(src: str, dst: str, ignore:str) -> None:\n    \"\"\"\n    Recursively copy all contents of src directory into dst directory.\n\n    Args:\n        src (str): Path to the source directory.\n        dst (str): Path to the destination directory.\n        ignore (str): list of directories and files (strings) to ignore\n\n    Raises:\n        NotADirectoryError: If src does not exist or isnâ€™t a directory.\n    \"\"\"\n    if src is None or dst is None or src == \"\" or dst == \"\":\n        raise ValueError(\"Source and destination paths must be provided.\")\n    if not os.path.isdir(src):\n        raise NotADirectoryError(f\"Source directory '{src}' is not a directory or does not exist.\")\n    os.makedirs(dst, exist_ok=True)\n\n    for entry in os.listdir(src):\n        s_path = os.path.join(src, entry)\n        d_path = os.path.join(dst, entry)\n\n        if ignore:\n            ignored = ignore(src, os.listdir(src))\n            if entry in ignored:\n                continue\n\n        # Recurse into subdirectories\n        if os.path.isdir(s_path) and not os.path.islink(s_path):\n            copy_directory_contents(s_path, d_path, ignore=ignore)\n        else:\n            # Handle symlinks\n            if os.path.islink(s_path):\n                link_target = os.readlink(s_path)\n                if os.path.lexists(d_path):\n                    os.remove(d_path)\n                os.symlink(link_target, d_path)\n            else:\n                # Copy file (with metadata)\n                shutil.copy2(s_path, d_path)\n                \n\nimport subprocess\nimport shlex\nfrom typing import Union, List, Optional, Tuple\n\n# def run_command(\n#     command: Union[str, List[str]],\n#     working_dir: Optional[str] = None,\n#     timeout: Optional[int] = None\n# ) -> Tuple[int, str, str]:\n#     \"\"\"\n#     Execute a terminal/CMD command.\n\n#     Args:\n#         command: either a command string (runs under shell=True) \n#                  or a list of arguments (shell=False).\n#         working_dir: path where the command will be executed.\n#         timeout: max seconds to allow the command to run.\n\n#     Returns:\n#         A tuple of (return_code, stdout, stderr).\n#         - return_code is the process exit code (or -1 on error/timeout).\n#         - stdout is the captured standard output.\n#         - stderr is the captured standard error (or timeout/error message).\n#     \"\"\"\n#     # Determine whether to use the shell\n#     use_shell = isinstance(command, str)\n#     cmd = command if use_shell else list(command)\n\n#     try:\n#         proc = subprocess.run(\n#             cmd,\n#             shell=use_shell,\n#             cwd=working_dir,\n#             text=True,\n#             stdout=subprocess.PIPE,\n#             stderr=subprocess.PIPE,\n#             timeout=timeout,\n#         )\n#         print(f\"Command executed: {command}\", proc.returncode, proc.stdout, proc.stderr)\n#         return proc.returncode, proc.stdout, proc.stderr\n\n#     except subprocess.TimeoutExpired as e:\n#         print(-1, \"\", f\"TimeoutExpired: command '{e.cmd}' exceeded {e.timeout}s\")\n#         return -1, \"\", f\"TimeoutExpired: command '{e.cmd}' exceeded {e.timeout}s\"\n\n#     except Exception as e:\n#         print(-1, \"\", f\"Error: {e}\")\n#         return -1, \"\", f\"Error: {e}\"\n"
+    }
+  ],
+  "pipeline_id": "",
+  "request_inputs": [
+    {
+      "name": "Input",
+      "value": "",
+      "is_required": true,
+      "locked": true,
+      "type": 0,
+      "is_default": true
+    }
+  ],
+  "pip_dependencies": [],
+  "env_variables": [],
+  "mcp_servers": [],
+  "max_passes": 5,
+  "endpoint_query": "",
+  "response_structure": [],
+  "endpoint_timeout": 60,
+  "export_uid": "f8dbcd1e",
+  "export_version": 1,
+  "_export_type": "tool",
+  "_export_name": "File Agent Tool",
+  "_export_description": "A tool for performing System IO operations",
+  "_export_date": "2026-03-04T02:54:51.006Z",
+  "_pip_packages": []
+}

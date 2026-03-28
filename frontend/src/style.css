@@ -1,0 +1,121 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+@import "@vue-flow/core/dist/style.css";
+@import "@vue-flow/core/dist/theme-default.css";
+@import "@vue-flow/controls/dist/style.css";
+@import "@vue-flow/minimap/dist/style.css";
+
+:root.light {
+  /* Gray scale inversion — borders (700/800) pushed darker for contrast */
+  --color-gray-50: #111827;
+  --color-gray-100: #1f2937;
+  --color-gray-200: #374151;
+  --color-gray-300: #4b5563;
+  --color-gray-400: #6b7280;
+  --color-gray-500: #6b7280;
+  --color-gray-600: #9ca3af;
+  --color-gray-700: #d1d5db;
+  --color-gray-800: #e5e7eb;
+  --color-gray-900: #f9fafb;
+  --color-gray-950: #ffffff;
+
+  /* Colored -900 → pastel so bg-{color}-900/{opacity} badges look clean */
+  --color-blue-900: #dbeafe;
+  --color-green-900: #dcfce7;
+  --color-red-900: #fee2e2;
+  --color-yellow-900: #fef9c3;
+  --color-indigo-900: #e0e7ff;
+  --color-orange-900: #ffedd5;
+  --color-amber-900: #fef3c7;
+  --color-purple-900: #f3e8ff;
+  --color-sky-900: #e0f2fe;
+  --color-cyan-900: #cffafe;
+  --color-teal-900: #ccfbf1;
+  --color-emerald-900: #d1fae5;
+
+  /* Accent text — lighter shades pushed darker for readability on light bg */
+  --color-blue-200: #2563eb;
+  --color-blue-400: #2563eb;
+  --color-green-400: #16a34a;
+  --color-red-400: #ef4444;
+  --color-purple-300: #7c3aed;
+  --color-purple-400: #7c3aed;
+  --color-purple-500: #6d28d9;
+}
+
+/* ── Scrollbar theme ─────────────────────────────────────────────── */
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-gray-700) transparent;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--color-gray-700);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--color-gray-600);
+}
+
+/* ── Reusable component classes ────────────────────────────────────── */
+
+.btn-primary {
+  @apply px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-colors;
+}
+
+.btn-sm-outline {
+  @apply px-2 py-1 text-blue-400 rounded text-xs hover:bg-blue-600/20 transition-colors;
+}
+
+.btn-sm-ghost {
+  @apply px-3 py-1.5 bg-blue-600/20 text-blue-400 rounded-lg text-xs hover:bg-blue-600/30 transition-colors;
+}
+
+.btn-sm-danger {
+  @apply px-2 py-1 text-red-400/70 rounded text-xs hover:bg-red-900/20 hover:text-red-400 transition-colors;
+}
+
+.btn-sm-danger-ghost {
+  @apply px-3 py-1.5 text-red-400 rounded-lg text-xs hover:bg-red-900/20 transition-colors;
+}
+
+.input-base {
+  @apply w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-sm focus:outline-none focus:border-blue-500;
+}
+
+.input-sm {
+  @apply w-full px-2 py-1.5 bg-gray-800 border border-gray-700 rounded text-sm focus:outline-none focus:border-blue-500;
+}
+
+.input-search {
+  @apply flex-1 px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-sm focus:outline-none focus:border-blue-500;
+}
+
+.card-base {
+  @apply bg-gray-900 border border-gray-800 rounded-xl p-4;
+}
+
+.card-hover {
+  @apply bg-gray-900 border border-gray-800 rounded-xl p-4 hover:border-gray-600 transition-colors;
+}
+
+.dropdown-panel {
+  @apply absolute right-0 mt-1 w-44 bg-gray-800 border border-gray-700 rounded-lg shadow-xl z-20 overflow-hidden;
+}
+
+.vue-flow__minimap {
+  background-color: var(--color-gray-900);
+  border: 1px solid var(--color-gray-700);
+  border-radius: 0.5rem;
+}

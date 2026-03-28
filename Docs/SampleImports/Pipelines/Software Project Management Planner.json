@@ -1,0 +1,894 @@
+{
+  "name": "Software Project Management Planner",
+  "description": "Plans software development by gathering requirements, creating a development plan with Epics, Stories, Tasks and QA Tasks, creating the project and artifacts in Jira, and verifying everything was created correctly.",
+  "tag": "Project Planning",
+  "steps": [
+    {
+      "id": "start",
+      "name": "Start",
+      "tool_id": "",
+      "tool": {
+        "type": 9
+      },
+      "is_start": true,
+      "next_steps": [
+        "ask_user"
+      ],
+      "pos_x": 46.25,
+      "pos_y": 390,
+      "description": "",
+      "disabled": false,
+      "status": 0,
+      "status_text": "",
+      "pause_after": false,
+      "inputs": [],
+      "outputs": [],
+      "pre_process": "",
+      "post_process": "",
+      "next_steps_true": [],
+      "next_steps_false": [],
+      "call_cost": [],
+      "tool_outputs": [],
+      "memory_id": ""
+    },
+    {
+      "id": "ask_user",
+      "name": "Ask User",
+      "tool_id": "-7",
+      "tool": {
+        "id": "njvk3ont2",
+        "name": "Ask User",
+        "type": 11,
+        "tag": "",
+        "sort_index": 0,
+        "is_enabled": true,
+        "description": "",
+        "prompt": "You are reviewing a software plan to ensure you have enough information to create a comprehensive development plan (Epics, Stories, Tasks, QA Tasks).\n\nProject Name: {{Project Name}}\nProject Key: {{Project Key}}\n\nSoftware Plan:\n{{Software Plan}}\n\nAnalyze the software plan above and ask the user clarifying questions to ensure you have a complete understanding. Consider:\n- Are the features and requirements clearly defined?\n- Are there any ambiguous or missing details about functionality?\n- What are the technical constraints or preferences (tech stack, integrations, platforms)?\n- Are there any non-functional requirements (performance, security, scalability)?\n- What is the priority order of features?\n- Are there any dependencies or external systems involved?\n- Who are the target users/personas?\n\nAsk focused, specific questions to fill in any gaps. If the plan is already comprehensive, confirm your understanding and summarize what you'll be planning.",
+        "system_prompt": "You are a clarification assistant in a pipeline workflow. Your job is to analyze the incoming context and decide whether you need to ask the user clarifying questions before proceeding.\n\nYou MUST respond with valid JSON in one of two formats:\n\n1. If you need clarification:\n{\n  \"status\": \"questions\",\n  \"questions\": [\n    {\n      \"id\": \"q1\",\n      \"text\": \"Your question here?\",\n      \"type\": \"choice\",\n      \"options\": [\"Option A\", \"Option B\", \"Option C\"]\n    },\n    {\n      \"id\": \"q2\",\n      \"text\": \"Your open-ended question here?\",\n      \"type\": \"text\"\n    }\n  ]\n}\n\n2. If no clarification is needed (the context is clear and specific enough):\n{\n  \"status\": \"ready\",\n  \"summary\": \"A comprehensive summary of the context including any user answers from previous rounds...\"\n}\n\nGuidelines:\n- Use \"choice\" type when the answer is one of several known options\n- Use \"text\" type for open-ended questions\n- Keep questions concise and relevant\n- Ask at most 3-4 questions per round\n- After receiving user answers, either ask follow-up questions or output \"ready\" with a comprehensive summary that includes the original context plus all clarifications\n- If the input is already clear and specific, respond immediately with \"ready\"",
+        "model": "claude-sonnet-4-6",
+        "chatbot_id": "",
+        "endpoint_url": "",
+        "endpoint_method": 0,
+        "endpoint_headers": "",
+        "endpoint_body": "",
+        "agent_functions": [],
+        "pip_dependencies": [],
+        "env_variables": [],
+        "mcp_servers": [],
+        "pipeline_id": "",
+        "max_passes": 5,
+        "request_inputs": [
+          {
+            "name": "Input",
+            "value": "",
+            "is_required": true,
+            "locked": true,
+            "type": 0,
+            "is_default": true
+          }
+        ]
+      },
+      "inputs": [
+        {
+          "name": "Input",
+          "value": "{{Start}}",
+          "is_default": true,
+          "is_required": true,
+          "type": 0
+        }
+      ],
+      "pause_after": true,
+      "next_steps": [
+        "dev_plan"
+      ],
+      "pos_x": 355,
+      "pos_y": 241.25,
+      "description": "",
+      "disabled": false,
+      "status": 0,
+      "status_text": "",
+      "outputs": [],
+      "pre_process": "",
+      "post_process": "",
+      "next_steps_true": [],
+      "next_steps_false": [],
+      "is_start": false,
+      "call_cost": [],
+      "tool_outputs": [],
+      "memory_id": ""
+    },
+    {
+      "id": "dev_plan",
+      "name": "Create Development Plan",
+      "tool_id": "-1",
+      "tool": {
+        "id": "tlaphqk13",
+        "name": "Base LLM",
+        "type": 0,
+        "tag": "",
+        "sort_index": 0,
+        "is_enabled": true,
+        "description": "",
+        "prompt": "Based on the following software plan and clarified requirements, create a comprehensive Development Plan.\n\nProject Name: {{Project Name}}\nProject Key: {{Project Key}}\n\nOriginal Software Plan:\n{{Software Plan}}\n\nClarified Requirements & Context:\n{{Ask User}}\n\nCreate a structured development plan with the following hierarchy:\n\n1. **Epics** - High-level feature areas or major workstreams. Each Epic should have:\n   - Title\n   - Description\n   - Acceptance Criteria\n\n2. **Stories** (under each Epic) - User-facing deliverables. Each Story should have:\n   - Title\n   - Description (in user story format: As a [user], I want [feature], so that [benefit])\n   - Acceptance Criteria\n   - Story Points estimate (1, 2, 3, 5, 8, 13)\n   - Priority (Highest, High, Medium, Low, Lowest)\n\n3. **Tasks** (under each Story) - Technical implementation work items. Each Task should have:\n   - Title\n   - Description with technical details\n   - Estimated hours\n\n4. **QA Tasks** (under each Story) - Testing and quality assurance items. Each QA Task should have:\n   - Title\n   - Description including test approach\n   - Test type (Unit, Integration, E2E, Manual, Performance)\n   - Estimated hours\n\nOrganize everything in a clear, hierarchical format. Ensure complete coverage of all requirements. Use the project key {{Project Key}} as a reference prefix in your plan.\n\nOutput the plan in a well-structured markdown format that can be parsed programmatically.",
+        "system_prompt": "",
+        "model": "claude-opus-4-6",
+        "chatbot_id": "",
+        "endpoint_url": "",
+        "endpoint_method": 0,
+        "endpoint_headers": "",
+        "endpoint_body": "",
+        "agent_functions": [],
+        "pip_dependencies": [],
+        "env_variables": [],
+        "mcp_servers": [],
+        "pipeline_id": "",
+        "max_passes": 5,
+        "request_inputs": [
+          {
+            "name": "Input",
+            "value": "",
+            "is_required": true,
+            "locked": true,
+            "type": 0,
+            "is_default": true
+          }
+        ]
+      },
+      "inputs": [
+        {
+          "name": "Input",
+          "value": "{{Ask User}}",
+          "is_default": true,
+          "is_required": true,
+          "type": 0
+        }
+      ],
+      "next_steps": [
+        "a2uw2ksf2"
+      ],
+      "pos_x": 580,
+      "pos_y": 241.25,
+      "description": "",
+      "disabled": false,
+      "status": 0,
+      "status_text": "",
+      "pause_after": false,
+      "outputs": [],
+      "pre_process": "function process(input) {\n    return [input];\n}",
+      "post_process": "",
+      "next_steps_true": [],
+      "next_steps_false": [],
+      "is_start": false,
+      "call_cost": [],
+      "tool_outputs": [],
+      "memory_id": ""
+    },
+    {
+      "id": "create_artifacts",
+      "name": "Create Project & Artifacts",
+      "tool_id": "lneit71w1",
+      "tool": {
+        "id": "lneit71w1",
+        "name": "Jira Tool",
+        "type": 3,
+        "tag": "Jira, Project Planning",
+        "sort_index": 6,
+        "is_enabled": true,
+        "description": "A agent tool with access to Jira API",
+        "prompt": "Using the Jira API, create the project and all development artifacts based on the following development plan.\n\nProject Name: {{Project Name}}\nProject Key: {{Project Key}}\n\nDevelopment Plan:\n{{Input[@]}}\n\nFollow these steps:\n2. Create all Epics defined in the development plan.\n3. Under each Epic, create all Stories with their descriptions, acceptance criteria, story points, and priority.\n4. Under each Story, create all Tasks with their descriptions and time estimates.\n5. Under each Story, create all QA Tasks (as sub-tasks or linked tasks) with their descriptions and test type.\n6. Set up proper parent-child relationships (Stories under Epics, Tasks under Stories).\n7. Keep track of everything you create including issue keys.\n\nAfter creating everything, provide a complete summary of all items created with their Jira issue keys.\n\nIMPORTANT: Create ALL items from the development plan. Do not skip or abbreviate. Process each Epic and all its children completely before moving to the next.",
+        "system_prompt": "You are an assistant in charge of calling functions to create items in a Jira software project",
+        "model": "gpt-5-mini",
+        "chatbot_id": "",
+        "endpoint_url": "",
+        "endpoint_method": 0,
+        "endpoint_headers": "",
+        "endpoint_body": "",
+        "agent_functions": [
+          {
+            "uid": "u0ormt3",
+            "name": "JiraTools",
+            "description": "",
+            "is_enabled": true,
+            "is_deleted": false,
+            "function_string": "import os\nimport requests\nfrom dotenv import load_dotenv\nfrom jira import JIRA\n\n# Load environment variables from .env\nload_dotenv()\n\nJIRA_SITE = os.getenv(\"JIRA_SITE\")   # e.g. 'https://your-domain.atlassian.net'\nJIRA_EMAIL = os.getenv(\"JIRA_EMAIL\") # your Jira account email\nJIRA_TOKEN = os.getenv(\"JIRA_TOKEN\") # your Jira API token\n\n# Reasonable defaults for cloud calls\n_HTTP_TIMEOUT = 30\n\n\ndef _require_env():\n    missing = [k for k, v in {\n        \"JIRA_SITE\": JIRA_SITE,\n        \"JIRA_EMAIL\": JIRA_EMAIL,\n        \"JIRA_TOKEN\": JIRA_TOKEN,\n    }.items() if not v]\n    if missing:\n        raise RuntimeError(f\"Missing required environment variables: {', '.join(missing)}\")\n\n\ndef _rest_v3_url(path: str) -> str:\n    # path like \"/project\" or \"/myself\"\n    base = JIRA_SITE.rstrip(\"/\")\n    return f\"{base}/rest/api/3{path}\"\n\n\ndef _requests_session() -> requests.Session:\n    \"\"\"\n    Jira Cloud basic auth for REST: email + API token.\n    \"\"\"\n    _require_env()\n    s = requests.Session()\n    s.auth = (JIRA_EMAIL, JIRA_TOKEN)\n    s.headers.update({\n        \"Accept\": \"application/json\",\n        \"Content-Type\": \"application/json\",\n    })\n    return s\n\n\ndef _get_my_account_id() -> str:\n    \"\"\"\n    Needed for create project payload (leadAccountId).\n    \"\"\"\n    sess = _requests_session()\n    r = sess.get(_rest_v3_url(\"/myself\"), timeout=_HTTP_TIMEOUT)\n    if r.status_code >= 400:\n        raise RuntimeError(f\"Failed to fetch /myself ({r.status_code}): {r.text}\")\n    data = r.json()\n    account_id = data.get(\"accountId\")\n    if not account_id:\n        raise RuntimeError(\"Could not determine accountId from /myself response.\")\n    return account_id\n\n\ndef _adf_doc_from_text(text: str) -> dict:\n    \"\"\"\n    Minimal Atlassian Document Format for a plain text description.\n    Jira Cloud REST v3 supports ADF in description. :contentReference[oaicite:3]{index=3}\n    \"\"\"\n    # Split into paragraphs to preserve newlines reasonably\n    paragraphs = []\n    for line in (text or \"\").splitlines():\n        if line.strip() == \"\":\n            continue\n        paragraphs.append({\n            \"type\": \"paragraph\",\n            \"content\": [{\"type\": \"text\", \"text\": line}],\n        })\n    if not paragraphs:\n        paragraphs = [{\"type\": \"paragraph\", \"content\": []}]\n    return {\"type\": \"doc\", \"version\": 1, \"content\": paragraphs}\n\n\ndef get_jira_client():\n    \"\"\"\n    Instantiate and return a JIRA client using credentials from environment variables.\n    \"\"\"\n    try:\n        _require_env()\n        options = {\"server\": JIRA_SITE,\n            \"rest_api_version\": \"3\"}  # <-- critical}\n        # python-jira is still fine for many issue operations, but project creation is safer via REST v3.\n        return JIRA(options, basic_auth=(JIRA_EMAIL, JIRA_TOKEN))\n    except Exception as e:\n        print(f\"Error creating Jira client: {e}\")\n        return None\n\n\ndef create_issue(project_key: str,\n                 summary: str,\n                 parent: str = None,\n                 description: str = \"\",\n                 issue_type: str = 'Story'):\n    \"\"\"\n    Create a new issue in the specified project.\n    :param project_key: Key of the project\n    :param summary: Summary/title of the issue\n    :param description: Detailed description\n    :param issue_type: Type of issue (e.g., 'Epic', 'Story', 'Task', 'Bug')\n    :return: Created Issue resource\n    \"\"\"\n    jira = get_jira_client()\n    if jira is None:\n        return None\n\n    print(f\"Creating [{issue_type}] {summary} in project {project_key}...\")\n    try:\n        # Jira summary limit is ~255 chars in many configs; keep your 220 rule\n        sum_text = summary or \"\"\n        if len(sum_text) > 220:\n            sum_text = sum_text[:220] + \"...\"\n\n        # Build a combined description (use params correctly)\n        full_desc = (summary or \"\").strip()\n        if description:\n            full_desc = (full_desc + \"\\n\\n---\\n\\n\" + description.strip()).strip()\n\n        # Use ADF for cloud v3 compatibility; python-jira will pass it through for Cloud.\n        # If your instance rejects ADF (unlikely on Cloud), change to plain string.\n        fields = {\n            \"project\": {\"key\": project_key},\n            \"summary\": sum_text,\n            \"issuetype\": {\"name\": issue_type},\n            \"description\": _adf_doc_from_text(full_desc),\n        }\n\n        if parent:\n            # Works for subtasks; for “epic link” / hierarchy you may need a different field depending on project type.\n            fields[\"parent\"] = {\"key\": parent}\n\n        issue = jira.create_issue(fields=fields)\n        return issue.raw\n    except Exception as e:\n        print(f\"Error creating issue: {e}\")\n        return None\n\n\ndef create_project(key: str,\n                   name: str,\n                   project_type: str = 'software',\n                   template_key: str = \"com.pyxis.greenhopper.jira:gh-simplified-scrum-classic\"):\n    \"\"\"\n    Create a new Jira project.\n\n    :param name: Project name\n    :param project_type: Type of project ('software', 'business', 'service_desk')\n    :param template_key: Template identifier\n    :return: Created Project resource\n    \"\"\"\n    print(f\"Creating project {name} with key {key}...\")\n\n    try:\n        _require_env()\n\n        # Jira Cloud create project: POST /rest/api/3/project\n        # Permissions required: Administer Jira. :contentReference[oaicite:4]{index=4}\n        lead_account_id = _get_my_account_id()\n\n        payload = {\n            \"key\": key,\n            \"name\": name,\n            \"projectTypeKey\": project_type,         # 'software' | 'business' | 'service_desk' :contentReference[oaicite:5]{index=5}\n            \"projectTemplateKey\": template_key,     # e.g. scrum classic :contentReference[oaicite:6]{index=6}\n            \"leadAccountId\": lead_account_id,       # shown in Atlassian sample payload :contentReference[oaicite:7]{index=7}\n            # IMPORTANT: do NOT include permissionScheme / notificationScheme / issueSecurityScheme\n            # unless you intentionally pick valid IDs from THIS site.\n        }\n\n        sess = _requests_session()\n        r = sess.post(_rest_v3_url(\"/project\"), json=payload, timeout=_HTTP_TIMEOUT)\n\n        if r.status_code >= 400:\n            # Bubble up the server's message—this is usually the fastest way to fix config/perms.\n            raise RuntimeError(f\"Create project failed ({r.status_code}): {r.text}\")\n\n        # Response is ProjectIdentifiers (id, key, self) :contentReference[oaicite:8]{index=8}\n        return r.json()\n\n    except Exception as e:\n        print(f\"Error creating project: {e}\")\n        return None\n\n\ndef get_project_key_by_name(project_name: str):\n    \"\"\"\n    Get the project Key by its name.\n    :param project_name: Name of the project\n    :return: Project Key\n    \"\"\"\n    try:\n        jira = get_jira_client()\n        if jira is None:\n            return None\n\n        projects = jira.projects()\n        for project in projects:\n            if project.name == project_name:\n                print(f\"Project {project_name} found with ID: {project.key}\")\n                return project.key\n        print(f\"Project {project_name} not found.\")\n        return None\n    except Exception as e:\n        print(f\"Error getting projects: {e}\")\n        return None\n\n\ndef get_issues_by_project(project_key: str, issue_type: str = \"\"):\n    \"\"\"\n    Get all issues in a project.\n    :param project_key: Key of the project\n    :issue_type:\n    :return: List of issues\n    \"\"\"\n    jira = get_jira_client()\n    if jira is None:\n        return None\n    try:\n        if issue_type:\n            jql = f'project=\"{project_key}\" AND issuetype=\"{issue_type}\"'\n        else:\n            jql = f'project=\"{project_key}\"'\n        issues = jira.search_issues(jql)\n        return issues\n    except Exception as e:\n        print(f\"Error getting issues [{project_key}][{issue_type}]: {e}\")\n        return None\n"
+          }
+        ],
+        "pipeline_id": "",
+        "request_inputs": [
+          {
+            "name": "Input",
+            "value": "{{Restructure}}",
+            "is_required": true,
+            "locked": true,
+            "type": 0,
+            "is_default": true
+          }
+        ],
+        "created_at": "2026-02-26T14:59:41.001104+00:00",
+        "updated_at": "2026-02-28T04:36:22.781073+00:00",
+        "pip_dependencies": [
+          "jira"
+        ],
+        "env_variables": [
+          {
+            "name": "JIRA_SITE",
+            "description": "",
+            "type": 5
+          },
+          {
+            "name": "JIRA_TOKEN",
+            "description": "",
+            "type": 5
+          },
+          {
+            "name": "JIRA_EMAIL",
+            "description": "",
+            "type": 0
+          }
+        ],
+        "mcp_servers": [],
+        "max_passes": 5
+      },
+      "inputs": [
+        {
+          "name": "Input",
+          "value": "{{Create Development Plan}}",
+          "is_default": true,
+          "is_required": true,
+          "type": 0
+        }
+      ],
+      "next_steps": [
+        "verify"
+      ],
+      "pos_x": 320,
+      "pos_y": 493.75,
+      "description": "",
+      "disabled": false,
+      "status": 0,
+      "status_text": "",
+      "pause_after": false,
+      "outputs": [],
+      "pre_process": "function process(input) {\r\n    return input.split(\"*****\");\r\n}",
+      "post_process": "function process(output) {\r\n    return output;\r\n}",
+      "next_steps_true": [],
+      "next_steps_false": [],
+      "is_start": false,
+      "call_cost": [],
+      "tool_outputs": [],
+      "memory_id": ""
+    },
+    {
+      "id": "verify",
+      "name": "Verify Creation",
+      "tool_id": "lneit71w1",
+      "tool": {
+        "id": "lneit71w1",
+        "name": "Jira Tool",
+        "type": 3,
+        "tag": "Jira, Project Planning",
+        "sort_index": 6,
+        "is_enabled": true,
+        "description": "A agent tool with access to Jira API",
+        "prompt": "Verify that all planned development artifacts were successfully created in Jira for project '{{Project Key}}'.\n\nOriginal Development Plan:\n{{Create Development Plan}}\n\nCreation Results:\n{{Create Project & Artifacts}}\n\nPerform the following verification steps:\n1. Query the Jira project '{{Project Key}}' to get all issues.\n2. Compare what exists in Jira against the original development plan.\n3. Check that ALL Epics were created.\n4. Check that ALL Stories were created under the correct Epics.\n5. Check that ALL Tasks were created under the correct Stories.\n6. Check that ALL QA Tasks were created.\n7. Verify parent-child relationships are correct.\n8. Verify priorities and story points are set correctly.\n\nProvide a detailed verification report:\n- Total items planned vs. total items created\n- Any MISSING items that were in the plan but not created\n- Any MISMATCHED items (wrong parent, wrong priority, etc.)\n- Overall status: PASS (everything matches) or FAIL (with details of what's missing)\n\nIf any items are missing or incorrect, list exactly what needs to be fixed.",
+        "system_prompt": "You are an assistant in charge of calling functions to create items in a Jira software project",
+        "model": "claude-haiku-4-5-20251001",
+        "chatbot_id": "",
+        "endpoint_url": "",
+        "endpoint_method": 0,
+        "endpoint_headers": "",
+        "endpoint_body": "",
+        "agent_functions": [
+          {
+            "uid": "u0ormt3",
+            "name": "JiraTools",
+            "description": "",
+            "is_enabled": true,
+            "is_deleted": false,
+            "function_string": "import os\nimport requests\nfrom dotenv import load_dotenv\nfrom jira import JIRA\n\n# Load environment variables from .env\nload_dotenv()\n\nJIRA_SITE = os.getenv(\"JIRA_SITE\")   # e.g. 'https://your-domain.atlassian.net'\nJIRA_EMAIL = os.getenv(\"JIRA_EMAIL\") # your Jira account email\nJIRA_TOKEN = os.getenv(\"JIRA_TOKEN\") # your Jira API token\n\n# Reasonable defaults for cloud calls\n_HTTP_TIMEOUT = 30\n\n\ndef _require_env():\n    missing = [k for k, v in {\n        \"JIRA_SITE\": JIRA_SITE,\n        \"JIRA_EMAIL\": JIRA_EMAIL,\n        \"JIRA_TOKEN\": JIRA_TOKEN,\n    }.items() if not v]\n    if missing:\n        raise RuntimeError(f\"Missing required environment variables: {', '.join(missing)}\")\n\n\ndef _rest_v3_url(path: str) -> str:\n    # path like \"/project\" or \"/myself\"\n    base = JIRA_SITE.rstrip(\"/\")\n    return f\"{base}/rest/api/3{path}\"\n\n\ndef _requests_session() -> requests.Session:\n    \"\"\"\n    Jira Cloud basic auth for REST: email + API token.\n    \"\"\"\n    _require_env()\n    s = requests.Session()\n    s.auth = (JIRA_EMAIL, JIRA_TOKEN)\n    s.headers.update({\n        \"Accept\": \"application/json\",\n        \"Content-Type\": \"application/json\",\n    })\n    return s\n\n\ndef _get_my_account_id() -> str:\n    \"\"\"\n    Needed for create project payload (leadAccountId).\n    \"\"\"\n    sess = _requests_session()\n    r = sess.get(_rest_v3_url(\"/myself\"), timeout=_HTTP_TIMEOUT)\n    if r.status_code >= 400:\n        raise RuntimeError(f\"Failed to fetch /myself ({r.status_code}): {r.text}\")\n    data = r.json()\n    account_id = data.get(\"accountId\")\n    if not account_id:\n        raise RuntimeError(\"Could not determine accountId from /myself response.\")\n    return account_id\n\n\ndef _adf_doc_from_text(text: str) -> dict:\n    \"\"\"\n    Minimal Atlassian Document Format for a plain text description.\n    Jira Cloud REST v3 supports ADF in description. :contentReference[oaicite:3]{index=3}\n    \"\"\"\n    # Split into paragraphs to preserve newlines reasonably\n    paragraphs = []\n    for line in (text or \"\").splitlines():\n        if line.strip() == \"\":\n            continue\n        paragraphs.append({\n            \"type\": \"paragraph\",\n            \"content\": [{\"type\": \"text\", \"text\": line}],\n        })\n    if not paragraphs:\n        paragraphs = [{\"type\": \"paragraph\", \"content\": []}]\n    return {\"type\": \"doc\", \"version\": 1, \"content\": paragraphs}\n\n\ndef get_jira_client():\n    \"\"\"\n    Instantiate and return a JIRA client using credentials from environment variables.\n    \"\"\"\n    try:\n        _require_env()\n        options = {\"server\": JIRA_SITE,\n            \"rest_api_version\": \"3\"}  # <-- critical}\n        # python-jira is still fine for many issue operations, but project creation is safer via REST v3.\n        return JIRA(options, basic_auth=(JIRA_EMAIL, JIRA_TOKEN))\n    except Exception as e:\n        print(f\"Error creating Jira client: {e}\")\n        return None\n\n\ndef create_issue(project_key: str,\n                 summary: str,\n                 parent: str = None,\n                 description: str = \"\",\n                 issue_type: str = 'Story'):\n    \"\"\"\n    Create a new issue in the specified project.\n    :param project_key: Key of the project\n    :param summary: Summary/title of the issue\n    :param description: Detailed description\n    :param issue_type: Type of issue (e.g., 'Epic', 'Story', 'Task', 'Bug')\n    :return: Created Issue resource\n    \"\"\"\n    jira = get_jira_client()\n    if jira is None:\n        return None\n\n    print(f\"Creating [{issue_type}] {summary} in project {project_key}...\")\n    try:\n        # Jira summary limit is ~255 chars in many configs; keep your 220 rule\n        sum_text = summary or \"\"\n        if len(sum_text) > 220:\n            sum_text = sum_text[:220] + \"...\"\n\n        # Build a combined description (use params correctly)\n        full_desc = (summary or \"\").strip()\n        if description:\n            full_desc = (full_desc + \"\\n\\n---\\n\\n\" + description.strip()).strip()\n\n        # Use ADF for cloud v3 compatibility; python-jira will pass it through for Cloud.\n        # If your instance rejects ADF (unlikely on Cloud), change to plain string.\n        fields = {\n            \"project\": {\"key\": project_key},\n            \"summary\": sum_text,\n            \"issuetype\": {\"name\": issue_type},\n            \"description\": _adf_doc_from_text(full_desc),\n        }\n\n        if parent:\n            # Works for subtasks; for “epic link” / hierarchy you may need a different field depending on project type.\n            fields[\"parent\"] = {\"key\": parent}\n\n        issue = jira.create_issue(fields=fields)\n        return issue.raw\n    except Exception as e:\n        print(f\"Error creating issue: {e}\")\n        return None\n\n\ndef create_project(key: str,\n                   name: str,\n                   project_type: str = 'software',\n                   template_key: str = \"com.pyxis.greenhopper.jira:gh-simplified-scrum-classic\"):\n    \"\"\"\n    Create a new Jira project.\n\n    :param name: Project name\n    :param project_type: Type of project ('software', 'business', 'service_desk')\n    :param template_key: Template identifier\n    :return: Created Project resource\n    \"\"\"\n    print(f\"Creating project {name} with key {key}...\")\n\n    try:\n        _require_env()\n\n        # Jira Cloud create project: POST /rest/api/3/project\n        # Permissions required: Administer Jira. :contentReference[oaicite:4]{index=4}\n        lead_account_id = _get_my_account_id()\n\n        payload = {\n            \"key\": key,\n            \"name\": name,\n            \"projectTypeKey\": project_type,         # 'software' | 'business' | 'service_desk' :contentReference[oaicite:5]{index=5}\n            \"projectTemplateKey\": template_key,     # e.g. scrum classic :contentReference[oaicite:6]{index=6}\n            \"leadAccountId\": lead_account_id,       # shown in Atlassian sample payload :contentReference[oaicite:7]{index=7}\n            # IMPORTANT: do NOT include permissionScheme / notificationScheme / issueSecurityScheme\n            # unless you intentionally pick valid IDs from THIS site.\n        }\n\n        sess = _requests_session()\n        r = sess.post(_rest_v3_url(\"/project\"), json=payload, timeout=_HTTP_TIMEOUT)\n\n        if r.status_code >= 400:\n            # Bubble up the server's message—this is usually the fastest way to fix config/perms.\n            raise RuntimeError(f\"Create project failed ({r.status_code}): {r.text}\")\n\n        # Response is ProjectIdentifiers (id, key, self) :contentReference[oaicite:8]{index=8}\n        return r.json()\n\n    except Exception as e:\n        print(f\"Error creating project: {e}\")\n        return None\n\n\ndef get_project_key_by_name(project_name: str):\n    \"\"\"\n    Get the project Key by its name.\n    :param project_name: Name of the project\n    :return: Project Key\n    \"\"\"\n    try:\n        jira = get_jira_client()\n        if jira is None:\n            return None\n\n        projects = jira.projects()\n        for project in projects:\n            if project.name == project_name:\n                print(f\"Project {project_name} found with ID: {project.key}\")\n                return project.key\n        print(f\"Project {project_name} not found.\")\n        return None\n    except Exception as e:\n        print(f\"Error getting projects: {e}\")\n        return None\n\n\ndef get_issues_by_project(project_key: str, issue_type: str = \"\"):\n    \"\"\"\n    Get all issues in a project.\n    :param project_key: Key of the project\n    :issue_type:\n    :return: List of issues\n    \"\"\"\n    jira = get_jira_client()\n    if jira is None:\n        return None\n    try:\n        if issue_type:\n            jql = f'project=\"{project_key}\" AND issuetype=\"{issue_type}\"'\n        else:\n            jql = f'project=\"{project_key}\"'\n        issues = jira.search_issues(jql)\n        return issues\n    except Exception as e:\n        print(f\"Error getting issues [{project_key}][{issue_type}]: {e}\")\n        return None\n"
+          }
+        ],
+        "pipeline_id": "",
+        "request_inputs": [
+          {
+            "name": "Input",
+            "value": "",
+            "is_required": true,
+            "locked": true,
+            "type": 0,
+            "is_default": true
+          }
+        ],
+        "created_at": "2026-02-26T14:59:41.001104+00:00",
+        "updated_at": "2026-02-28T04:36:22.781073+00:00",
+        "pip_dependencies": [
+          "jira"
+        ],
+        "env_variables": [
+          {
+            "name": "JIRA_SITE",
+            "description": "",
+            "type": 5
+          },
+          {
+            "name": "JIRA_TOKEN",
+            "description": "",
+            "type": 5
+          },
+          {
+            "name": "JIRA_EMAIL",
+            "description": "",
+            "type": 0
+          }
+        ],
+        "mcp_servers": [],
+        "max_passes": 5
+      },
+      "inputs": [
+        {
+          "name": "Input",
+          "value": "{{Create Project & Artifacts}}",
+          "is_default": true,
+          "is_required": true,
+          "type": 0
+        }
+      ],
+      "next_steps": [
+        "end"
+      ],
+      "pos_x": 603.75,
+      "pos_y": 493.75,
+      "description": "",
+      "disabled": false,
+      "status": 0,
+      "status_text": "",
+      "pause_after": false,
+      "outputs": [],
+      "pre_process": "function process(input) {\r\n    return [input];\r\n}",
+      "post_process": "function process(output) {\r\n    return output;\r\n}",
+      "next_steps_true": [],
+      "next_steps_false": [],
+      "is_start": false,
+      "call_cost": [],
+      "tool_outputs": [],
+      "memory_id": ""
+    },
+    {
+      "id": "end",
+      "name": "End",
+      "tool_id": "-5",
+      "tool": {
+        "id": "scfne0762",
+        "name": "End",
+        "type": 7,
+        "tag": "",
+        "sort_index": 0,
+        "is_enabled": true,
+        "description": "",
+        "prompt": "",
+        "system_prompt": "",
+        "model": "",
+        "chatbot_id": "",
+        "endpoint_url": "",
+        "endpoint_method": 0,
+        "endpoint_headers": "",
+        "endpoint_body": "",
+        "agent_functions": [],
+        "pip_dependencies": [],
+        "env_variables": [],
+        "mcp_servers": [],
+        "pipeline_id": "",
+        "max_passes": 5,
+        "request_inputs": [
+          {
+            "name": "Input",
+            "value": "",
+            "is_required": true,
+            "locked": true,
+            "type": 0,
+            "is_default": true
+          }
+        ]
+      },
+      "pos_x": 855.0969940336512,
+      "pos_y": 498.1472471835195,
+      "description": "",
+      "disabled": false,
+      "status": 0,
+      "status_text": "",
+      "pause_after": false,
+      "inputs": [],
+      "outputs": [],
+      "pre_process": "",
+      "post_process": "",
+      "next_steps": [],
+      "next_steps_true": [],
+      "next_steps_false": [],
+      "is_start": false,
+      "call_cost": [],
+      "tool_outputs": [],
+      "memory_id": ""
+    },
+    {
+      "id": "a2uw2ksf2",
+      "name": "Restructure",
+      "description": "",
+      "next_steps": [
+        "v7w9d5a44"
+      ],
+      "next_steps_true": [],
+      "next_steps_false": [],
+      "is_start": false,
+      "tool_id": "-1",
+      "status": 0,
+      "inputs": [
+        {
+          "name": "Input",
+          "value": "",
+          "is_required": false,
+          "locked": true,
+          "type": 0,
+          "is_default": true
+        }
+      ],
+      "outputs": [],
+      "call_cost": [],
+      "status_text": "",
+      "pre_process": "function process(input) {\n    return [input];\n}",
+      "post_process": "function process(output) {\n    return output;\n}",
+      "disabled": false,
+      "tool_outputs": [],
+      "pause_after": false,
+      "memory_id": "",
+      "pos_x": 351.25,
+      "pos_y": 357.5,
+      "tool": {
+        "id": "uxbbf7ed6",
+        "name": "Base LLM",
+        "type": 0,
+        "tag": "",
+        "sort_index": 0,
+        "is_enabled": true,
+        "description": "",
+        "prompt": "Look at the below development plan an summarize the contents like so.\n\nProject Name: <project name>\nProject Key: <project key>\n   Epic: <epic name> - <description>\n     Story: <story name> - <description>\n        Task: <task name1> - <description>\n        Task: <task name2> - <description>\n        etc...\n        QA Task: <qa task name 1> - <description>\n        QA Task: <qa task name 2> - <description>\n        etc...\n     Story: <story name 2> - <description>\n        Task: <task name1> - <description>\n        Task: <task name2> - <description>\n        etc...\n        QA Task: <qa task name 1> - <description>\n        QA Task: <qa task name 2> - <description>\n        etc...\n*****\nProject Name: <project name>\nProject Key: <project key>\n   Epic: <epic name> - <description>\n     Story: <story name> - <description>\n        Task: <task name1> - <description>\n        Task: <task name2> - <description>\n        etc...\n        QA Task: <qa task name 1> - <description>\n        QA Task: <qa task name 2> - <description>\n        etc...\n     Story: <story name 2> - <description>\n        Task: <task name1> - <description>\n        Task: <task name2> - <description>\n        etc...\n        QA Task: <qa task name 1> - <description>\n        QA Task: <qa task name 2> - <description>\n        etc...\n*****\nProject Name: <project name>\nProject Key: <project key>\n   Epic: <epic name> - <description>\n     Story: <story name> - <description>\n        Task: <task name1> - <description>\n        Task: <task name2> - <description>\n        etc...\n        QA Task: <qa task name 1> - <description>\n        QA Task: <qa task name 2> - <description>\n        etc...\n     Story: <story name 2> - <description>\n        Task: <task name1> - <description>\n        Task: <task name2> - <description>\n        etc...\n        QA Task: <qa task name 1> - <description>\n        QA Task: <qa task name 2> - <description>\n        etc...\n*****\n\nEssentially I want you to break the Epics into groups with all the information for that epic, its stories, tasks, qa tasks.  Then I want you to separate each group with five ampersands (*****)\n\nDevelopment Plan:\n{{Input}}",
+        "system_prompt": "",
+        "model": "",
+        "chatbot_id": "",
+        "endpoint_url": "",
+        "endpoint_method": 0,
+        "endpoint_headers": "",
+        "endpoint_body": "",
+        "agent_functions": [],
+        "pip_dependencies": [],
+        "env_variables": [],
+        "mcp_servers": [],
+        "pipeline_id": "",
+        "max_passes": 5,
+        "request_inputs": [
+          {
+            "name": "Input",
+            "value": "{{Create Development Plan}}",
+            "is_required": true,
+            "locked": true,
+            "type": 0,
+            "is_default": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "v7w9d5a44",
+      "name": "Create Project",
+      "description": "",
+      "next_steps": [
+        "xct9tvxkc"
+      ],
+      "next_steps_true": [],
+      "next_steps_false": [],
+      "is_start": false,
+      "tool_id": "lneit71w1",
+      "status": 0,
+      "inputs": [
+        {
+          "name": "Input",
+          "value": "",
+          "is_required": false,
+          "locked": true,
+          "type": 0,
+          "is_default": true
+        }
+      ],
+      "outputs": [],
+      "call_cost": [],
+      "status_text": "",
+      "pre_process": "function process(input) {\n    return [input];\n}",
+      "post_process": "function process(output) {\n    return output;\n}",
+      "disabled": false,
+      "tool_outputs": [],
+      "pause_after": false,
+      "memory_id": "",
+      "pos_x": 597.5,
+      "pos_y": 356.25,
+      "tool": {
+        "id": "lneit71w1",
+        "name": "Jira Tool",
+        "type": 3,
+        "tag": "Jira, Project Planning",
+        "sort_index": 6,
+        "is_enabled": true,
+        "description": "A agent tool with access to Jira API",
+        "prompt": "Create the project found in the below request.\n\nDo not create Epics or Stories, you job is to create the Project.\n\nRequest:\n{{Input}}",
+        "system_prompt": "You are an assistant in charge of calling functions to create items in a Jira software project",
+        "model": "gpt-5-mini",
+        "chatbot_id": "",
+        "endpoint_url": "",
+        "endpoint_method": 0,
+        "endpoint_headers": "",
+        "endpoint_body": "",
+        "agent_functions": [
+          {
+            "uid": "u0ormt3",
+            "name": "JiraTools",
+            "description": "",
+            "is_enabled": true,
+            "is_deleted": false,
+            "function_string": "import os\nimport requests\nfrom dotenv import load_dotenv\nfrom jira import JIRA\n\n# Load environment variables from .env\nload_dotenv()\n\nJIRA_SITE = os.getenv(\"JIRA_SITE\")   # e.g. 'https://your-domain.atlassian.net'\nJIRA_EMAIL = os.getenv(\"JIRA_EMAIL\") # your Jira account email\nJIRA_TOKEN = os.getenv(\"JIRA_TOKEN\") # your Jira API token\n\n# Reasonable defaults for cloud calls\n_HTTP_TIMEOUT = 30\n\n\ndef _require_env():\n    missing = [k for k, v in {\n        \"JIRA_SITE\": JIRA_SITE,\n        \"JIRA_EMAIL\": JIRA_EMAIL,\n        \"JIRA_TOKEN\": JIRA_TOKEN,\n    }.items() if not v]\n    if missing:\n        raise RuntimeError(f\"Missing required environment variables: {', '.join(missing)}\")\n\n\ndef _rest_v3_url(path: str) -> str:\n    # path like \"/project\" or \"/myself\"\n    base = JIRA_SITE.rstrip(\"/\")\n    return f\"{base}/rest/api/3{path}\"\n\n\ndef _requests_session() -> requests.Session:\n    \"\"\"\n    Jira Cloud basic auth for REST: email + API token.\n    \"\"\"\n    _require_env()\n    s = requests.Session()\n    s.auth = (JIRA_EMAIL, JIRA_TOKEN)\n    s.headers.update({\n        \"Accept\": \"application/json\",\n        \"Content-Type\": \"application/json\",\n    })\n    return s\n\n\ndef _get_my_account_id() -> str:\n    \"\"\"\n    Needed for create project payload (leadAccountId).\n    \"\"\"\n    sess = _requests_session()\n    r = sess.get(_rest_v3_url(\"/myself\"), timeout=_HTTP_TIMEOUT)\n    if r.status_code >= 400:\n        raise RuntimeError(f\"Failed to fetch /myself ({r.status_code}): {r.text}\")\n    data = r.json()\n    account_id = data.get(\"accountId\")\n    if not account_id:\n        raise RuntimeError(\"Could not determine accountId from /myself response.\")\n    return account_id\n\n\ndef _adf_doc_from_text(text: str) -> dict:\n    \"\"\"\n    Minimal Atlassian Document Format for a plain text description.\n    Jira Cloud REST v3 supports ADF in description. :contentReference[oaicite:3]{index=3}\n    \"\"\"\n    # Split into paragraphs to preserve newlines reasonably\n    paragraphs = []\n    for line in (text or \"\").splitlines():\n        if line.strip() == \"\":\n            continue\n        paragraphs.append({\n            \"type\": \"paragraph\",\n            \"content\": [{\"type\": \"text\", \"text\": line}],\n        })\n    if not paragraphs:\n        paragraphs = [{\"type\": \"paragraph\", \"content\": []}]\n    return {\"type\": \"doc\", \"version\": 1, \"content\": paragraphs}\n\n\ndef get_jira_client():\n    \"\"\"\n    Instantiate and return a JIRA client using credentials from environment variables.\n    \"\"\"\n    try:\n        _require_env()\n        options = {\"server\": JIRA_SITE,\n            \"rest_api_version\": \"3\"}  # <-- critical}\n        # python-jira is still fine for many issue operations, but project creation is safer via REST v3.\n        return JIRA(options, basic_auth=(JIRA_EMAIL, JIRA_TOKEN))\n    except Exception as e:\n        print(f\"Error creating Jira client: {e}\")\n        return None\n\n\ndef create_issue(project_key: str,\n                 summary: str,\n                 parent: str = None,\n                 description: str = \"\",\n                 issue_type: str = 'Story'):\n    \"\"\"\n    Create a new issue in the specified project.\n    :param project_key: Key of the project\n    :param summary: Summary/title of the issue\n    :param description: Detailed description\n    :param issue_type: Type of issue (e.g., 'Epic', 'Story', 'Task', 'Bug')\n    :return: Created Issue resource\n    \"\"\"\n    jira = get_jira_client()\n    if jira is None:\n        return None\n\n    print(f\"Creating [{issue_type}] {summary} in project {project_key}...\")\n    try:\n        # Jira summary limit is ~255 chars in many configs; keep your 220 rule\n        sum_text = summary or \"\"\n        if len(sum_text) > 220:\n            sum_text = sum_text[:220] + \"...\"\n\n        # Build a combined description (use params correctly)\n        full_desc = (summary or \"\").strip()\n        if description:\n            full_desc = (full_desc + \"\\n\\n---\\n\\n\" + description.strip()).strip()\n\n        # Use ADF for cloud v3 compatibility; python-jira will pass it through for Cloud.\n        # If your instance rejects ADF (unlikely on Cloud), change to plain string.\n        fields = {\n            \"project\": {\"key\": project_key},\n            \"summary\": sum_text,\n            \"issuetype\": {\"name\": issue_type},\n            \"description\": _adf_doc_from_text(full_desc),\n        }\n\n        if parent:\n            # Works for subtasks; for “epic link” / hierarchy you may need a different field depending on project type.\n            fields[\"parent\"] = {\"key\": parent}\n\n        issue = jira.create_issue(fields=fields)\n        return issue.raw\n    except Exception as e:\n        print(f\"Error creating issue: {e}\")\n        return None\n\n\ndef create_project(key: str,\n                   name: str,\n                   project_type: str = 'software',\n                   template_key: str = \"com.pyxis.greenhopper.jira:gh-simplified-scrum-classic\"):\n    \"\"\"\n    Create a new Jira project.\n\n    :param name: Project name\n    :param project_type: Type of project ('software', 'business', 'service_desk')\n    :param template_key: Template identifier\n    :return: Created Project resource\n    \"\"\"\n    print(f\"Creating project {name} with key {key}...\")\n\n    try:\n        _require_env()\n\n        # Jira Cloud create project: POST /rest/api/3/project\n        # Permissions required: Administer Jira. :contentReference[oaicite:4]{index=4}\n        lead_account_id = _get_my_account_id()\n\n        payload = {\n            \"key\": key,\n            \"name\": name,\n            \"projectTypeKey\": project_type,         # 'software' | 'business' | 'service_desk' :contentReference[oaicite:5]{index=5}\n            \"projectTemplateKey\": template_key,     # e.g. scrum classic :contentReference[oaicite:6]{index=6}\n            \"leadAccountId\": lead_account_id,       # shown in Atlassian sample payload :contentReference[oaicite:7]{index=7}\n            # IMPORTANT: do NOT include permissionScheme / notificationScheme / issueSecurityScheme\n            # unless you intentionally pick valid IDs from THIS site.\n        }\n\n        sess = _requests_session()\n        r = sess.post(_rest_v3_url(\"/project\"), json=payload, timeout=_HTTP_TIMEOUT)\n\n        if r.status_code >= 400:\n            # Bubble up the server's message—this is usually the fastest way to fix config/perms.\n            raise RuntimeError(f\"Create project failed ({r.status_code}): {r.text}\")\n\n        # Response is ProjectIdentifiers (id, key, self) :contentReference[oaicite:8]{index=8}\n        return r.json()\n\n    except Exception as e:\n        print(f\"Error creating project: {e}\")\n        return None\n\n\ndef get_project_key_by_name(project_name: str):\n    \"\"\"\n    Get the project Key by its name.\n    :param project_name: Name of the project\n    :return: Project Key\n    \"\"\"\n    try:\n        jira = get_jira_client()\n        if jira is None:\n            return None\n\n        projects = jira.projects()\n        for project in projects:\n            if project.name == project_name:\n                print(f\"Project {project_name} found with ID: {project.key}\")\n                return project.key\n        print(f\"Project {project_name} not found.\")\n        return None\n    except Exception as e:\n        print(f\"Error getting projects: {e}\")\n        return None\n\n\ndef get_issues_by_project(project_key: str, issue_type: str = \"\"):\n    \"\"\"\n    Get all issues in a project.\n    :param project_key: Key of the project\n    :issue_type:\n    :return: List of issues\n    \"\"\"\n    jira = get_jira_client()\n    if jira is None:\n        return None\n    try:\n        if issue_type:\n            jql = f'project=\"{project_key}\" AND issuetype=\"{issue_type}\"'\n        else:\n            jql = f'project=\"{project_key}\"'\n        issues = jira.search_issues(jql)\n        return issues\n    except Exception as e:\n        print(f\"Error getting issues [{project_key}][{issue_type}]: {e}\")\n        return None\n"
+          }
+        ],
+        "pipeline_id": "",
+        "request_inputs": [
+          {
+            "name": "Input",
+            "value": "{{Create Development Plan}}",
+            "is_required": true,
+            "locked": true,
+            "type": 0,
+            "is_default": true
+          }
+        ],
+        "created_at": "2026-02-26T14:59:41.001104+00:00",
+        "updated_at": "2026-02-28T04:36:22.781073+00:00",
+        "pip_dependencies": [
+          "jira"
+        ],
+        "env_variables": [
+          {
+            "name": "JIRA_SITE",
+            "description": "",
+            "type": 5
+          },
+          {
+            "name": "JIRA_TOKEN",
+            "description": "",
+            "type": 5
+          },
+          {
+            "name": "JIRA_EMAIL",
+            "description": "",
+            "type": 0
+          }
+        ],
+        "mcp_servers": [],
+        "max_passes": 5
+      }
+    },
+    {
+      "id": "107akljea",
+      "name": "If 107a",
+      "description": "",
+      "next_steps": [],
+      "next_steps_true": [
+        "create_artifacts"
+      ],
+      "next_steps_false": [
+        "v7w9d5a44"
+      ],
+      "is_start": false,
+      "tool_id": "-3",
+      "status": 0,
+      "inputs": [
+        {
+          "name": "Input",
+          "value": "",
+          "is_required": false,
+          "locked": true,
+          "type": 0,
+          "is_default": true
+        }
+      ],
+      "outputs": [],
+      "call_cost": [],
+      "status_text": "",
+      "pre_process": "function process(input) {\n    return [input];\n}",
+      "post_process": "function process(output) {\n    return output;\n}",
+      "disabled": false,
+      "tool_outputs": [],
+      "pause_after": false,
+      "memory_id": "",
+      "pos_x": 1078.3008247139217,
+      "pos_y": 328.86072066057676,
+      "tool": {
+        "id": "3s92xj9ub",
+        "name": "If",
+        "type": 5,
+        "tag": "",
+        "sort_index": 0,
+        "is_enabled": true,
+        "description": "",
+        "prompt": "Ensure the outputs indicates that the project was successfully created and could be confirmed.\n{{Input}}",
+        "system_prompt": "You are a condition evaluator. Assess whether the described condition is true or false.",
+        "model": "",
+        "chatbot_id": "",
+        "endpoint_url": "",
+        "endpoint_method": 0,
+        "endpoint_headers": "",
+        "endpoint_body": "",
+        "agent_functions": [],
+        "pip_dependencies": [],
+        "env_variables": [],
+        "mcp_servers": [],
+        "pipeline_id": "",
+        "max_passes": 5,
+        "request_inputs": [
+          {
+            "name": "Input",
+            "value": "{{Create Project}}",
+            "is_required": true,
+            "locked": true,
+            "type": 0,
+            "is_default": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "xct9tvxkc",
+      "name": "Confirm",
+      "description": "",
+      "next_steps": [
+        "107akljea"
+      ],
+      "next_steps_true": [],
+      "next_steps_false": [],
+      "is_start": false,
+      "tool_id": "-4",
+      "status": 0,
+      "inputs": [
+        {
+          "name": "Input",
+          "value": "",
+          "is_required": false,
+          "locked": true,
+          "type": 0,
+          "is_default": true
+        }
+      ],
+      "outputs": [],
+      "call_cost": [],
+      "status_text": "",
+      "pre_process": "function process(input) {\n    return [input];\n}",
+      "post_process": "function process(output) {\n    return output;\n}",
+      "disabled": false,
+      "tool_outputs": [],
+      "pause_after": false,
+      "memory_id": "",
+      "pos_x": 830.8008247139215,
+      "pos_y": 355.11072066057676,
+      "tool": {
+        "id": "ksifrtsvd",
+        "name": "Loop Counter",
+        "type": 10,
+        "tag": "",
+        "sort_index": 0,
+        "is_enabled": true,
+        "description": "",
+        "prompt": "",
+        "system_prompt": "",
+        "model": "",
+        "chatbot_id": "",
+        "endpoint_url": "",
+        "endpoint_method": 0,
+        "endpoint_headers": "",
+        "endpoint_body": "",
+        "agent_functions": [],
+        "pip_dependencies": [],
+        "env_variables": [],
+        "mcp_servers": [],
+        "pipeline_id": "",
+        "max_passes": 3,
+        "request_inputs": [
+          {
+            "name": "Input",
+            "value": "",
+            "is_required": true,
+            "locked": true,
+            "type": 0,
+            "is_default": true
+          }
+        ]
+      }
+    }
+  ],
+  "inputs": [
+    {
+      "name": "Software Plan",
+      "value": "I want to create a vue 3 frontend application.\nThis application will use pyodide to run a python script and perform actions.  The purpose of this python script is to use the pyDicom library to read uploaded dicom files.\nThe pyodide workflow will be handled in a web worker to save the main thread (partially implemented)\nOnce the dicom data has been read in pyodide/pydicom it will be returned to the browser for processing and viewing\nIn the vue application, create components for uploading a Dicom File.  Once uploaded it will automatically process.\nOnce processed, show the dicom data.  On the left hand side, show the tags in a list.  \nIn the main section show the dicom image.\nAllow tags to be edited\nAllow basic tools to view the dicom image (think through this, which tools make the most sense for a basic dicom viewer)\nAllow edits to be saved to a new dicom (using pydicom and pyodide again) and download the edited dicom file.\n\nI expect the UI to be modern and visually pleasing.  Use a dark made actually.\nI expect all functionality to be contained in Vue 3 (ts) and pyodide python scripts.\nPython scripts exists un the public folder, edit and create all python scripts in that folder.\nMake sure the web worker is called for all pyodide work.\n\nA placeholder for the pyodide web worker already exists here : \"\\src\\pyodideWorker.ts\" but will need to be fully implemented.  The code file for the worker is \\public\\reader.py but will also need to be looked at and possibly updated\n\nThe project already has a vue template in place and already has pyodide installed.",
+      "description": "A description of the software to be planned and developed, including goals, features, and any known requirements",
+      "type": 0,
+      "is_required": true,
+      "locked": false,
+      "index": 0,
+      "is_default": true,
+      "data": null
+    },
+    {
+      "name": "Project Name",
+      "value": "PyoTest4",
+      "description": "The name of the project to create (e.g., 'Customer Portal')",
+      "type": 0,
+      "is_required": true,
+      "locked": false,
+      "index": 1,
+      "is_default": false,
+      "data": null
+    },
+    {
+      "name": "Project Key",
+      "value": "PTEST4",
+      "description": "The short project key for Jira (e.g., 'CP', 'PORTAL')",
+      "type": 0,
+      "is_required": true,
+      "locked": false,
+      "index": 2,
+      "is_default": false,
+      "data": null
+    }
+  ],
+  "edges": [
+    {
+      "id": "start_to_ask",
+      "source": "start",
+      "target": "ask_user",
+      "source_handle": "start_source",
+      "target_handle": "ask_user_target"
+    },
+    {
+      "id": "ask_to_plan",
+      "source": "ask_user",
+      "target": "dev_plan",
+      "source_handle": "ask_user_source",
+      "target_handle": "dev_plan_target"
+    },
+    {
+      "id": "create_to_verify",
+      "source": "create_artifacts",
+      "target": "verify",
+      "source_handle": "create_artifacts_source",
+      "target_handle": "verify_target"
+    },
+    {
+      "id": "verify_to_end",
+      "source": "verify",
+      "target": "end",
+      "source_handle": "verify_source",
+      "target_handle": "end_target"
+    },
+    {
+      "id": "dev_plan_a2uw2ksf2_dev_plan_source_a2uw2ksf2_target",
+      "source": "dev_plan",
+      "target": "a2uw2ksf2",
+      "source_handle": "dev_plan_source",
+      "target_handle": "a2uw2ksf2_target"
+    },
+    {
+      "id": "a2uw2ksf2_v7w9d5a44_a2uw2ksf2_source_v7w9d5a44_target",
+      "source": "a2uw2ksf2",
+      "target": "v7w9d5a44",
+      "source_handle": "a2uw2ksf2_source",
+      "target_handle": "v7w9d5a44_target"
+    },
+    {
+      "id": "v7w9d5a44_xct9tvxkc_v7w9d5a44_source_xct9tvxkc_target",
+      "source": "v7w9d5a44",
+      "target": "xct9tvxkc",
+      "source_handle": "v7w9d5a44_source",
+      "target_handle": "xct9tvxkc_target"
+    },
+    {
+      "id": "xct9tvxkc_107akljea_xct9tvxkc_source_107akljea_target",
+      "source": "xct9tvxkc",
+      "target": "107akljea",
+      "source_handle": "xct9tvxkc_source",
+      "target_handle": "107akljea_target"
+    },
+    {
+      "id": "107akljea_create_artifacts_107akljea_true_create_artifacts_target",
+      "source": "107akljea",
+      "target": "create_artifacts",
+      "source_handle": "107akljea_true",
+      "target_handle": "create_artifacts_target"
+    },
+    {
+      "id": "107akljea_v7w9d5a44_107akljea_false_v7w9d5a44_target",
+      "source": "107akljea",
+      "target": "v7w9d5a44",
+      "source_handle": "107akljea_false",
+      "target_handle": "v7w9d5a44_target"
+    }
+  ],
+  "guidance": "This pipeline is for software project planning. Ensure all development artifacts are well-structured, clearly described, and traceable. Epics should represent major features, Stories should be user-facing deliverables, Tasks should be technical work items, and QA Tasks should cover testing for each story.",
+  "sort_index": 2,
+  "memories": [],
+  "export_uid": "dnh67v3c3",
+  "export_version": 1,
+  "_export_type": "pipeline",
+  "_export_name": "Software Project Management Planner",
+  "_export_description": "Plans software development by gathering requirements, creating a development plan with Epics, Stories, Tasks and QA Tasks, creating the project and artifacts in Jira, and verifying everything was created correctly.",
+  "_export_date": "2026-03-04T02:56:55.210Z",
+  "_tools": [
+    {
+      "id": "lneit71w1",
+      "name": "Jira Tool",
+      "type": 3,
+      "tag": "Jira, Project Planning",
+      "sort_index": 6,
+      "is_enabled": true,
+      "description": "A agent tool with access to Jira API",
+      "prompt": "Create the project found in the below request.\n\nDo not create Epics or Stories, you job is to create the Project.\n\nRequest:\n{{Input}}",
+      "system_prompt": "You are an assistant in charge of calling functions to create items in a Jira software project",
+      "model": "gpt-5-mini",
+      "chatbot_id": "",
+      "endpoint_url": "",
+      "endpoint_method": 0,
+      "endpoint_headers": "",
+      "endpoint_body": "",
+      "agent_functions": [
+        {
+          "uid": "u0ormt3",
+          "name": "JiraTools",
+          "description": "",
+          "is_enabled": true,
+          "is_deleted": false,
+          "function_string": "import os\nimport requests\nfrom dotenv import load_dotenv\nfrom jira import JIRA\n\n# Load environment variables from .env\nload_dotenv()\n\nJIRA_SITE = os.getenv(\"JIRA_SITE\")   # e.g. 'https://your-domain.atlassian.net'\nJIRA_EMAIL = os.getenv(\"JIRA_EMAIL\") # your Jira account email\nJIRA_TOKEN = os.getenv(\"JIRA_TOKEN\") # your Jira API token\n\n# Reasonable defaults for cloud calls\n_HTTP_TIMEOUT = 30\n\n\ndef _require_env():\n    missing = [k for k, v in {\n        \"JIRA_SITE\": JIRA_SITE,\n        \"JIRA_EMAIL\": JIRA_EMAIL,\n        \"JIRA_TOKEN\": JIRA_TOKEN,\n    }.items() if not v]\n    if missing:\n        raise RuntimeError(f\"Missing required environment variables: {', '.join(missing)}\")\n\n\ndef _rest_v3_url(path: str) -> str:\n    # path like \"/project\" or \"/myself\"\n    base = JIRA_SITE.rstrip(\"/\")\n    return f\"{base}/rest/api/3{path}\"\n\n\ndef _requests_session() -> requests.Session:\n    \"\"\"\n    Jira Cloud basic auth for REST: email + API token.\n    \"\"\"\n    _require_env()\n    s = requests.Session()\n    s.auth = (JIRA_EMAIL, JIRA_TOKEN)\n    s.headers.update({\n        \"Accept\": \"application/json\",\n        \"Content-Type\": \"application/json\",\n    })\n    return s\n\n\ndef _get_my_account_id() -> str:\n    \"\"\"\n    Needed for create project payload (leadAccountId).\n    \"\"\"\n    sess = _requests_session()\n    r = sess.get(_rest_v3_url(\"/myself\"), timeout=_HTTP_TIMEOUT)\n    if r.status_code >= 400:\n        raise RuntimeError(f\"Failed to fetch /myself ({r.status_code}): {r.text}\")\n    data = r.json()\n    account_id = data.get(\"accountId\")\n    if not account_id:\n        raise RuntimeError(\"Could not determine accountId from /myself response.\")\n    return account_id\n\n\ndef _adf_doc_from_text(text: str) -> dict:\n    \"\"\"\n    Minimal Atlassian Document Format for a plain text description.\n    Jira Cloud REST v3 supports ADF in description. :contentReference[oaicite:3]{index=3}\n    \"\"\"\n    # Split into paragraphs to preserve newlines reasonably\n    paragraphs = []\n    for line in (text or \"\").splitlines():\n        if line.strip() == \"\":\n            continue\n        paragraphs.append({\n            \"type\": \"paragraph\",\n            \"content\": [{\"type\": \"text\", \"text\": line}],\n        })\n    if not paragraphs:\n        paragraphs = [{\"type\": \"paragraph\", \"content\": []}]\n    return {\"type\": \"doc\", \"version\": 1, \"content\": paragraphs}\n\n\ndef get_jira_client():\n    \"\"\"\n    Instantiate and return a JIRA client using credentials from environment variables.\n    \"\"\"\n    try:\n        _require_env()\n        options = {\"server\": JIRA_SITE,\n            \"rest_api_version\": \"3\"}  # <-- critical}\n        # python-jira is still fine for many issue operations, but project creation is safer via REST v3.\n        return JIRA(options, basic_auth=(JIRA_EMAIL, JIRA_TOKEN))\n    except Exception as e:\n        print(f\"Error creating Jira client: {e}\")\n        return None\n\n\ndef create_issue(project_key: str,\n                 summary: str,\n                 parent: str = None,\n                 description: str = \"\",\n                 issue_type: str = 'Story'):\n    \"\"\"\n    Create a new issue in the specified project.\n    :param project_key: Key of the project\n    :param summary: Summary/title of the issue\n    :param description: Detailed description\n    :param issue_type: Type of issue (e.g., 'Epic', 'Story', 'Task', 'Bug')\n    :return: Created Issue resource\n    \"\"\"\n    jira = get_jira_client()\n    if jira is None:\n        return None\n\n    print(f\"Creating [{issue_type}] {summary} in project {project_key}...\")\n    try:\n        # Jira summary limit is ~255 chars in many configs; keep your 220 rule\n        sum_text = summary or \"\"\n        if len(sum_text) > 220:\n            sum_text = sum_text[:220] + \"...\"\n\n        # Build a combined description (use params correctly)\n        full_desc = (summary or \"\").strip()\n        if description:\n            full_desc = (full_desc + \"\\n\\n---\\n\\n\" + description.strip()).strip()\n\n        # Use ADF for cloud v3 compatibility; python-jira will pass it through for Cloud.\n        # If your instance rejects ADF (unlikely on Cloud), change to plain string.\n        fields = {\n            \"project\": {\"key\": project_key},\n            \"summary\": sum_text,\n            \"issuetype\": {\"name\": issue_type},\n            \"description\": _adf_doc_from_text(full_desc),\n        }\n\n        if parent:\n            # Works for subtasks; for “epic link” / hierarchy you may need a different field depending on project type.\n            fields[\"parent\"] = {\"key\": parent}\n\n        issue = jira.create_issue(fields=fields)\n        return issue.raw\n    except Exception as e:\n        print(f\"Error creating issue: {e}\")\n        return None\n\n\ndef create_project(key: str,\n                   name: str,\n                   project_type: str = 'software',\n                   template_key: str = \"com.pyxis.greenhopper.jira:gh-simplified-scrum-classic\"):\n    \"\"\"\n    Create a new Jira project.\n\n    :param name: Project name\n    :param project_type: Type of project ('software', 'business', 'service_desk')\n    :param template_key: Template identifier\n    :return: Created Project resource\n    \"\"\"\n    print(f\"Creating project {name} with key {key}...\")\n\n    try:\n        _require_env()\n\n        # Jira Cloud create project: POST /rest/api/3/project\n        # Permissions required: Administer Jira. :contentReference[oaicite:4]{index=4}\n        lead_account_id = _get_my_account_id()\n\n        payload = {\n            \"key\": key,\n            \"name\": name,\n            \"projectTypeKey\": project_type,         # 'software' | 'business' | 'service_desk' :contentReference[oaicite:5]{index=5}\n            \"projectTemplateKey\": template_key,     # e.g. scrum classic :contentReference[oaicite:6]{index=6}\n            \"leadAccountId\": lead_account_id,       # shown in Atlassian sample payload :contentReference[oaicite:7]{index=7}\n            # IMPORTANT: do NOT include permissionScheme / notificationScheme / issueSecurityScheme\n            # unless you intentionally pick valid IDs from THIS site.\n        }\n\n        sess = _requests_session()\n        r = sess.post(_rest_v3_url(\"/project\"), json=payload, timeout=_HTTP_TIMEOUT)\n\n        if r.status_code >= 400:\n            # Bubble up the server's message—this is usually the fastest way to fix config/perms.\n            raise RuntimeError(f\"Create project failed ({r.status_code}): {r.text}\")\n\n        # Response is ProjectIdentifiers (id, key, self) :contentReference[oaicite:8]{index=8}\n        return r.json()\n\n    except Exception as e:\n        print(f\"Error creating project: {e}\")\n        return None\n\n\ndef get_project_key_by_name(project_name: str):\n    \"\"\"\n    Get the project Key by its name.\n    :param project_name: Name of the project\n    :return: Project Key\n    \"\"\"\n    try:\n        jira = get_jira_client()\n        if jira is None:\n            return None\n\n        projects = jira.projects()\n        for project in projects:\n            if project.name == project_name:\n                print(f\"Project {project_name} found with ID: {project.key}\")\n                return project.key\n        print(f\"Project {project_name} not found.\")\n        return None\n    except Exception as e:\n        print(f\"Error getting projects: {e}\")\n        return None\n\n\ndef get_issues_by_project(project_key: str, issue_type: str = \"\"):\n    \"\"\"\n    Get all issues in a project.\n    :param project_key: Key of the project\n    :issue_type:\n    :return: List of issues\n    \"\"\"\n    jira = get_jira_client()\n    if jira is None:\n        return None\n    try:\n        if issue_type:\n            jql = f'project=\"{project_key}\" AND issuetype=\"{issue_type}\"'\n        else:\n            jql = f'project=\"{project_key}\"'\n        issues = jira.search_issues(jql)\n        return issues\n    except Exception as e:\n        print(f\"Error getting issues [{project_key}][{issue_type}]: {e}\")\n        return None\n"
+        }
+      ],
+      "pipeline_id": "",
+      "request_inputs": [
+        {
+          "name": "Input",
+          "value": "{{Create Development Plan}}",
+          "is_required": true,
+          "locked": true,
+          "type": 0,
+          "is_default": true
+        }
+      ],
+      "pip_dependencies": [
+        "jira"
+      ],
+      "env_variables": [
+        {
+          "name": "JIRA_SITE",
+          "description": "",
+          "type": 5
+        },
+        {
+          "name": "JIRA_TOKEN",
+          "description": "",
+          "type": 5
+        },
+        {
+          "name": "JIRA_EMAIL",
+          "description": "",
+          "type": 0
+        }
+      ],
+      "mcp_servers": [],
+      "max_passes": 5,
+      "export_uid": "7ylecv101c"
+    }
+  ],
+  "_pip_packages": [
+    "jira"
+  ]
+}

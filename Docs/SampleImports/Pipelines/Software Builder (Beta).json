@@ -1,0 +1,1288 @@
+{
+  "name": "Software Builder",
+  "description": "Analyzes a software definition to determine which layers (Data, Server, UI) are needed, then plans and implements each layer by creating the necessary files.",
+  "tag": "software development",
+  "steps": [
+    {
+      "id": "start",
+      "name": "Start",
+      "tool_id": "",
+      "tool": {
+        "type": 9
+      },
+      "is_start": true,
+      "next_steps": [
+        "t4gtju7g2"
+      ],
+      "pos_x": -139.53125,
+      "pos_y": 512.5,
+      "description": "",
+      "disabled": false,
+      "status": 0,
+      "status_text": "",
+      "pause_after": false,
+      "inputs": [],
+      "outputs": [],
+      "pre_process": "",
+      "post_process": "",
+      "next_steps_true": [],
+      "next_steps_false": [],
+      "call_cost": [],
+      "tool_outputs": [],
+      "memory_id": ""
+    },
+    {
+      "id": "analyze",
+      "name": "Analyze Software",
+      "tool_id": "-1",
+      "tool": {
+        "id": "za4w10e64",
+        "name": "Base LLM",
+        "type": 0,
+        "tag": "",
+        "sort_index": 0,
+        "is_enabled": true,
+        "description": "",
+        "prompt": "You are analyzing a software project to determine its architectural layers.\n\nSoftware Description:\n{{Input}}\n\nClarifying Q/A:\n{{Clarify}}\n\nWorking Directory: {{Working Directory}}\n\nAnalyze this software description and produce a structured summary that clearly identifies:\n1. **Data Layer**: Does this software need a database, data models, ORM, migrations, data access layer, or any form of persistent storage? (e.g., database schemas, repositories, data services)\n2. **Server Layer**: Does this software need a backend server, API endpoints, server-side logic, middleware, authentication, or any server-side processing? (e.g., REST API, GraphQL, server routes, controllers)\n3. **UI Layer**: Does this software need a frontend user interface, web pages, client-side components, styling, or any visual presentation? (e.g., HTML pages, React/Vue components, CSS, client-side routing)\n\nFor each layer, clearly state whether it is NEEDED or NOT NEEDED, and briefly explain what that layer would involve if needed.\n\nAlso include a high-level project overview summarizing the technology choices and architecture.",
+        "system_prompt": "",
+        "model": "",
+        "chatbot_id": "",
+        "endpoint_url": "",
+        "endpoint_method": 0,
+        "endpoint_headers": "",
+        "endpoint_body": "",
+        "agent_functions": [],
+        "pip_dependencies": [],
+        "env_variables": [],
+        "mcp_servers": [],
+        "pipeline_id": "",
+        "max_passes": 5,
+        "request_inputs": [
+          {
+            "name": "Input",
+            "value": "{{Software Description}}",
+            "is_required": true,
+            "locked": true,
+            "type": 0,
+            "is_default": true
+          }
+        ]
+      },
+      "inputs": [
+        {
+          "name": "Input",
+          "value": "{{Start}}",
+          "is_default": true,
+          "is_required": true,
+          "type": 0
+        }
+      ],
+      "next_steps": [
+        "check_data",
+        "check_server",
+        "check_ui"
+      ],
+      "pos_x": 382.5,
+      "pos_y": 497.5,
+      "description": "",
+      "disabled": false,
+      "status": 0,
+      "status_text": "",
+      "pause_after": false,
+      "outputs": [],
+      "pre_process": "function process(input) {\n    return [input];\n}",
+      "post_process": "function process(output) {\r\n    return output;\r\n}",
+      "next_steps_true": [],
+      "next_steps_false": [],
+      "is_start": false,
+      "call_cost": [],
+      "tool_outputs": [],
+      "memory_id": ""
+    },
+    {
+      "id": "check_data",
+      "name": "Needs Data Layer",
+      "tool_id": "-3",
+      "tool": {
+        "id": "jxnc7c323",
+        "name": "If",
+        "type": 5,
+        "tag": "",
+        "sort_index": 0,
+        "is_enabled": true,
+        "description": "",
+        "prompt": "{{Input}}",
+        "system_prompt": "You are a condition evaluator. Assess whether the described condition is true or false.",
+        "model": "",
+        "chatbot_id": "",
+        "endpoint_url": "",
+        "endpoint_method": 0,
+        "endpoint_headers": "",
+        "endpoint_body": "",
+        "agent_functions": [],
+        "pip_dependencies": [],
+        "env_variables": [],
+        "mcp_servers": [],
+        "pipeline_id": "",
+        "max_passes": 5,
+        "request_inputs": [
+          {
+            "name": "Input",
+            "value": "",
+            "is_required": true,
+            "locked": true,
+            "type": 0,
+            "is_default": true
+          }
+        ]
+      },
+      "inputs": [
+        {
+          "name": "Input",
+          "value": "{{Analyze Software}}",
+          "is_default": true,
+          "is_required": true,
+          "type": 0
+        }
+      ],
+      "next_steps_true": [
+        "plan_data"
+      ],
+      "next_steps_false": [
+        "wait_all"
+      ],
+      "pos_x": 700,
+      "pos_y": 150,
+      "description": "",
+      "disabled": false,
+      "status": 0,
+      "status_text": "",
+      "pause_after": false,
+      "outputs": [],
+      "pre_process": "",
+      "post_process": "",
+      "next_steps": [],
+      "is_start": false,
+      "call_cost": [],
+      "tool_outputs": [],
+      "memory_id": ""
+    },
+    {
+      "id": "check_server",
+      "name": "Needs Server Layer",
+      "tool_id": "-3",
+      "tool": {
+        "id": "bxpn7c924",
+        "name": "If",
+        "type": 5,
+        "tag": "",
+        "sort_index": 0,
+        "is_enabled": true,
+        "description": "",
+        "prompt": "{{Input}}",
+        "system_prompt": "You are a condition evaluator. Assess whether the described condition is true or false.",
+        "model": "",
+        "chatbot_id": "",
+        "endpoint_url": "",
+        "endpoint_method": 0,
+        "endpoint_headers": "",
+        "endpoint_body": "",
+        "agent_functions": [],
+        "pip_dependencies": [],
+        "env_variables": [],
+        "mcp_servers": [],
+        "pipeline_id": "",
+        "max_passes": 5,
+        "request_inputs": [
+          {
+            "name": "Input",
+            "value": "",
+            "is_required": true,
+            "locked": true,
+            "type": 0,
+            "is_default": true
+          }
+        ]
+      },
+      "inputs": [
+        {
+          "name": "Input",
+          "value": "{{Analyze Software}}",
+          "is_default": true,
+          "is_required": true,
+          "type": 0
+        }
+      ],
+      "next_steps_true": [
+        "plan_server"
+      ],
+      "next_steps_false": [
+        "wait_all"
+      ],
+      "pos_x": 698.4842834334895,
+      "pos_y": 481.8114012018751,
+      "description": "",
+      "disabled": false,
+      "status": 0,
+      "status_text": "",
+      "pause_after": false,
+      "outputs": [],
+      "pre_process": "",
+      "post_process": "",
+      "next_steps": [],
+      "is_start": false,
+      "call_cost": [],
+      "tool_outputs": [],
+      "memory_id": ""
+    },
+    {
+      "id": "check_ui",
+      "name": "Needs UI Layer",
+      "tool_id": "-3",
+      "tool": {
+        "id": "jtnrj9w55",
+        "name": "If",
+        "type": 5,
+        "tag": "",
+        "sort_index": 0,
+        "is_enabled": true,
+        "description": "",
+        "prompt": "{{Input}}",
+        "system_prompt": "You are a condition evaluator. Assess whether the described condition is true or false.",
+        "model": "",
+        "chatbot_id": "",
+        "endpoint_url": "",
+        "endpoint_method": 0,
+        "endpoint_headers": "",
+        "endpoint_body": "",
+        "agent_functions": [],
+        "pip_dependencies": [],
+        "env_variables": [],
+        "mcp_servers": [],
+        "pipeline_id": "",
+        "max_passes": 5,
+        "request_inputs": [
+          {
+            "name": "Input",
+            "value": "",
+            "is_required": true,
+            "locked": true,
+            "type": 0,
+            "is_default": true
+          }
+        ]
+      },
+      "inputs": [
+        {
+          "name": "Input",
+          "value": "{{Analyze Software}}",
+          "is_default": true,
+          "is_required": true,
+          "type": 0
+        }
+      ],
+      "next_steps_true": [
+        "plan_ui"
+      ],
+      "next_steps_false": [
+        "wait_all"
+      ],
+      "pos_x": 700,
+      "pos_y": 850,
+      "description": "",
+      "disabled": false,
+      "status": 0,
+      "status_text": "",
+      "pause_after": false,
+      "outputs": [],
+      "pre_process": "",
+      "post_process": "",
+      "next_steps": [],
+      "is_start": false,
+      "call_cost": [],
+      "tool_outputs": [],
+      "memory_id": ""
+    },
+    {
+      "id": "plan_data",
+      "name": "Plan Data Layer",
+      "tool_id": "-1",
+      "tool": {
+        "id": "52yyz24g6",
+        "name": "Base LLM",
+        "type": 0,
+        "tag": "",
+        "sort_index": 0,
+        "is_enabled": true,
+        "description": "",
+        "prompt": "You are planning the Data Layer for a software project.\n\nProject Analysis:\n{{Analyze Software}}\n\nOriginal Software Description:\n{{Software Description}}\n\nWorking Directory: {{Working Directory}}\n\nCreate a detailed, comprehensive implementation plan for the Data Layer. Include:\n\n1. **Database Choice & Justification**: Which database technology and why\n2. **Data Models/Schemas**: Every entity, its fields, types, relationships, and constraints\n3. **File Structure**: Complete list of every file to create with its FULL PATH (relative to the working directory), including:\n   - Database configuration files\n   - Model/Schema definition files\n   - Migration files\n   - Repository/DAO files\n   - Seed data files (if applicable)\n   - Database utility/helper files\n4. **File Contents**: For EACH file, provide a detailed description of what it should contain, including imports, exports, and key logic\n5. **Dependencies**: Any packages/libraries needed\n\nBe extremely thorough and specific. Every file must have a complete path and detailed content specification. This plan will be handed directly to a file creation agent.",
+        "system_prompt": "",
+        "model": "",
+        "chatbot_id": "",
+        "endpoint_url": "",
+        "endpoint_method": 0,
+        "endpoint_headers": "",
+        "endpoint_body": "",
+        "agent_functions": [],
+        "pip_dependencies": [],
+        "env_variables": [],
+        "mcp_servers": [],
+        "pipeline_id": "",
+        "max_passes": 5,
+        "request_inputs": [
+          {
+            "name": "Input",
+            "value": "",
+            "is_required": true,
+            "locked": true,
+            "type": 0,
+            "is_default": true
+          }
+        ]
+      },
+      "inputs": [
+        {
+          "name": "Input",
+          "value": "{{Analyze Software}}",
+          "is_default": true,
+          "is_required": true,
+          "type": 0
+        }
+      ],
+      "next_steps": [
+        "create_data_files"
+      ],
+      "pos_x": 936.3399042065635,
+      "pos_y": 143.9371337339584,
+      "description": "",
+      "disabled": false,
+      "status": 0,
+      "status_text": "",
+      "pause_after": false,
+      "outputs": [],
+      "pre_process": "function process(input) {\n    return [input];\n}",
+      "post_process": "function process(output) {\r\n    return output;\r\n}",
+      "next_steps_true": [],
+      "next_steps_false": [],
+      "is_start": false,
+      "call_cost": [],
+      "tool_outputs": [],
+      "memory_id": ""
+    },
+    {
+      "id": "plan_server",
+      "name": "Plan Server Layer",
+      "tool_id": "-1",
+      "tool": {
+        "id": "9rg81rs77",
+        "name": "Base LLM",
+        "type": 0,
+        "tag": "",
+        "sort_index": 0,
+        "is_enabled": true,
+        "description": "",
+        "prompt": "You are planning the Server Layer for a software project.\n\nProject Analysis:\n{{Analyze Software}}\n\nOriginal Software Description:\n{{Software Description}}\n\nWorking Directory: {{Working Directory}}\n\nCreate a detailed, comprehensive implementation plan for the Server Layer. Include:\n\n1. **Framework Choice & Justification**: Which server framework and why\n2. **API Design**: Every endpoint with method, path, request/response schemas, and authentication requirements\n3. **File Structure**: Complete list of every file to create with its FULL PATH (relative to the working directory), including:\n   - Server entry point / main application file\n   - Route definition files\n   - Controller files\n   - Middleware files (auth, validation, error handling, CORS, etc.)\n   - Service/business logic files\n   - Configuration files (environment, server config)\n   - Package manifest (package.json, requirements.txt, etc.)\n4. **File Contents**: For EACH file, provide a detailed description of what it should contain, including imports, exports, and key logic\n5. **Dependencies**: Any packages/libraries needed\n\nBe extremely thorough and specific. Every file must have a complete path and detailed content specification. This plan will be handed directly to a file creation agent.",
+        "system_prompt": "",
+        "model": "",
+        "chatbot_id": "",
+        "endpoint_url": "",
+        "endpoint_method": 0,
+        "endpoint_headers": "",
+        "endpoint_body": "",
+        "agent_functions": [],
+        "pip_dependencies": [],
+        "env_variables": [],
+        "mcp_servers": [],
+        "pipeline_id": "",
+        "max_passes": 5,
+        "request_inputs": [
+          {
+            "name": "Input",
+            "value": "",
+            "is_required": true,
+            "locked": true,
+            "type": 0,
+            "is_default": true
+          }
+        ]
+      },
+      "inputs": [
+        {
+          "name": "Input",
+          "value": "{{Analyze Software}}",
+          "is_default": true,
+          "is_required": true,
+          "type": 0
+        }
+      ],
+      "next_steps": [
+        "create_server_files"
+      ],
+      "pos_x": 946.949920172136,
+      "pos_y": 475.7485349358336,
+      "description": "",
+      "disabled": false,
+      "status": 0,
+      "status_text": "",
+      "pause_after": false,
+      "outputs": [],
+      "pre_process": "function process(input) {\n    return [input];\n}",
+      "post_process": "function process(output) {\r\n    return output;\r\n}",
+      "next_steps_true": [],
+      "next_steps_false": [],
+      "is_start": false,
+      "call_cost": [],
+      "tool_outputs": [],
+      "memory_id": ""
+    },
+    {
+      "id": "plan_ui",
+      "name": "Plan Client Logic Layer",
+      "tool_id": "-1",
+      "tool": {
+        "id": "sc0f0f7t8",
+        "name": "Base LLM",
+        "type": 0,
+        "tag": "",
+        "sort_index": 0,
+        "is_enabled": true,
+        "description": "",
+        "prompt": "You are planning the UI Layer for a software project.\n\nProject Analysis:\n{{Analyze Software}}\n\nOriginal Software Description:\n{{Software Description}}\n\nWorking Directory: {{Working Directory}}\n\nDesign ONLY these categories of files:\n- Type definitions, interfaces, and data models\n- Configuration file changes (vite, tsconfig, etc.)\n- Utility modules and helper functions\n- Service layers, composables, and state management\n- Backend scripts (Python, workers, etc.)\n- Any other non-UI logic files\n\nDO NOT design Vue components, views, App.vue, or routing — that is handled by a separate step.\n\nFor EACH file, provide:\n\n### [ABSOLUTE_FILE_PATH]\n**Action:** CREATE | MODIFY | DELETE\n**Purpose:** Brief description\n**Dependencies:** Other files this imports from\n\n```\n[Complete implementation code]\n```\n\nSeparate each file section with: #####\n\n## Important Guidelines:\n1. Use ABSOLUTE file paths based on the working directory\n2. Write COMPLETE, production-ready code — no placeholders or TODOs\n3. Maintain consistency with existing project patterns\n4. Include all imports, type definitions, and error handling\n5. If modifying an existing file, show the COMPLETE new file contents\n6. Order files logically: shared types first, then utilities, then services\n7. Design clean interfaces that the UI layer can easily consume\n\nBe extremely thorough and specific. Every file must have a complete path and detailed content specification. This plan will be handed directly to a file creation agent.",
+        "system_prompt": "",
+        "model": "",
+        "chatbot_id": "",
+        "endpoint_url": "",
+        "endpoint_method": 0,
+        "endpoint_headers": "",
+        "endpoint_body": "",
+        "agent_functions": [],
+        "pip_dependencies": [],
+        "env_variables": [],
+        "mcp_servers": [],
+        "pipeline_id": "",
+        "max_passes": 5,
+        "request_inputs": [
+          {
+            "name": "Input",
+            "value": "",
+            "is_required": true,
+            "locked": true,
+            "type": 0,
+            "is_default": true
+          }
+        ]
+      },
+      "inputs": [
+        {
+          "name": "Input",
+          "value": "{{Analyze Software}}",
+          "is_default": true,
+          "is_required": true,
+          "type": 0
+        }
+      ],
+      "next_steps": [
+        "jy93zgj8f"
+      ],
+      "pos_x": 964.26611570583,
+      "pos_y": 1032.5,
+      "description": "",
+      "disabled": false,
+      "status": 0,
+      "status_text": "",
+      "pause_after": false,
+      "outputs": [],
+      "pre_process": "function process(input) {\n    return [input];\n}",
+      "post_process": "function process(output) {\r\n    return output;\r\n}",
+      "next_steps_true": [],
+      "next_steps_false": [],
+      "is_start": false,
+      "call_cost": [],
+      "tool_outputs": [],
+      "memory_id": ""
+    },
+    {
+      "id": "create_data_files",
+      "name": "Create Data Files",
+      "tool_id": "j2hm8uj3c",
+      "tool": {
+        "id": "j2hm8uj3c",
+        "name": "File Agent Tool",
+        "type": 3,
+        "tag": "System IO",
+        "sort_index": 0,
+        "is_enabled": true,
+        "description": "A tool for performing System IO operations",
+        "prompt": "You need to create all the Data Layer files for a software project.\n\nWorking Directory: {{Working Directory}}\n\nHere is the detailed implementation plan for the Data Layer:\n\n{{Plan Data Layer}}\n\nProject Analysis for context:\n{{Analyze Software}}\n\nINSTRUCTIONS:\n1. Create every file listed in the plan above\n2. Use the FULL file paths specified (relative to the working directory)\n3. Write complete, production-quality code for each file — not pseudocode or placeholders\n4. Ensure all imports, exports, and references between files are correct and consistent\n5. Create any necessary directories automatically\n6. Include proper comments and documentation in the code\n\nCreate ALL files now. Do not skip any files from the plan.",
+        "system_prompt": "You are a helpful assistant who performs system IO actions that are requested of you.",
+        "model": "claude-haiku-4-5-20251001",
+        "chatbot_id": "",
+        "endpoint_url": "",
+        "endpoint_method": 0,
+        "endpoint_headers": "",
+        "endpoint_body": "",
+        "agent_functions": [
+          {
+            "uid": "efaz7we",
+            "name": "FileAgentTool",
+            "description": "",
+            "is_enabled": true,
+            "is_deleted": false,
+            "function_string": "import os\nimport shutil\nfrom typing import List, Union\nimport subprocess \n\ndef check_directory(path: str) -> bool:\n    \"\"\"\n    Check if a directory exists at `path`.\n    Returns True if it exists, False otherwise.\n    \"\"\"\n    print(f\"Checking if directory exists: {path}\")\n    return os.path.isdir(path)\n\ndef create_directory(path: str):\n    \"\"\"\n    Create a single directory at `path`.\n    Raises FileExistsError if it already exists.\n    \"\"\"\n    print(f\"Trying directory: {path}\")\n    os.mkdir(path)\n    print(f\"Directory created: {path}\")\n    return f\"Directory created: {path}\"\n\ndef create_file(path: str, content: str):\n    \"\"\"\n    Create or truncate a file at `path`, add content if provided.\n    \"\"\"\n    with open(path, 'w'):\n        if content:\n            with open(path, 'w') as f:\n                f.write(content)\n        else:\n            with open(path, 'w') as f:\n                pass\n    print(f\"File created: {path}\")\n    return f\"File created: {path}\"\n\ndef write_to_file(path: str, contents: str, append: bool):\n    \"\"\"\n    Write contents to a file. If append is True, append to the file.\n    \"\"\"\n    if path is None or path == \"\":\n        raise ValueError(\"File path must be provided.\")\n    mode = 'a' if append else 'w'\n    with open(path, mode) as f:\n        f.write(contents)\n    \n    print(f\"Written to file: {path}\")\n    return f\"Written to file: {path}\"\n\ndef read_file(path: str) -> str:\n    \"\"\"\n    Read and return the entire contents of the file at `path` as a string.\n    Raises FileNotFoundError if the file does not exist.\n    \"\"\"\n    if path is None or path == \"\" or not os.path.isfile(path):\n        raise FileNotFoundError(f\"File not found: {path!r}\")\n    response = \"\"\n    with open(path, \"r\") as f:\n        response = f.read()\n    print(f\"Read from file: {path}\")\n    return response\n\n\n\ndef read_all_files(dir_path: str, ignore: List[str] = None) -> str:\n    \"\"\"\n    Recursively scan dir_path INCLUDING the base directory and return all file paths.\n\n    :param dir_path: The root directory to scan.\n    :param ignore: List of substrings to ignore in file or directory names.\n    :return: Newline-separated string of absolute file paths.\n    \"\"\"\n\n    if not dir_path:\n        raise ValueError(\"Directory path must be provided.\")\n\n    if not os.path.isdir(dir_path):\n        raise NotADirectoryError(f\"Not a directory: {dir_path!r}\")\n\n    ignore_set = set(ignore or [])\n    ignore_set.update({\n        \"node_modules\",\n        \".git\",\n        \".idea\",\n        \".vscode\",\n        \".vs\",\n        \".gitignore\",\n        \".env\",\n        \".venv\",\n        \"__pycache__\",\n        \"__init__\",\n    })\n\n    file_paths: List[str] = []\n\n    for root, dirs, files in os.walk(dir_path):\n\n        # prune ignored directories (prevents descending into them)\n        dirs[:] = [\n            d for d in dirs\n            if not any(ig in d for ig in ignore_set)\n        ]\n\n        # process files in current directory (INCLUDING base directory)\n        for fname in files:\n            if any(ig in fname for ig in ignore_set):\n                continue\n\n            full_path = os.path.abspath(os.path.join(root, fname))\n            file_paths.append(full_path)\n\n    print(f\"Files found in {dir_path}: {len(file_paths)}\")\n    print(f\"Ignored list: {sorted(ignore_set)}\")\n\n    return \"\\n\".join(file_paths)\n\n\ndef copy_directory_contents(src: str, dst: str, ignore:str) -> None:\n    \"\"\"\n    Recursively copy all contents of src directory into dst directory.\n\n    Args:\n        src (str): Path to the source directory.\n        dst (str): Path to the destination directory.\n        ignore (str): list of directories and files (strings) to ignore\n\n    Raises:\n        NotADirectoryError: If src does not exist or isnâ€™t a directory.\n    \"\"\"\n    if src is None or dst is None or src == \"\" or dst == \"\":\n        raise ValueError(\"Source and destination paths must be provided.\")\n    if not os.path.isdir(src):\n        raise NotADirectoryError(f\"Source directory '{src}' is not a directory or does not exist.\")\n    os.makedirs(dst, exist_ok=True)\n\n    for entry in os.listdir(src):\n        s_path = os.path.join(src, entry)\n        d_path = os.path.join(dst, entry)\n\n        if ignore:\n            ignored = ignore(src, os.listdir(src))\n            if entry in ignored:\n                continue\n\n        # Recurse into subdirectories\n        if os.path.isdir(s_path) and not os.path.islink(s_path):\n            copy_directory_contents(s_path, d_path, ignore=ignore)\n        else:\n            # Handle symlinks\n            if os.path.islink(s_path):\n                link_target = os.readlink(s_path)\n                if os.path.lexists(d_path):\n                    os.remove(d_path)\n                os.symlink(link_target, d_path)\n            else:\n                # Copy file (with metadata)\n                shutil.copy2(s_path, d_path)\n                \n\nimport subprocess\nimport shlex\nfrom typing import Union, List, Optional, Tuple\n\n# def run_command(\n#     command: Union[str, List[str]],\n#     working_dir: Optional[str] = None,\n#     timeout: Optional[int] = None\n# ) -> Tuple[int, str, str]:\n#     \"\"\"\n#     Execute a terminal/CMD command.\n\n#     Args:\n#         command: either a command string (runs under shell=True) \n#                  or a list of arguments (shell=False).\n#         working_dir: path where the command will be executed.\n#         timeout: max seconds to allow the command to run.\n\n#     Returns:\n#         A tuple of (return_code, stdout, stderr).\n#         - return_code is the process exit code (or -1 on error/timeout).\n#         - stdout is the captured standard output.\n#         - stderr is the captured standard error (or timeout/error message).\n#     \"\"\"\n#     # Determine whether to use the shell\n#     use_shell = isinstance(command, str)\n#     cmd = command if use_shell else list(command)\n\n#     try:\n#         proc = subprocess.run(\n#             cmd,\n#             shell=use_shell,\n#             cwd=working_dir,\n#             text=True,\n#             stdout=subprocess.PIPE,\n#             stderr=subprocess.PIPE,\n#             timeout=timeout,\n#         )\n#         print(f\"Command executed: {command}\", proc.returncode, proc.stdout, proc.stderr)\n#         return proc.returncode, proc.stdout, proc.stderr\n\n#     except subprocess.TimeoutExpired as e:\n#         print(-1, \"\", f\"TimeoutExpired: command '{e.cmd}' exceeded {e.timeout}s\")\n#         return -1, \"\", f\"TimeoutExpired: command '{e.cmd}' exceeded {e.timeout}s\"\n\n#     except Exception as e:\n#         print(-1, \"\", f\"Error: {e}\")\n#         return -1, \"\", f\"Error: {e}\"\n"
+          }
+        ],
+        "pipeline_id": "",
+        "request_inputs": [
+          {
+            "name": "Input",
+            "value": "",
+            "is_required": true,
+            "locked": true,
+            "type": 0,
+            "is_default": true
+          }
+        ],
+        "created_at": "2026-02-26T00:50:48.369771+00:00",
+        "updated_at": "2026-02-26T13:34:29.329851+00:00",
+        "pip_dependencies": [],
+        "env_variables": [],
+        "mcp_servers": [],
+        "max_passes": 5
+      },
+      "inputs": [
+        {
+          "name": "Input",
+          "value": "{{Plan Data Layer}}",
+          "is_default": true,
+          "is_required": true,
+          "type": 0
+        }
+      ],
+      "next_steps": [
+        "wait_all"
+      ],
+      "pos_x": 1427.5,
+      "pos_y": 151.25,
+      "description": "",
+      "disabled": false,
+      "status": 0,
+      "status_text": "",
+      "pause_after": false,
+      "outputs": [],
+      "pre_process": "function process(input) {\r\n    return [input];\r\n}",
+      "post_process": "function process(output) {\r\n    return output;\r\n}",
+      "next_steps_true": [],
+      "next_steps_false": [],
+      "is_start": false,
+      "call_cost": [],
+      "tool_outputs": [],
+      "memory_id": ""
+    },
+    {
+      "id": "create_server_files",
+      "name": "Create Server Files",
+      "tool_id": "j2hm8uj3c",
+      "tool": {
+        "id": "j2hm8uj3c",
+        "name": "File Agent Tool",
+        "type": 3,
+        "tag": "System IO",
+        "sort_index": 0,
+        "is_enabled": true,
+        "description": "A tool for performing System IO operations",
+        "prompt": "You need to create all the Server Layer files for a software project.\n\nWorking Directory: {{Working Directory}}\n\nHere is the detailed implementation plan for the Server Layer:\n\n{{Plan Server Layer}}\n\nProject Analysis for context:\n{{Analyze Software}}\n\nINSTRUCTIONS:\n1. Create every file listed in the plan above\n2. Use the FULL file paths specified (relative to the working directory)\n3. Write complete, production-quality code for each file — not pseudocode or placeholders\n4. Ensure all imports, exports, and references between files are correct and consistent\n5. Create any necessary directories automatically\n6. Include proper comments and documentation in the code\n\nCreate ALL files now. Do not skip any files from the plan.",
+        "system_prompt": "You are a helpful assistant who performs system IO actions that are requested of you.",
+        "model": "claude-haiku-4-5-20251001",
+        "chatbot_id": "",
+        "endpoint_url": "",
+        "endpoint_method": 0,
+        "endpoint_headers": "",
+        "endpoint_body": "",
+        "agent_functions": [
+          {
+            "uid": "efaz7we",
+            "name": "FileAgentTool",
+            "description": "",
+            "is_enabled": true,
+            "is_deleted": false,
+            "function_string": "import os\nimport shutil\nfrom typing import List, Union\nimport subprocess \n\ndef check_directory(path: str) -> bool:\n    \"\"\"\n    Check if a directory exists at `path`.\n    Returns True if it exists, False otherwise.\n    \"\"\"\n    print(f\"Checking if directory exists: {path}\")\n    return os.path.isdir(path)\n\ndef create_directory(path: str):\n    \"\"\"\n    Create a single directory at `path`.\n    Raises FileExistsError if it already exists.\n    \"\"\"\n    print(f\"Trying directory: {path}\")\n    os.mkdir(path)\n    print(f\"Directory created: {path}\")\n    return f\"Directory created: {path}\"\n\ndef create_file(path: str, content: str):\n    \"\"\"\n    Create or truncate a file at `path`, add content if provided.\n    \"\"\"\n    with open(path, 'w'):\n        if content:\n            with open(path, 'w') as f:\n                f.write(content)\n        else:\n            with open(path, 'w') as f:\n                pass\n    print(f\"File created: {path}\")\n    return f\"File created: {path}\"\n\ndef write_to_file(path: str, contents: str, append: bool):\n    \"\"\"\n    Write contents to a file. If append is True, append to the file.\n    \"\"\"\n    if path is None or path == \"\":\n        raise ValueError(\"File path must be provided.\")\n    mode = 'a' if append else 'w'\n    with open(path, mode) as f:\n        f.write(contents)\n    \n    print(f\"Written to file: {path}\")\n    return f\"Written to file: {path}\"\n\ndef read_file(path: str) -> str:\n    \"\"\"\n    Read and return the entire contents of the file at `path` as a string.\n    Raises FileNotFoundError if the file does not exist.\n    \"\"\"\n    if path is None or path == \"\" or not os.path.isfile(path):\n        raise FileNotFoundError(f\"File not found: {path!r}\")\n    response = \"\"\n    with open(path, \"r\") as f:\n        response = f.read()\n    print(f\"Read from file: {path}\")\n    return response\n\n\n\ndef read_all_files(dir_path: str, ignore: List[str] = None) -> str:\n    \"\"\"\n    Recursively scan dir_path INCLUDING the base directory and return all file paths.\n\n    :param dir_path: The root directory to scan.\n    :param ignore: List of substrings to ignore in file or directory names.\n    :return: Newline-separated string of absolute file paths.\n    \"\"\"\n\n    if not dir_path:\n        raise ValueError(\"Directory path must be provided.\")\n\n    if not os.path.isdir(dir_path):\n        raise NotADirectoryError(f\"Not a directory: {dir_path!r}\")\n\n    ignore_set = set(ignore or [])\n    ignore_set.update({\n        \"node_modules\",\n        \".git\",\n        \".idea\",\n        \".vscode\",\n        \".vs\",\n        \".gitignore\",\n        \".env\",\n        \".venv\",\n        \"__pycache__\",\n        \"__init__\",\n    })\n\n    file_paths: List[str] = []\n\n    for root, dirs, files in os.walk(dir_path):\n\n        # prune ignored directories (prevents descending into them)\n        dirs[:] = [\n            d for d in dirs\n            if not any(ig in d for ig in ignore_set)\n        ]\n\n        # process files in current directory (INCLUDING base directory)\n        for fname in files:\n            if any(ig in fname for ig in ignore_set):\n                continue\n\n            full_path = os.path.abspath(os.path.join(root, fname))\n            file_paths.append(full_path)\n\n    print(f\"Files found in {dir_path}: {len(file_paths)}\")\n    print(f\"Ignored list: {sorted(ignore_set)}\")\n\n    return \"\\n\".join(file_paths)\n\n\ndef copy_directory_contents(src: str, dst: str, ignore:str) -> None:\n    \"\"\"\n    Recursively copy all contents of src directory into dst directory.\n\n    Args:\n        src (str): Path to the source directory.\n        dst (str): Path to the destination directory.\n        ignore (str): list of directories and files (strings) to ignore\n\n    Raises:\n        NotADirectoryError: If src does not exist or isnâ€™t a directory.\n    \"\"\"\n    if src is None or dst is None or src == \"\" or dst == \"\":\n        raise ValueError(\"Source and destination paths must be provided.\")\n    if not os.path.isdir(src):\n        raise NotADirectoryError(f\"Source directory '{src}' is not a directory or does not exist.\")\n    os.makedirs(dst, exist_ok=True)\n\n    for entry in os.listdir(src):\n        s_path = os.path.join(src, entry)\n        d_path = os.path.join(dst, entry)\n\n        if ignore:\n            ignored = ignore(src, os.listdir(src))\n            if entry in ignored:\n                continue\n\n        # Recurse into subdirectories\n        if os.path.isdir(s_path) and not os.path.islink(s_path):\n            copy_directory_contents(s_path, d_path, ignore=ignore)\n        else:\n            # Handle symlinks\n            if os.path.islink(s_path):\n                link_target = os.readlink(s_path)\n                if os.path.lexists(d_path):\n                    os.remove(d_path)\n                os.symlink(link_target, d_path)\n            else:\n                # Copy file (with metadata)\n                shutil.copy2(s_path, d_path)\n                \n\nimport subprocess\nimport shlex\nfrom typing import Union, List, Optional, Tuple\n\n# def run_command(\n#     command: Union[str, List[str]],\n#     working_dir: Optional[str] = None,\n#     timeout: Optional[int] = None\n# ) -> Tuple[int, str, str]:\n#     \"\"\"\n#     Execute a terminal/CMD command.\n\n#     Args:\n#         command: either a command string (runs under shell=True) \n#                  or a list of arguments (shell=False).\n#         working_dir: path where the command will be executed.\n#         timeout: max seconds to allow the command to run.\n\n#     Returns:\n#         A tuple of (return_code, stdout, stderr).\n#         - return_code is the process exit code (or -1 on error/timeout).\n#         - stdout is the captured standard output.\n#         - stderr is the captured standard error (or timeout/error message).\n#     \"\"\"\n#     # Determine whether to use the shell\n#     use_shell = isinstance(command, str)\n#     cmd = command if use_shell else list(command)\n\n#     try:\n#         proc = subprocess.run(\n#             cmd,\n#             shell=use_shell,\n#             cwd=working_dir,\n#             text=True,\n#             stdout=subprocess.PIPE,\n#             stderr=subprocess.PIPE,\n#             timeout=timeout,\n#         )\n#         print(f\"Command executed: {command}\", proc.returncode, proc.stdout, proc.stderr)\n#         return proc.returncode, proc.stdout, proc.stderr\n\n#     except subprocess.TimeoutExpired as e:\n#         print(-1, \"\", f\"TimeoutExpired: command '{e.cmd}' exceeded {e.timeout}s\")\n#         return -1, \"\", f\"TimeoutExpired: command '{e.cmd}' exceeded {e.timeout}s\"\n\n#     except Exception as e:\n#         print(-1, \"\", f\"Error: {e}\")\n#         return -1, \"\", f\"Error: {e}\"\n"
+          }
+        ],
+        "pipeline_id": "",
+        "request_inputs": [
+          {
+            "name": "Input",
+            "value": "",
+            "is_required": true,
+            "locked": true,
+            "type": 0,
+            "is_default": true
+          }
+        ],
+        "created_at": "2026-02-26T00:50:48.369771+00:00",
+        "updated_at": "2026-02-26T13:34:29.329851+00:00",
+        "pip_dependencies": [],
+        "env_variables": [],
+        "mcp_servers": [],
+        "max_passes": 5
+      },
+      "inputs": [
+        {
+          "name": "Input",
+          "value": "{{Plan Server Layer}}",
+          "is_default": true,
+          "is_required": true,
+          "type": 0
+        }
+      ],
+      "next_steps": [
+        "wait_all"
+      ],
+      "pos_x": 1421.25,
+      "pos_y": 500,
+      "description": "",
+      "disabled": false,
+      "status": 0,
+      "status_text": "",
+      "pause_after": false,
+      "outputs": [],
+      "pre_process": "function process(input) {\r\n    return [input];\r\n}",
+      "post_process": "function process(output) {\r\n    return output;\r\n}",
+      "next_steps_true": [],
+      "next_steps_false": [],
+      "is_start": false,
+      "call_cost": [],
+      "tool_outputs": [],
+      "memory_id": ""
+    },
+    {
+      "id": "create_ui_files",
+      "name": "Create UI Files",
+      "tool_id": "j2hm8uj3c",
+      "tool": {
+        "id": "j2hm8uj3c",
+        "name": "File Agent Tool",
+        "type": 3,
+        "tag": "System IO",
+        "sort_index": 0,
+        "is_enabled": true,
+        "description": "A tool for performing System IO operations",
+        "prompt": "Implement the following UI architecture plan by creating/modifying all specified files.\n\n## Architecture Plan\n{{Input[@]}}\n\n## Working Directory\n{{Working Directory}}\n\n---\n\nINSTRUCTIONS:\n1. Create any directories that don't exist before writing files\n2. Write EACH .vue file, router config, App.vue, and style file using write_to_file with COMPLETE content\n3. Do NOT skip any files — every single file in the plan must be written\n4. Use the exact absolute paths specified in the plan\n5. Copy the code EXACTLY as specified — do not modify it unless there is an obvious syntax error\n6. After writing all files, list every file you created as a summary",
+        "system_prompt": "You are a helpful assistant who performs system IO actions that are requested of you.",
+        "model": "claude-haiku-4-5-20251001",
+        "chatbot_id": "",
+        "endpoint_url": "",
+        "endpoint_method": 0,
+        "endpoint_headers": "",
+        "endpoint_body": "",
+        "agent_functions": [
+          {
+            "uid": "efaz7we",
+            "name": "FileAgentTool",
+            "description": "",
+            "is_enabled": true,
+            "is_deleted": false,
+            "function_string": "import os\nimport shutil\nfrom typing import List, Union\nimport subprocess \n\ndef check_directory(path: str) -> bool:\n    \"\"\"\n    Check if a directory exists at `path`.\n    Returns True if it exists, False otherwise.\n    \"\"\"\n    print(f\"Checking if directory exists: {path}\")\n    return os.path.isdir(path)\n\ndef create_directory(path: str):\n    \"\"\"\n    Create a single directory at `path`.\n    Raises FileExistsError if it already exists.\n    \"\"\"\n    print(f\"Trying directory: {path}\")\n    os.mkdir(path)\n    print(f\"Directory created: {path}\")\n    return f\"Directory created: {path}\"\n\ndef create_file(path: str, content: str):\n    \"\"\"\n    Create or truncate a file at `path`, add content if provided.\n    \"\"\"\n    with open(path, 'w'):\n        if content:\n            with open(path, 'w') as f:\n                f.write(content)\n        else:\n            with open(path, 'w') as f:\n                pass\n    print(f\"File created: {path}\")\n    return f\"File created: {path}\"\n\ndef write_to_file(path: str, contents: str, append: bool):\n    \"\"\"\n    Write contents to a file. If append is True, append to the file.\n    \"\"\"\n    if path is None or path == \"\":\n        raise ValueError(\"File path must be provided.\")\n    mode = 'a' if append else 'w'\n    with open(path, mode) as f:\n        f.write(contents)\n    \n    print(f\"Written to file: {path}\")\n    return f\"Written to file: {path}\"\n\ndef read_file(path: str) -> str:\n    \"\"\"\n    Read and return the entire contents of the file at `path` as a string.\n    Raises FileNotFoundError if the file does not exist.\n    \"\"\"\n    if path is None or path == \"\" or not os.path.isfile(path):\n        raise FileNotFoundError(f\"File not found: {path!r}\")\n    response = \"\"\n    with open(path, \"r\") as f:\n        response = f.read()\n    print(f\"Read from file: {path}\")\n    return response\n\n\n\ndef read_all_files(dir_path: str, ignore: List[str] = None) -> str:\n    \"\"\"\n    Recursively scan dir_path INCLUDING the base directory and return all file paths.\n\n    :param dir_path: The root directory to scan.\n    :param ignore: List of substrings to ignore in file or directory names.\n    :return: Newline-separated string of absolute file paths.\n    \"\"\"\n\n    if not dir_path:\n        raise ValueError(\"Directory path must be provided.\")\n\n    if not os.path.isdir(dir_path):\n        raise NotADirectoryError(f\"Not a directory: {dir_path!r}\")\n\n    ignore_set = set(ignore or [])\n    ignore_set.update({\n        \"node_modules\",\n        \".git\",\n        \".idea\",\n        \".vscode\",\n        \".vs\",\n        \".gitignore\",\n        \".env\",\n        \".venv\",\n        \"__pycache__\",\n        \"__init__\",\n    })\n\n    file_paths: List[str] = []\n\n    for root, dirs, files in os.walk(dir_path):\n\n        # prune ignored directories (prevents descending into them)\n        dirs[:] = [\n            d for d in dirs\n            if not any(ig in d for ig in ignore_set)\n        ]\n\n        # process files in current directory (INCLUDING base directory)\n        for fname in files:\n            if any(ig in fname for ig in ignore_set):\n                continue\n\n            full_path = os.path.abspath(os.path.join(root, fname))\n            file_paths.append(full_path)\n\n    print(f\"Files found in {dir_path}: {len(file_paths)}\")\n    print(f\"Ignored list: {sorted(ignore_set)}\")\n\n    return \"\\n\".join(file_paths)\n\n\ndef copy_directory_contents(src: str, dst: str, ignore:str) -> None:\n    \"\"\"\n    Recursively copy all contents of src directory into dst directory.\n\n    Args:\n        src (str): Path to the source directory.\n        dst (str): Path to the destination directory.\n        ignore (str): list of directories and files (strings) to ignore\n\n    Raises:\n        NotADirectoryError: If src does not exist or isnâ€™t a directory.\n    \"\"\"\n    if src is None or dst is None or src == \"\" or dst == \"\":\n        raise ValueError(\"Source and destination paths must be provided.\")\n    if not os.path.isdir(src):\n        raise NotADirectoryError(f\"Source directory '{src}' is not a directory or does not exist.\")\n    os.makedirs(dst, exist_ok=True)\n\n    for entry in os.listdir(src):\n        s_path = os.path.join(src, entry)\n        d_path = os.path.join(dst, entry)\n\n        if ignore:\n            ignored = ignore(src, os.listdir(src))\n            if entry in ignored:\n                continue\n\n        # Recurse into subdirectories\n        if os.path.isdir(s_path) and not os.path.islink(s_path):\n            copy_directory_contents(s_path, d_path, ignore=ignore)\n        else:\n            # Handle symlinks\n            if os.path.islink(s_path):\n                link_target = os.readlink(s_path)\n                if os.path.lexists(d_path):\n                    os.remove(d_path)\n                os.symlink(link_target, d_path)\n            else:\n                # Copy file (with metadata)\n                shutil.copy2(s_path, d_path)\n                \n\nimport subprocess\nimport shlex\nfrom typing import Union, List, Optional, Tuple\n\n# def run_command(\n#     command: Union[str, List[str]],\n#     working_dir: Optional[str] = None,\n#     timeout: Optional[int] = None\n# ) -> Tuple[int, str, str]:\n#     \"\"\"\n#     Execute a terminal/CMD command.\n\n#     Args:\n#         command: either a command string (runs under shell=True) \n#                  or a list of arguments (shell=False).\n#         working_dir: path where the command will be executed.\n#         timeout: max seconds to allow the command to run.\n\n#     Returns:\n#         A tuple of (return_code, stdout, stderr).\n#         - return_code is the process exit code (or -1 on error/timeout).\n#         - stdout is the captured standard output.\n#         - stderr is the captured standard error (or timeout/error message).\n#     \"\"\"\n#     # Determine whether to use the shell\n#     use_shell = isinstance(command, str)\n#     cmd = command if use_shell else list(command)\n\n#     try:\n#         proc = subprocess.run(\n#             cmd,\n#             shell=use_shell,\n#             cwd=working_dir,\n#             text=True,\n#             stdout=subprocess.PIPE,\n#             stderr=subprocess.PIPE,\n#             timeout=timeout,\n#         )\n#         print(f\"Command executed: {command}\", proc.returncode, proc.stdout, proc.stderr)\n#         return proc.returncode, proc.stdout, proc.stderr\n\n#     except subprocess.TimeoutExpired as e:\n#         print(-1, \"\", f\"TimeoutExpired: command '{e.cmd}' exceeded {e.timeout}s\")\n#         return -1, \"\", f\"TimeoutExpired: command '{e.cmd}' exceeded {e.timeout}s\"\n\n#     except Exception as e:\n#         print(-1, \"\", f\"Error: {e}\")\n#         return -1, \"\", f\"Error: {e}\"\n"
+          }
+        ],
+        "pipeline_id": "",
+        "request_inputs": [
+          {
+            "name": "Input",
+            "value": "{{Plan Client Logic Layer}}#####{{Plan UI View Layer}}",
+            "is_required": true,
+            "locked": true,
+            "type": 0,
+            "is_default": true
+          }
+        ],
+        "created_at": "2026-02-26T00:50:48.369771+00:00",
+        "updated_at": "2026-02-26T13:34:29.329851+00:00",
+        "pip_dependencies": [],
+        "env_variables": [],
+        "mcp_servers": [],
+        "max_passes": 5
+      },
+      "inputs": [
+        {
+          "name": "Input",
+          "value": "{{Plan UI Layer}}",
+          "is_default": true,
+          "is_required": true,
+          "type": 0
+        }
+      ],
+      "next_steps": [
+        "wait_all"
+      ],
+      "pos_x": 1443.75,
+      "pos_y": 850,
+      "description": "",
+      "disabled": false,
+      "status": 0,
+      "status_text": "",
+      "pause_after": false,
+      "outputs": [],
+      "pre_process": "function process(input) {\r\n    return input.split(\"#####\");\r\n}",
+      "post_process": "function process(output) {\r\n    return output;\r\n}",
+      "next_steps_true": [],
+      "next_steps_false": [],
+      "is_start": false,
+      "call_cost": [],
+      "tool_outputs": [],
+      "memory_id": ""
+    },
+    {
+      "id": "wait_all",
+      "name": "Wait For All",
+      "tool_id": "-6",
+      "tool": {
+        "id": "cmz3m7wi9",
+        "name": "Wait",
+        "type": 8,
+        "tag": "",
+        "sort_index": 0,
+        "is_enabled": true,
+        "description": "",
+        "prompt": "",
+        "system_prompt": "",
+        "model": "",
+        "chatbot_id": "",
+        "endpoint_url": "",
+        "endpoint_method": 0,
+        "endpoint_headers": "",
+        "endpoint_body": "",
+        "agent_functions": [],
+        "pip_dependencies": [],
+        "env_variables": [],
+        "mcp_servers": [],
+        "pipeline_id": "",
+        "max_passes": 5,
+        "request_inputs": [
+          {
+            "name": "Input",
+            "value": "",
+            "is_required": true,
+            "locked": true,
+            "type": 0,
+            "is_default": true
+          }
+        ]
+      },
+      "inputs": [
+        {
+          "name": "Input",
+          "value": "",
+          "is_default": true,
+          "is_required": false,
+          "type": 0
+        }
+      ],
+      "next_steps": [
+        "end"
+      ],
+      "pos_x": 1740.0299680688545,
+      "pos_y": 498.21856686697924,
+      "description": "",
+      "disabled": false,
+      "status": 0,
+      "status_text": "",
+      "pause_after": false,
+      "outputs": [],
+      "pre_process": "",
+      "post_process": "",
+      "next_steps_true": [],
+      "next_steps_false": [],
+      "is_start": false,
+      "call_cost": [],
+      "tool_outputs": [],
+      "memory_id": ""
+    },
+    {
+      "id": "end",
+      "name": "End",
+      "tool_id": "-5",
+      "tool": {
+        "id": "uvu4adfha",
+        "name": "End",
+        "type": 7,
+        "tag": "",
+        "sort_index": 0,
+        "is_enabled": true,
+        "description": "",
+        "prompt": "",
+        "system_prompt": "",
+        "model": "",
+        "chatbot_id": "",
+        "endpoint_url": "",
+        "endpoint_method": 0,
+        "endpoint_headers": "",
+        "endpoint_body": "",
+        "agent_functions": [],
+        "pip_dependencies": [],
+        "env_variables": [],
+        "mcp_servers": [],
+        "pipeline_id": "",
+        "max_passes": 5,
+        "request_inputs": [
+          {
+            "name": "Input",
+            "value": "",
+            "is_required": true,
+            "locked": true,
+            "type": 0,
+            "is_default": true
+          }
+        ]
+      },
+      "inputs": [
+        {
+          "name": "Input",
+          "value": "",
+          "is_default": true,
+          "is_required": false,
+          "type": 0
+        }
+      ],
+      "next_steps": [],
+      "pos_x": 1992.3728024037505,
+      "pos_y": 503.21856686697924,
+      "description": "",
+      "disabled": false,
+      "status": 0,
+      "status_text": "",
+      "pause_after": false,
+      "outputs": [],
+      "pre_process": "",
+      "post_process": "",
+      "next_steps_true": [],
+      "next_steps_false": [],
+      "is_start": false,
+      "call_cost": [],
+      "tool_outputs": [],
+      "memory_id": ""
+    },
+    {
+      "id": "t4gtju7g2",
+      "name": "Clarify",
+      "description": "",
+      "next_steps": [
+        "analyze"
+      ],
+      "next_steps_true": [],
+      "next_steps_false": [],
+      "is_start": false,
+      "tool_id": "-7",
+      "status": 0,
+      "inputs": [
+        {
+          "name": "Input",
+          "value": "",
+          "is_required": false,
+          "locked": true,
+          "type": 0,
+          "is_default": true
+        }
+      ],
+      "outputs": [],
+      "call_cost": [],
+      "status_text": "",
+      "pre_process": "function process(input) {\n    return [input];\n}",
+      "post_process": "function process(output) {\n    return output;\n}",
+      "disabled": false,
+      "tool_outputs": [],
+      "pause_after": false,
+      "memory_id": "",
+      "pos_x": 133.75,
+      "pos_y": 497.5,
+      "tool": {
+        "id": "zpbg0zgg3",
+        "name": "Ask User",
+        "type": 11,
+        "tag": "",
+        "sort_index": 0,
+        "is_enabled": true,
+        "description": "",
+        "prompt": "{{Input}}",
+        "system_prompt": "You are a clarification assistant in a pipeline workflow. Your job is to analyze the incoming context and decide whether you need to ask the user clarifying questions before proceeding.\n\nYou MUST respond with valid JSON in one of two formats:\n\n1. If you need clarification:\n{\n  \"status\": \"questions\",\n  \"questions\": [\n    {\n      \"id\": \"q1\",\n      \"text\": \"Your question here?\",\n      \"type\": \"choice\",\n      \"options\": [\"Option A\", \"Option B\", \"Option C\"]\n    },\n    {\n      \"id\": \"q2\",\n      \"text\": \"Your open-ended question here?\",\n      \"type\": \"text\"\n    }\n  ]\n}\n\n2. If no clarification is needed (the context is clear and specific enough):\n{\n  \"status\": \"ready\",\n  \"summary\": \"A comprehensive summary of the context including any user answers from previous rounds...\"\n}\n\nGuidelines:\n- Use \"choice\" type when the answer is one of several known options\n- Use \"text\" type for open-ended questions\n- Keep questions concise and relevant\n- Ask at most 3-4 questions per round\n- After receiving user answers, either ask follow-up questions or output \"ready\" with a comprehensive summary that includes the original context plus all clarifications\n- If the input is already clear and specific, respond immediately with \"ready\"",
+        "model": "",
+        "chatbot_id": "",
+        "endpoint_url": "",
+        "endpoint_method": 0,
+        "endpoint_headers": "",
+        "endpoint_body": "",
+        "agent_functions": [],
+        "pip_dependencies": [],
+        "env_variables": [],
+        "mcp_servers": [],
+        "pipeline_id": "",
+        "max_passes": 5,
+        "request_inputs": [
+          {
+            "name": "Input",
+            "value": "{{Software Description}}",
+            "is_required": true,
+            "locked": true,
+            "type": 0,
+            "is_default": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "jy93zgj8f",
+      "name": "Summarize Logic",
+      "description": "",
+      "next_steps": [
+        "ysc6nxk1h"
+      ],
+      "next_steps_true": [],
+      "next_steps_false": [],
+      "is_start": false,
+      "tool_id": "-1",
+      "status": 0,
+      "inputs": [
+        {
+          "name": "Input",
+          "value": "",
+          "is_required": false,
+          "locked": true,
+          "type": 0,
+          "is_default": true
+        }
+      ],
+      "outputs": [],
+      "call_cost": [],
+      "status_text": "",
+      "pre_process": "function process(input) {\n    return [input];\n}",
+      "post_process": "function process(output) {\n    return output;\n}",
+      "disabled": false,
+      "tool_outputs": [],
+      "pause_after": false,
+      "memory_id": "",
+      "pos_x": 1204.8761316714026,
+      "pos_y": 1034.0157165665103,
+      "tool": {
+        "id": "b3vyflkrj",
+        "name": "Base LLM",
+        "type": 0,
+        "tag": "",
+        "sort_index": 0,
+        "is_enabled": true,
+        "description": "",
+        "prompt": "Extract a concise API reference from the logic layer architecture below.\n\nFor each file, output ONLY:\n1. The absolute file path\n2. All exported type/interface definitions (signatures only — no JSDoc, no comments)\n3. All exported function/constant signatures (name, parameters, return type — no implementation bodies)\n\n## Rules:\n- Do NOT include function bodies or implementations\n- Do NOT include internal/private helpers\n- Do NOT include import statements\n- Do NOT include comments or documentation\n- Keep type definitions complete (all properties) but strip any inline comments\n- For composables, show the return type shape (what properties/methods are available)\n\n## Logic Layer\n{{Plan Client Logic Layer}}",
+        "system_prompt": "",
+        "model": "",
+        "chatbot_id": "",
+        "endpoint_url": "",
+        "endpoint_method": 0,
+        "endpoint_headers": "",
+        "endpoint_body": "",
+        "agent_functions": [],
+        "pip_dependencies": [],
+        "env_variables": [],
+        "mcp_servers": [],
+        "pipeline_id": "",
+        "max_passes": 5,
+        "request_inputs": [
+          {
+            "name": "Input",
+            "value": "",
+            "is_required": true,
+            "locked": true,
+            "type": 0,
+            "is_default": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "ysc6nxk1h",
+      "name": "Plan UI View Layer",
+      "description": "",
+      "next_steps": [
+        "create_ui_files"
+      ],
+      "next_steps_true": [],
+      "next_steps_false": [],
+      "is_start": false,
+      "tool_id": "-1",
+      "status": 0,
+      "inputs": [
+        {
+          "name": "Input",
+          "value": "",
+          "is_required": false,
+          "locked": true,
+          "type": 0,
+          "is_default": true
+        }
+      ],
+      "outputs": [],
+      "call_cost": [],
+      "status_text": "",
+      "pre_process": "function process(input) {\n    return [input];\n}",
+      "post_process": "function process(output) {\n    return output;\n}",
+      "disabled": false,
+      "tool_outputs": [],
+      "pause_after": false,
+      "memory_id": "",
+      "pos_x": 1413.5475488388508,
+      "pos_y": 1032.7657165665105,
+      "tool": {
+        "id": "thvyf254i",
+        "name": "Base LLM",
+        "type": 0,
+        "tag": "",
+        "sort_index": 0,
+        "is_enabled": true,
+        "description": "",
+        "prompt": "Design the complete UI layer for this project.\n\n## User's Specification\n{{Analyze Software}}\n\n## Working Directory\n{{Working Directory}}\n\n## Available Logic Layer API\nThe following types, services, and composables already exist. Import and use them — do NOT redefine or reimplement them.\n\n{{Summarize Logic}}\n\n---\n\nDesign ONLY these file types:\n- Vue component files (.vue) — pages, views, layouts, and reusable components\n- Router configuration (router/index.ts)\n- App.vue (root component)\n- CSS/style files if needed\n- index.html updates if needed\n\nCRITICAL RULES:\n- NEVER output .ts files for types, interfaces, services, utilities, composables, or workers — those ALREADY EXIST in the logic layer\n- Import types and composables from the logic layer using the signatures listed above\n- Every Vue component MUST use <script setup lang=\"ts\">, <template>, and <style scoped>\n- Implement FULL template markup with real logic — no placeholders, no TODOs, no \"add content here\" comments\n- Include all event handlers, computed properties, watchers, and reactive state\n- Make the UI modern, polished, and match the user's design requirements\n\nFor EACH file:\n\n### [ABSOLUTE_FILE_PATH]\n**Action:** CREATE | MODIFY\n**Purpose:** Brief description of the component\n**Dependencies:** Which logic-layer files this imports\n\n```\n[Complete implementation code]\n```\n\nSeparate each file with: #####",
+        "system_prompt": "",
+        "model": "",
+        "chatbot_id": "",
+        "endpoint_url": "",
+        "endpoint_method": 0,
+        "endpoint_headers": "",
+        "endpoint_body": "",
+        "agent_functions": [],
+        "pip_dependencies": [],
+        "env_variables": [],
+        "mcp_servers": [],
+        "pipeline_id": "",
+        "max_passes": 5,
+        "request_inputs": [
+          {
+            "name": "Input",
+            "value": "",
+            "is_required": true,
+            "locked": true,
+            "type": 0,
+            "is_default": true
+          }
+        ]
+      }
+    }
+  ],
+  "inputs": [
+    {
+      "name": "Software Description",
+      "value": "I want to create a vue 3 frontend application.\nThis application will use pyodide to run a python script and perform actions.  The purpose of this python script is to use the pyDicom library to read uploaded dicom files.\nThe pyodide workflow will be handled in a web worker to save the main thread (partially implemented)\nOnce the dicom data has been read in pyodide/pydicom it will be returned to the browser for processing and viewing\nIn the vue application, create components for uploading a Dicom File.  Once uploaded it will automatically process.\nOnce processed, show the dicom data.  On the left hand side, show the tags in a list.  \nIn the main section show the dicom image.\nAllow tags to be edited\nAllow basic tools to view the dicom image (think through this, which tools make the most sense for a basic dicom viewer)\nAllow edits to be saved to a new dicom (using pydicom and pyodide again) and download the edited dicom file.\n\nI expect the UI to be modern and visually pleasing.  Use a dark made actually.\nI expect all functionality to be contained in Vue 3 (ts) and pyodide python scripts.\nPython scripts exists un the public folder, edit and create all python scripts in that folder.\nMake sure the web worker is called for all pyodide work.\n\nA placeholder for the pyodide web worker already exists here : \"\\src\\pyodideWorker.ts\" but will need to be fully implemented.  The code file for the worker is \\public\\reader.py but will also need to be looked at and possibly updated\n\nThe project already has a vue template in place and already has pyodide installed.",
+      "description": "A detailed description or definition of the software to be built",
+      "type": 0,
+      "is_required": true,
+      "locked": false,
+      "index": 0,
+      "is_default": true,
+      "data": null
+    },
+    {
+      "name": "Working Directory",
+      "value": "C:\\Dev\\PyodideDicom\\pyoDicomT3",
+      "description": "The root directory path where all project files will be created",
+      "type": 0,
+      "is_required": true,
+      "locked": false,
+      "index": 1,
+      "is_default": false,
+      "data": null
+    }
+  ],
+  "edges": [
+    {
+      "id": "analyze_to_check_data",
+      "source": "analyze",
+      "target": "check_data",
+      "source_handle": "analyze_source",
+      "target_handle": "check_data_target"
+    },
+    {
+      "id": "analyze_to_check_server",
+      "source": "analyze",
+      "target": "check_server",
+      "source_handle": "analyze_source",
+      "target_handle": "check_server_target"
+    },
+    {
+      "id": "analyze_to_check_ui",
+      "source": "analyze",
+      "target": "check_ui",
+      "source_handle": "analyze_source",
+      "target_handle": "check_ui_target"
+    },
+    {
+      "id": "check_data_true",
+      "source": "check_data",
+      "target": "plan_data",
+      "source_handle": "check_data_true",
+      "target_handle": "plan_data_target"
+    },
+    {
+      "id": "check_data_false",
+      "source": "check_data",
+      "target": "wait_all",
+      "source_handle": "check_data_false",
+      "target_handle": "wait_all_target"
+    },
+    {
+      "id": "check_server_true",
+      "source": "check_server",
+      "target": "plan_server",
+      "source_handle": "check_server_true",
+      "target_handle": "plan_server_target"
+    },
+    {
+      "id": "check_server_false",
+      "source": "check_server",
+      "target": "wait_all",
+      "source_handle": "check_server_false",
+      "target_handle": "wait_all_target"
+    },
+    {
+      "id": "check_ui_true",
+      "source": "check_ui",
+      "target": "plan_ui",
+      "source_handle": "check_ui_true",
+      "target_handle": "plan_ui_target"
+    },
+    {
+      "id": "check_ui_false",
+      "source": "check_ui",
+      "target": "wait_all",
+      "source_handle": "check_ui_false",
+      "target_handle": "wait_all_target"
+    },
+    {
+      "id": "plan_data_to_create",
+      "source": "plan_data",
+      "target": "create_data_files",
+      "source_handle": "plan_data_source",
+      "target_handle": "create_data_files_target"
+    },
+    {
+      "id": "plan_server_to_create",
+      "source": "plan_server",
+      "target": "create_server_files",
+      "source_handle": "plan_server_source",
+      "target_handle": "create_server_files_target"
+    },
+    {
+      "id": "create_data_to_wait",
+      "source": "create_data_files",
+      "target": "wait_all",
+      "source_handle": "create_data_files_source",
+      "target_handle": "wait_all_target"
+    },
+    {
+      "id": "create_server_to_wait",
+      "source": "create_server_files",
+      "target": "wait_all",
+      "source_handle": "create_server_files_source",
+      "target_handle": "wait_all_target"
+    },
+    {
+      "id": "create_ui_to_wait",
+      "source": "create_ui_files",
+      "target": "wait_all",
+      "source_handle": "create_ui_files_source",
+      "target_handle": "wait_all_target"
+    },
+    {
+      "id": "wait_to_end",
+      "source": "wait_all",
+      "target": "end",
+      "source_handle": "wait_all_source",
+      "target_handle": "end_target"
+    },
+    {
+      "id": "start_t4gtju7g2_start_source_t4gtju7g2_target",
+      "source": "start",
+      "target": "t4gtju7g2",
+      "source_handle": "start_source",
+      "target_handle": "t4gtju7g2_target"
+    },
+    {
+      "id": "t4gtju7g2_analyze_t4gtju7g2_source_analyze_target",
+      "source": "t4gtju7g2",
+      "target": "analyze",
+      "source_handle": "t4gtju7g2_source",
+      "target_handle": "analyze_target"
+    },
+    {
+      "id": "plan_ui_jy93zgj8f_plan_ui_source_jy93zgj8f_target",
+      "source": "plan_ui",
+      "target": "jy93zgj8f",
+      "source_handle": "plan_ui_source",
+      "target_handle": "jy93zgj8f_target"
+    },
+    {
+      "id": "jy93zgj8f_ysc6nxk1h_jy93zgj8f_source_ysc6nxk1h_target",
+      "source": "jy93zgj8f",
+      "target": "ysc6nxk1h",
+      "source_handle": "jy93zgj8f_source",
+      "target_handle": "ysc6nxk1h_target"
+    },
+    {
+      "id": "ysc6nxk1h_create_ui_files_ysc6nxk1h_source_create_ui_files_target",
+      "source": "ysc6nxk1h",
+      "target": "create_ui_files",
+      "source_handle": "ysc6nxk1h_source",
+      "target_handle": "create_ui_files_target"
+    }
+  ],
+  "guidance": "You are building software based on a user's description. Analyze requirements carefully, plan thoroughly with file paths and content, and generate production-quality code files. Always use the provided working directory as the root for all file paths.",
+  "sort_index": 3,
+  "memories": [],
+  "export_uid": "elk2ap5j7",
+  "export_version": 1,
+  "_export_type": "pipeline",
+  "_export_name": "Software Builder (Beta)",
+  "_export_description": "Analyzes a software definition to determine which layers (Data, Server, UI) are needed, then plans and implements each layer by creating the necessary files.",
+  "_export_date": "2026-03-04T02:56:19.110Z",
+  "_tools": [
+    {
+      "id": "j2hm8uj3c",
+      "name": "File Agent Tool",
+      "type": 3,
+      "tag": "System IO",
+      "sort_index": 0,
+      "is_enabled": true,
+      "description": "A tool for performing System IO operations",
+      "prompt": "Implement the following UI architecture plan by creating/modifying all specified files.\n\n## Architecture Plan\n{{Input[@]}}\n\n## Working Directory\n{{Working Directory}}\n\n---\n\nINSTRUCTIONS:\n1. Create any directories that don't exist before writing files\n2. Write EACH .vue file, router config, App.vue, and style file using write_to_file with COMPLETE content\n3. Do NOT skip any files — every single file in the plan must be written\n4. Use the exact absolute paths specified in the plan\n5. Copy the code EXACTLY as specified — do not modify it unless there is an obvious syntax error\n6. After writing all files, list every file you created as a summary",
+      "system_prompt": "You are a helpful assistant who performs system IO actions that are requested of you.",
+      "model": "claude-haiku-4-5-20251001",
+      "chatbot_id": "",
+      "endpoint_url": "",
+      "endpoint_method": 0,
+      "endpoint_headers": "",
+      "endpoint_body": "",
+      "agent_functions": [
+        {
+          "uid": "efaz7we",
+          "name": "FileAgentTool",
+          "description": "",
+          "is_enabled": true,
+          "is_deleted": false,
+          "function_string": "import os\nimport shutil\nfrom typing import List, Union\nimport subprocess \n\ndef check_directory(path: str) -> bool:\n    \"\"\"\n    Check if a directory exists at `path`.\n    Returns True if it exists, False otherwise.\n    \"\"\"\n    print(f\"Checking if directory exists: {path}\")\n    return os.path.isdir(path)\n\ndef create_directory(path: str):\n    \"\"\"\n    Create a single directory at `path`.\n    Raises FileExistsError if it already exists.\n    \"\"\"\n    print(f\"Trying directory: {path}\")\n    os.mkdir(path)\n    print(f\"Directory created: {path}\")\n    return f\"Directory created: {path}\"\n\ndef create_file(path: str, content: str):\n    \"\"\"\n    Create or truncate a file at `path`, add content if provided.\n    \"\"\"\n    with open(path, 'w'):\n        if content:\n            with open(path, 'w') as f:\n                f.write(content)\n        else:\n            with open(path, 'w') as f:\n                pass\n    print(f\"File created: {path}\")\n    return f\"File created: {path}\"\n\ndef write_to_file(path: str, contents: str, append: bool):\n    \"\"\"\n    Write contents to a file. If append is True, append to the file.\n    \"\"\"\n    if path is None or path == \"\":\n        raise ValueError(\"File path must be provided.\")\n    mode = 'a' if append else 'w'\n    with open(path, mode) as f:\n        f.write(contents)\n    \n    print(f\"Written to file: {path}\")\n    return f\"Written to file: {path}\"\n\ndef read_file(path: str) -> str:\n    \"\"\"\n    Read and return the entire contents of the file at `path` as a string.\n    Raises FileNotFoundError if the file does not exist.\n    \"\"\"\n    if path is None or path == \"\" or not os.path.isfile(path):\n        raise FileNotFoundError(f\"File not found: {path!r}\")\n    response = \"\"\n    with open(path, \"r\") as f:\n        response = f.read()\n    print(f\"Read from file: {path}\")\n    return response\n\n\n\ndef read_all_files(dir_path: str, ignore: List[str] = None) -> str:\n    \"\"\"\n    Recursively scan dir_path INCLUDING the base directory and return all file paths.\n\n    :param dir_path: The root directory to scan.\n    :param ignore: List of substrings to ignore in file or directory names.\n    :return: Newline-separated string of absolute file paths.\n    \"\"\"\n\n    if not dir_path:\n        raise ValueError(\"Directory path must be provided.\")\n\n    if not os.path.isdir(dir_path):\n        raise NotADirectoryError(f\"Not a directory: {dir_path!r}\")\n\n    ignore_set = set(ignore or [])\n    ignore_set.update({\n        \"node_modules\",\n        \".git\",\n        \".idea\",\n        \".vscode\",\n        \".vs\",\n        \".gitignore\",\n        \".env\",\n        \".venv\",\n        \"__pycache__\",\n        \"__init__\",\n    })\n\n    file_paths: List[str] = []\n\n    for root, dirs, files in os.walk(dir_path):\n\n        # prune ignored directories (prevents descending into them)\n        dirs[:] = [\n            d for d in dirs\n            if not any(ig in d for ig in ignore_set)\n        ]\n\n        # process files in current directory (INCLUDING base directory)\n        for fname in files:\n            if any(ig in fname for ig in ignore_set):\n                continue\n\n            full_path = os.path.abspath(os.path.join(root, fname))\n            file_paths.append(full_path)\n\n    print(f\"Files found in {dir_path}: {len(file_paths)}\")\n    print(f\"Ignored list: {sorted(ignore_set)}\")\n\n    return \"\\n\".join(file_paths)\n\n\ndef copy_directory_contents(src: str, dst: str, ignore:str) -> None:\n    \"\"\"\n    Recursively copy all contents of src directory into dst directory.\n\n    Args:\n        src (str): Path to the source directory.\n        dst (str): Path to the destination directory.\n        ignore (str): list of directories and files (strings) to ignore\n\n    Raises:\n        NotADirectoryError: If src does not exist or isnâ€™t a directory.\n    \"\"\"\n    if src is None or dst is None or src == \"\" or dst == \"\":\n        raise ValueError(\"Source and destination paths must be provided.\")\n    if not os.path.isdir(src):\n        raise NotADirectoryError(f\"Source directory '{src}' is not a directory or does not exist.\")\n    os.makedirs(dst, exist_ok=True)\n\n    for entry in os.listdir(src):\n        s_path = os.path.join(src, entry)\n        d_path = os.path.join(dst, entry)\n\n        if ignore:\n            ignored = ignore(src, os.listdir(src))\n            if entry in ignored:\n                continue\n\n        # Recurse into subdirectories\n        if os.path.isdir(s_path) and not os.path.islink(s_path):\n            copy_directory_contents(s_path, d_path, ignore=ignore)\n        else:\n            # Handle symlinks\n            if os.path.islink(s_path):\n                link_target = os.readlink(s_path)\n                if os.path.lexists(d_path):\n                    os.remove(d_path)\n                os.symlink(link_target, d_path)\n            else:\n                # Copy file (with metadata)\n                shutil.copy2(s_path, d_path)\n                \n\nimport subprocess\nimport shlex\nfrom typing import Union, List, Optional, Tuple\n\n# def run_command(\n#     command: Union[str, List[str]],\n#     working_dir: Optional[str] = None,\n#     timeout: Optional[int] = None\n# ) -> Tuple[int, str, str]:\n#     \"\"\"\n#     Execute a terminal/CMD command.\n\n#     Args:\n#         command: either a command string (runs under shell=True) \n#                  or a list of arguments (shell=False).\n#         working_dir: path where the command will be executed.\n#         timeout: max seconds to allow the command to run.\n\n#     Returns:\n#         A tuple of (return_code, stdout, stderr).\n#         - return_code is the process exit code (or -1 on error/timeout).\n#         - stdout is the captured standard output.\n#         - stderr is the captured standard error (or timeout/error message).\n#     \"\"\"\n#     # Determine whether to use the shell\n#     use_shell = isinstance(command, str)\n#     cmd = command if use_shell else list(command)\n\n#     try:\n#         proc = subprocess.run(\n#             cmd,\n#             shell=use_shell,\n#             cwd=working_dir,\n#             text=True,\n#             stdout=subprocess.PIPE,\n#             stderr=subprocess.PIPE,\n#             timeout=timeout,\n#         )\n#         print(f\"Command executed: {command}\", proc.returncode, proc.stdout, proc.stderr)\n#         return proc.returncode, proc.stdout, proc.stderr\n\n#     except subprocess.TimeoutExpired as e:\n#         print(-1, \"\", f\"TimeoutExpired: command '{e.cmd}' exceeded {e.timeout}s\")\n#         return -1, \"\", f\"TimeoutExpired: command '{e.cmd}' exceeded {e.timeout}s\"\n\n#     except Exception as e:\n#         print(-1, \"\", f\"Error: {e}\")\n#         return -1, \"\", f\"Error: {e}\"\n"
+        }
+      ],
+      "pipeline_id": "",
+      "request_inputs": [
+        {
+          "name": "Input",
+          "value": "{{Plan Client Logic Layer}}#####{{Plan UI View Layer}}",
+          "is_required": true,
+          "locked": true,
+          "type": 0,
+          "is_default": true
+        }
+      ],
+      "pip_dependencies": [],
+      "env_variables": [],
+      "mcp_servers": [],
+      "max_passes": 5,
+      "export_uid": "bkb4oszt17"
+    }
+  ],
+  "_pip_packages": []
+}

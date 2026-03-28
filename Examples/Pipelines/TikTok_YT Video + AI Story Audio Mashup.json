@@ -1,0 +1,1255 @@
+{
+  "name": "TikTok/YT Video + AI Story Audio Mashup",
+  "description": "Generates a story from an input scenario using an LLM, downloads a TikTok video, converts the story to audio via TTS, waits for both to complete, then stitches the new audio with the downloaded video using FFmpeg.",
+  "tag": "Content Creation, video get, tik tok",
+  "steps": [
+    {
+      "id": "nj5meweo6",
+      "name": "Start",
+      "description": "",
+      "next_steps": [
+        "0h562ugv8",
+        "qvrmsdhrc"
+      ],
+      "next_steps_true": [],
+      "next_steps_false": [],
+      "is_start": true,
+      "tool_id": "-9",
+      "status": 0,
+      "inputs": [
+        {
+          "name": "Input",
+          "value": "",
+          "is_required": false,
+          "locked": true,
+          "type": 0,
+          "is_default": true
+        }
+      ],
+      "outputs": [],
+      "call_cost": [],
+      "status_text": "",
+      "pre_process": "function process(input) {\n    return [input];\n}",
+      "post_process": "function process(output) {\n    return output;\n}",
+      "disabled": false,
+      "tool_outputs": [],
+      "pause_after": false,
+      "memory_id": "",
+      "pos_x": 100,
+      "pos_y": 250,
+      "tool": {
+        "id": "lkplia5v7",
+        "name": "Start",
+        "type": 9,
+        "tag": "",
+        "sort_index": 0,
+        "is_enabled": true,
+        "description": "",
+        "prompt": "",
+        "system_prompt": "",
+        "model": "",
+        "chatbot_id": "",
+        "endpoint_url": "",
+        "endpoint_method": 0,
+        "endpoint_headers": "",
+        "endpoint_body": "",
+        "endpoint_query": "",
+        "endpoint_timeout": 60,
+        "agent_functions": [],
+        "pip_dependencies": [],
+        "env_variables": [],
+        "mcp_servers": [],
+        "pipeline_id": "",
+        "max_passes": 5,
+        "response_structure": [],
+        "request_inputs": [
+          {
+            "name": "Input",
+            "value": "",
+            "is_required": true,
+            "locked": true,
+            "type": 0,
+            "is_default": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "0h562ugv8",
+      "name": "GenerateStory",
+      "description": "",
+      "next_steps": [
+        "gko3t2un3"
+      ],
+      "next_steps_true": [],
+      "next_steps_false": [],
+      "is_start": false,
+      "tool_id": "-1",
+      "status": 0,
+      "inputs": [
+        {
+          "name": "Input",
+          "value": "",
+          "is_required": false,
+          "locked": true,
+          "type": 0,
+          "is_default": true
+        }
+      ],
+      "outputs": [],
+      "call_cost": [],
+      "status_text": "",
+      "pre_process": "function process(input) {\n    return [input];\n}",
+      "post_process": "function process(output) {\n    return output;\n}",
+      "disabled": false,
+      "tool_outputs": [],
+      "pause_after": true,
+      "memory_id": "",
+      "pos_x": 400,
+      "pos_y": 150,
+      "tool": {
+        "id": "napkbaa29",
+        "name": "Generate Story",
+        "type": 0,
+        "tag": "",
+        "sort_index": 0,
+        "is_enabled": true,
+        "description": "",
+        "prompt": "Write a short, engaging story based on the following scenario:\n\n{{Scenario}}\n\nThe story should be compelling, have a clear narrative arc, and be suitable for narration over a short video. Keep it concise — around 100-200 words.\n\nRespond with only the story, not comments, title, or opinions.",
+        "system_prompt": "You are a creative storyteller. Write engaging, vivid short stories suitable for narration over video content. Keep the story concise enough to fit a short-form video (30-90 seconds when read aloud).",
+        "model": "",
+        "chatbot_id": "",
+        "endpoint_url": "",
+        "endpoint_method": 0,
+        "endpoint_headers": "",
+        "endpoint_body": "",
+        "endpoint_query": "",
+        "endpoint_timeout": 60,
+        "agent_functions": [],
+        "pip_dependencies": [],
+        "env_variables": [],
+        "mcp_servers": [],
+        "pipeline_id": "",
+        "max_passes": 5,
+        "response_structure": [
+          {
+            "key": "story",
+            "type": "string"
+          }
+        ],
+        "request_inputs": [
+          {
+            "name": "Scenario",
+            "value": "{{Story}}",
+            "description": "",
+            "type": 0,
+            "is_required": true,
+            "locked": true,
+            "index": 0,
+            "is_default": true,
+            "data": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "lliamb66e",
+      "name": "Wait for Video and Audio",
+      "description": "",
+      "next_steps": [
+        "6egb3pdwd"
+      ],
+      "next_steps_true": [],
+      "next_steps_false": [],
+      "is_start": false,
+      "tool_id": "-6",
+      "status": 0,
+      "inputs": [
+        {
+          "name": "Input",
+          "value": "",
+          "is_required": false,
+          "locked": true,
+          "type": 0,
+          "is_default": true
+        }
+      ],
+      "outputs": [],
+      "call_cost": [],
+      "status_text": "",
+      "pre_process": "function process(input) {\n    return [input];\n}",
+      "post_process": "function process(output) {\n    return output;\n}",
+      "disabled": false,
+      "tool_outputs": [],
+      "pause_after": false,
+      "memory_id": "",
+      "pos_x": 1188.9457752149704,
+      "pos_y": 332.211078328037,
+      "tool": {
+        "id": "s1i3df38r",
+        "name": "Wait",
+        "type": 8,
+        "tag": "",
+        "sort_index": 0,
+        "is_enabled": true,
+        "description": "",
+        "prompt": "",
+        "system_prompt": "",
+        "model": "",
+        "chatbot_id": "",
+        "endpoint_url": "",
+        "endpoint_method": 0,
+        "endpoint_headers": "",
+        "endpoint_body": "",
+        "endpoint_query": "",
+        "endpoint_timeout": 60,
+        "agent_functions": [],
+        "pip_dependencies": [],
+        "env_variables": [],
+        "mcp_servers": [],
+        "pipeline_id": "",
+        "max_passes": 5,
+        "response_structure": [],
+        "request_inputs": [
+          {
+            "name": "Input",
+            "value": "",
+            "is_required": true,
+            "locked": true,
+            "type": 0,
+            "is_default": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "jer336v9i",
+      "name": "End",
+      "description": "",
+      "next_steps": [],
+      "next_steps_true": [],
+      "next_steps_false": [],
+      "is_start": false,
+      "tool_id": "-5",
+      "status": 0,
+      "inputs": [
+        {
+          "name": "Input",
+          "value": "",
+          "is_required": false,
+          "locked": true,
+          "type": 0,
+          "is_default": true
+        }
+      ],
+      "outputs": [],
+      "call_cost": [],
+      "status_text": "",
+      "pre_process": "function process(input) {\n    return [input];\n}",
+      "post_process": "function process(output) {\n    return output;\n}",
+      "disabled": false,
+      "tool_outputs": [],
+      "pause_after": false,
+      "memory_id": "",
+      "pos_x": 1864.498064159292,
+      "pos_y": 307.4446902654867,
+      "tool": {
+        "id": "ejdgru61j",
+        "name": "End",
+        "type": 7,
+        "tag": "",
+        "sort_index": 0,
+        "is_enabled": true,
+        "description": "",
+        "prompt": "",
+        "system_prompt": "",
+        "model": "",
+        "chatbot_id": "",
+        "endpoint_url": "",
+        "endpoint_method": 0,
+        "endpoint_headers": "",
+        "endpoint_body": "",
+        "endpoint_query": "",
+        "endpoint_timeout": 60,
+        "agent_functions": [],
+        "pip_dependencies": [],
+        "env_variables": [],
+        "mcp_servers": [],
+        "pipeline_id": "",
+        "max_passes": 5,
+        "response_structure": [],
+        "request_inputs": [
+          {
+            "name": "Input",
+            "value": "",
+            "is_required": true,
+            "locked": true,
+            "type": 0,
+            "is_default": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "b69ts8sx2",
+      "name": "SRT",
+      "description": "",
+      "next_steps": [
+        "4uvc187ah"
+      ],
+      "next_steps_true": [],
+      "next_steps_false": [],
+      "is_start": false,
+      "tool_id": "lcc4a5d61e",
+      "status": 0,
+      "inputs": [
+        {
+          "name": "Input",
+          "value": "",
+          "is_required": false,
+          "locked": true,
+          "type": 0,
+          "is_default": true
+        }
+      ],
+      "outputs": [],
+      "call_cost": [],
+      "status_text": "",
+      "pre_process": "function process(input) {\n    return [input];\n}",
+      "post_process": "function process(output) {\n    return output;\n}",
+      "disabled": false,
+      "tool_outputs": [],
+      "pause_after": false,
+      "memory_id": "",
+      "pos_x": 960,
+      "pos_y": 150,
+      "tool": {
+        "id": "lcc4a5d61e",
+        "name": "Audio to SRT Transcription",
+        "type": 3,
+        "tag": "Audio",
+        "sort_index": 0,
+        "is_enabled": true,
+        "description": "Converts an audio file into SRT (SubRip Subtitle) formatted text using OpenAI's Whisper speech recognition model. Returns only the SRT string.",
+        "prompt": "{{Input}}",
+        "system_prompt": "You are an audio transcription assistant. The user will provide an audio file. Use the transcribe_audio_to_srt function to convert it to SRT format. Return ONLY the raw SRT string output and nothing else — no explanation, no commentary, no markdown formatting.",
+        "model": "gpt-5-mini",
+        "chatbot_id": "",
+        "endpoint_url": "",
+        "endpoint_method": 0,
+        "endpoint_headers": "",
+        "endpoint_body": "",
+        "agent_functions": [
+          {
+            "uid": "cgzsk12",
+            "name": "transcribe_audio_to_srt",
+            "description": "Transcribes an audio file to SRT subtitle format using OpenAI Whisper",
+            "is_enabled": true,
+            "is_deleted": false,
+            "function_string": "import os\nimport tempfile\n\ndef transcribe_audio_to_srt(file_path: str) -> str:\n    \"\"\"Transcribes an audio file and returns the result as an SRT formatted string.\n\n    Args:\n        file_path: Path to the audio file to transcribe.\n\n    Returns:\n        A string containing the transcription in SRT subtitle format.\n    \"\"\"\n    try:\n        import whisper\n\n        if not os.path.exists(file_path):\n            return f\"Error: File not found at path: {file_path}\"\n\n        model = whisper.load_model(\"base\")\n        result = model.transcribe(file_path)\n\n        segments = result.get(\"segments\", [])\n        if not segments:\n            return \"Error: No speech segments detected in the audio file.\"\n\n        srt_lines = []\n        for i, segment in enumerate(segments, start=1):\n            start_time = segment[\"start\"]\n            end_time = segment[\"end\"]\n            text = segment[\"text\"].strip()\n\n            start_srt = _seconds_to_srt_time(start_time)\n            end_srt = _seconds_to_srt_time(end_time)\n\n            srt_lines.append(f\"{i}\")\n            srt_lines.append(f\"{start_srt} --> {end_srt}\")\n            srt_lines.append(text)\n            srt_lines.append(\"\")\n\n        return \"\\n\".join(srt_lines).strip()\n\n    except Exception as e:\n        return f\"Error during transcription: {str(e)}\"\n\n\ndef _seconds_to_srt_time(seconds: float) -> str:\n    \"\"\"Converts a float of seconds into SRT timestamp format HH:MM:SS,mmm.\n\n    Args:\n        seconds: Time value in seconds.\n\n    Returns:\n        A string in SRT time format (e.g. 00:01:23,456).\n    \"\"\"\n    try:\n        hours = int(seconds // 3600)\n        minutes = int((seconds % 3600) // 60)\n        secs = int(seconds % 60)\n        millis = int(round((seconds - int(seconds)) * 1000))\n        return f\"{hours:02d}:{minutes:02d}:{secs:02d},{millis:03d}\"\n    except Exception as e:\n        return f\"Error converting time: {str(e)}\"\n"
+          }
+        ],
+        "pipeline_id": "",
+        "request_inputs": [
+          {
+            "name": "Input",
+            "value": "{{TTS.path}}",
+            "description": "The audio file to transcribe into SRT format",
+            "type": 3,
+            "is_required": true,
+            "locked": true,
+            "index": 0,
+            "is_default": true,
+            "data": null
+          }
+        ],
+        "created_at": "2026-03-02T23:14:22.303561+00:00",
+        "updated_at": "2026-03-02T23:16:12.537323+00:00",
+        "pip_dependencies": [
+          "openai-whisper"
+        ],
+        "env_variables": [],
+        "mcp_servers": [],
+        "max_passes": 5,
+        "endpoint_query": "",
+        "response_structure": [],
+        "endpoint_timeout": 60
+      }
+    },
+    {
+      "id": "6egb3pdwd",
+      "name": "ConvertToVideo",
+      "description": "",
+      "next_steps": [
+        "jer336v9i"
+      ],
+      "next_steps_true": [],
+      "next_steps_false": [],
+      "is_start": false,
+      "tool_id": "f1ad4dfb",
+      "status": 0,
+      "inputs": [
+        {
+          "name": "Input",
+          "value": "",
+          "is_required": false,
+          "locked": true,
+          "type": 0,
+          "is_default": true
+        }
+      ],
+      "outputs": [],
+      "call_cost": [],
+      "status_text": "",
+      "pre_process": "function process(input) {\n    return [input];\n}",
+      "post_process": "function process(output) {\n    return output;\n}",
+      "disabled": false,
+      "tool_outputs": [],
+      "pause_after": false,
+      "memory_id": "",
+      "pos_x": 1535,
+      "pos_y": 300,
+      "tool": {
+        "id": "f1ad4dfb",
+        "name": "FFmpeg Tool",
+        "type": 3,
+        "tag": "media",
+        "sort_index": 1,
+        "is_enabled": true,
+        "description": "Process audio and video with FFmpeg. Convert formats, extract audio, trim/cut/concatenate, resize, compress, add subtitles/watermarks, extract frames, apply filters, capture streams, and more. Includes a public command runner so arbitrary ffmpeg/ffprobe commands are executed (not just printed).",
+        "prompt": "Using the file paths provided below, combine the downloaded TikTok video with the generated TTS audio. Replace the original audio in the video with the new TTS audio.\n\nFile information:\nVideo File: {{Download}}}}\nTTS Audio: {{TTS.path}}\nSRT: {{WorkingDirectory}}\\sub.srt\n\nUse FFmpeg to:\n1. Take the video file from above\n2. Replace its audio with the TTS audio file.  Loop or trim video to match audio length\n3. Use the SRT data to add sub titles to the video in a stylistic way. Ensure subtitles fit in video (Font size:24)\n4. Output a final combined video file {{WorkingDirectory}}\\final_output.mp4\n\nComplete requested work with no further   requests or questions.\n",
+        "system_prompt": "You are an expert media processing assistant powered by FFmpeg.\n\nKey requirement: You MUST actually execute ffmpeg/ffprobe commands via the provided public runner function(s). Do not merely print commands or ask the user to run them.\n\nWorkflow rules:\n- Always verify input file paths exist before running ffmpeg.\n- Prefer dedicated functions (convert/trim/etc.) when available.\n- When using generic/escape-hatch commands, use run_ffmpeg/run_ffprobe which MUST execute the command.\n- Always include -y for ffmpeg overwrites.\n- Return clear results: what ran, stdout/stderr summary, and output paths.\n- If a command fails, return the exit code and the last ~50 lines of stderr.\n- Never expose internal/private functions (like _run). Use the public run_command/run_ffmpeg/run_ffprobe utilities.\n",
+        "model": "gpt-5-mini",
+        "chatbot_id": "",
+        "endpoint_url": "",
+        "endpoint_method": 0,
+        "endpoint_headers": "",
+        "endpoint_body": "",
+        "agent_functions": [
+          {
+            "uid": "js6zzlb",
+            "name": "FFmpegAgent",
+            "description": "FFmpeg media processing utilities and robust public command execution helpers.",
+            "is_enabled": true,
+            "is_deleted": false,
+            "function_string": "import os, json, shlex, subprocess, textwrap, re\nfrom typing import List, Optional, Dict, Any\n\n\ndef list_files(path: str = \".\") -> str:\n    \"\"\"List files in a directory. Returns a newline-separated listing.\"\"\"\n    try:\n        if not path:\n            path = \".\"\n        if not os.path.isdir(path):\n            return f\"ERROR: Not a directory: {path}\"\n        entries = sorted(os.listdir(path))\n        lines = []\n        for e in entries:\n            full = os.path.join(path, e)\n            suffix = \"/\" if os.path.isdir(full) else \"\"\n            lines.append(e + suffix)\n        return \"\\n\".join(lines) if lines else \"(empty)\"\n    except Exception as e:\n        return f\"ERROR listing files: {e}\"\n\n\ndef file_exists(path: str) -> str:\n    \"\"\"Check whether a file exists. Returns 'true' or an error message.\"\"\"\n    try:\n        if not path:\n            return \"ERROR: No path provided\"\n        return \"true\" if os.path.exists(path) else f\"false: {path} does not exist\"\n    except Exception as e:\n        return f\"ERROR: {e}\"\n\n\ndef run_command(command: str, timeout_seconds: int = 3600, cwd: Optional[str] = None) -> str:\n    \"\"\"PUBLIC: Execute a shell command safely (no shell). Accepts a full command string and returns JSON with exit_code, stdout, stderr, and command.\n\n    This is the public replacement for any private _run usage.\n    \"\"\"\n    try:\n        if not command or not command.strip():\n            return \"ERROR: command is empty\"\n        args = shlex.split(command)\n        # Basic guardrail: disallow interactive commands that could hang\n        if any(a in args for a in [\"-i:\", \"-stdin\", \"--stdin\"]):\n            pass\n        proc = subprocess.run(\n            args,\n            stdout=subprocess.PIPE,\n            stderr=subprocess.PIPE,\n            text=True,\n            timeout=timeout_seconds,\n            cwd=cwd,\n            check=False,\n        )\n        out = {\n            \"command\": command,\n            \"exit_code\": proc.returncode,\n            \"stdout\": proc.stdout[-20000:],\n            \"stderr\": proc.stderr[-20000:],\n        }\n        return json.dumps(out, indent=2)\n    except subprocess.TimeoutExpired as e:\n        return json.dumps({\"command\": command, \"exit_code\": None, \"stdout\": \"\", \"stderr\": f\"TIMEOUT after {timeout_seconds}s: {e}\"}, indent=2)\n    except FileNotFoundError as e:\n        return json.dumps({\"command\": command, \"exit_code\": 127, \"stdout\": \"\", \"stderr\": f\"NOT FOUND: {e}\"}, indent=2)\n    except Exception as e:\n        return json.dumps({\"command\": command, \"exit_code\": 1, \"stdout\": \"\", \"stderr\": f\"ERROR: {e}\"}, indent=2)\n\n\ndef run_ffmpeg(args: str, timeout_seconds: int = 3600, cwd: Optional[str] = None) -> str:\n    \"\"\"Run an arbitrary ffmpeg argument string (without needing to include the 'ffmpeg' binary). Always prepends 'ffmpeg -y'. Returns JSON.\"\"\"\n    try:\n        if args is None:\n            return \"ERROR: args is None\"\n        cmd = f\"ffmpeg -y {args}\".strip()\n        return run_command(cmd, timeout_seconds=timeout_seconds, cwd=cwd)\n    except Exception as e:\n        return f\"ERROR: {e}\"\n\n\ndef run_ffprobe(args: str, timeout_seconds: int = 3600, cwd: Optional[str] = None) -> str:\n    \"\"\"Run an arbitrary ffprobe argument string (without needing to include the 'ffprobe' binary). Returns JSON.\"\"\"\n    try:\n        if args is None:\n            return \"ERROR: args is None\"\n        cmd = f\"ffprobe {args}\".strip()\n        return run_command(cmd, timeout_seconds=timeout_seconds, cwd=cwd)\n    except Exception as e:\n        return f\"ERROR: {e}\"\n\n\ndef get_media_info(path: str) -> str:\n    \"\"\"Return full media metadata as JSON using ffprobe.\"\"\"\n    try:\n        if not path:\n            return \"ERROR: path is required\"\n        if not os.path.exists(path):\n            return f\"ERROR: file not found: {path}\"\n        args = f\"-v error -print_format json -show_format -show_streams {shlex.quote(path)}\"\n        return run_ffprobe(args)\n    except Exception as e:\n        return f\"ERROR: {e}\"\n\n\ndef get_duration(path: str) -> str:\n    \"\"\"Get media duration in seconds as a string.\"\"\"\n    try:\n        if not path:\n            return \"ERROR: path is required\"\n        if not os.path.exists(path):\n            return f\"ERROR: file not found: {path}\"\n        args = f\"-v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 {shlex.quote(path)}\"\n        result = run_ffprobe(args)\n        try:\n            j = json.loads(result)\n            return result\n        except Exception:\n            # If run_ffprobe returns json wrapper, parse stdout\n            try:\n                wrapped = json.loads(result)\n                return (wrapped.get(\"stdout\") or \"\").strip() or result\n            except Exception:\n                return result\n    except Exception as e:\n        return f\"ERROR: {e}\"\n\n\ndef _quote(p: str) -> str:\n    return shlex.quote(p)\n\n\ndef convert_video(input_path: str, output_path: str, video_codec: str = \"libx264\", crf: int = 23, preset: str = \"medium\", audio_codec: str = \"aac\", audio_bitrate_k: int = 128) -> str:\n    \"\"\"Convert a video to a new format/codec using sensible defaults.\"\"\"\n    try:\n        if not os.path.exists(input_path):\n            return f\"ERROR: input not found: {input_path}\"\n        args = f\"-i {_quote(input_path)} -c:v {video_codec} -preset {preset} -crf {crf} -c:a {audio_codec} -b:a {audio_bitrate_k}k {_quote(output_path)}\"\n        return run_ffmpeg(args)\n    except Exception as e:\n        return f\"ERROR: {e}\"\n\n\ndef convert_audio(input_path: str, output_path: str, audio_codec: str = \"aac\", audio_bitrate_k: int = 192, sample_rate: Optional[int] = None, channels: Optional[int] = None) -> str:\n    \"\"\"Convert an audio file to a new format/codec.\"\"\"\n    try:\n        if not os.path.exists(input_path):\n            return f\"ERROR: input not found: {input_path}\"\n        extra = \"\"\n        if sample_rate:\n            extra += f\" -ar {int(sample_rate)}\"\n        if channels:\n            extra += f\" -ac {int(channels)}\"\n        args = f\"-i {_quote(input_path)} -c:a {audio_codec} -b:a {audio_bitrate_k}k{extra} {_quote(output_path)}\"\n        return run_ffmpeg(args)\n    except Exception as e:\n        return f\"ERROR: {e}\"\n\n\ndef extract_audio(input_video: str, output_audio: str, audio_codec: str = \"aac\", audio_bitrate_k: int = 192) -> str:\n    \"\"\"Extract audio from a video.\"\"\"\n    try:\n        if not os.path.exists(input_video):\n            return f\"ERROR: input not found: {input_video}\"\n        args = f\"-i {_quote(input_video)} -vn -c:a {audio_codec} -b:a {audio_bitrate_k}k {_quote(output_audio)}\"\n        return run_ffmpeg(args)\n    except Exception as e:\n        return f\"ERROR: {e}\"\n\n\ndef trim_media(input_path: str, output_path: str, start_time: str, end_time: Optional[str] = None, duration: Optional[str] = None) -> str:\n    \"\"\"Trim media using stream copy when possible.\"\"\"\n    try:\n        if not os.path.exists(input_path):\n            return f\"ERROR: input not found: {input_path}\"\n        if not start_time:\n            return \"ERROR: start_time is required\"\n        if end_time and duration:\n            return \"ERROR: Provide either end_time or duration, not both\"\n        if end_time:\n            # duration = end - start is harder; use -to with input seeking for simplicity\n            args = f\"-ss {start_time} -to {end_time} -i {_quote(input_path)} -c copy {_quote(output_path)}\"\n        elif duration:\n            args = f\"-ss {start_time} -i {_quote(input_path)} -t {duration} -c copy {_quote(output_path)}\"\n        else:\n            return \"ERROR: end_time or duration is required\"\n        return run_ffmpeg(args)\n    except Exception as e:\n        return f\"ERROR: {e}\"\n\n\ndef compress_video(input_path: str, output_path: str, crf: int = 28, preset: str = \"medium\", video_codec: str = \"libx264\", audio_bitrate_k: int = 128) -> str:\n    \"\"\"Compress a video using CRF-based encoding.\"\"\"\n    try:\n        if not os.path.exists(input_path):\n            return f\"ERROR: input not found: {input_path}\"\n        args = f\"-i {_quote(input_path)} -c:v {video_codec} -preset {preset} -crf {crf} -c:a aac -b:a {audio_bitrate_k}k {_quote(output_path)}\"\n        return run_ffmpeg(args)\n    except Exception as e:\n        return f\"ERROR: {e}\"\n"
+          }
+        ],
+        "pipeline_id": "",
+        "request_inputs": [
+          {
+            "name": "Input",
+            "value": "",
+            "description": "User request describing the media task to perform, including any file paths and desired outputs.",
+            "type": 0,
+            "is_required": true,
+            "locked": true,
+            "index": 0,
+            "is_default": true,
+            "data": null
+          }
+        ],
+        "created_at": "2026-02-27T23:22:39.729019+00:00",
+        "updated_at": "2026-03-03T12:30:48.440180+00:00",
+        "pip_dependencies": [],
+        "env_variables": [],
+        "mcp_servers": [],
+        "max_passes": 5,
+        "endpoint_query": "",
+        "response_structure": [
+          {
+            "key": "result",
+            "type": "string"
+          }
+        ],
+        "endpoint_timeout": 60
+      },
+      "retry_enabled": true,
+      "max_retries": 2
+    },
+    {
+      "id": "4uvc187ah",
+      "name": "SaveToDisk",
+      "description": "",
+      "next_steps": [
+        "lliamb66e"
+      ],
+      "next_steps_true": [],
+      "next_steps_false": [],
+      "is_start": false,
+      "tool_id": "jandds156",
+      "status": 0,
+      "inputs": [
+        {
+          "name": "Input",
+          "value": "",
+          "is_required": false,
+          "locked": true,
+          "type": 0,
+          "is_default": true
+        }
+      ],
+      "outputs": [],
+      "call_cost": [],
+      "status_text": "",
+      "pre_process": "function process(input) {\n    return [input];\n}",
+      "post_process": "function process(output) {\n    return output;\n}",
+      "disabled": false,
+      "tool_outputs": [],
+      "pause_after": false,
+      "memory_id": "",
+      "pos_x": 1220.088138750687,
+      "pos_y": 151.36048634724,
+      "tool": {
+        "id": "jandds156",
+        "name": "Save Text to File Path",
+        "type": 3,
+        "tag": "File Operations",
+        "sort_index": 0,
+        "is_enabled": true,
+        "description": "Receives a text string and a destination file path, then writes the text to that location (creating parent directories if needed).",
+        "prompt": "{{Content}}\n\nDESTINATION_PATH={{FilePath}}",
+        "system_prompt": "You are a file-writing utility. Your job is to save the provided text content to the specified file path safely.\n\nRequirements:\n- Use the provided Content as the full file contents (no extra formatting).\n- Write to FilePath exactly.\n- Create parent directories if they do not exist.\n- If FilePath points to an existing directory, return an error.\n- Use UTF-8 encoding by default.\n- Return a clear success message including the final absolute path and number of bytes written.\n- If an error occurs (permissions, invalid path, etc.), return a clear error message.\n\nCall the provided python function to perform the write operation.",
+        "model": "gpt-5-mini",
+        "chatbot_id": "",
+        "endpoint_url": "",
+        "endpoint_method": 0,
+        "endpoint_headers": "",
+        "endpoint_body": "",
+        "agent_functions": [
+          {
+            "uid": "c42cdj8",
+            "name": "file_writer",
+            "description": "Utilities for safely writing text to disk.",
+            "is_enabled": true,
+            "is_deleted": false,
+            "function_string": "import os\nfrom typing import Optional\n\ndef save_text_to_path(content: str, file_path: str, encoding: str = \"utf-8\") -> str:\n    \"\"\"Write the given text content to the specified file path.\n\n    Creates parent directories if needed. Refuses to write if the path resolves to an existing directory.\n\n    Args:\n        content: The full text to write to the file.\n        file_path: Destination path (absolute or relative).\n        encoding: Text encoding to use (default utf-8).\n\n    Returns:\n        A success or error message.\n    \"\"\"\n    try:\n        if file_path is None or str(file_path).strip() == \"\":\n            return \"ERROR: FilePath is required and cannot be empty.\"\n\n        # Normalize path\n        expanded = os.path.expanduser(str(file_path))\n        abs_path = os.path.abspath(expanded)\n\n        # If path exists and is a directory, refuse\n        if os.path.exists(abs_path) and os.path.isdir(abs_path):\n            return f\"ERROR: The destination path points to an existing directory: {abs_path}\"\n\n        parent_dir = os.path.dirname(abs_path) or \".\"\n        if parent_dir and not os.path.exists(parent_dir):\n            os.makedirs(parent_dir, exist_ok=True)\n\n        # Write file\n        data = \"\" if content is None else str(content)\n        with open(abs_path, \"w\", encoding=encoding, newline=\"\") as f:\n            f.write(data)\n\n        bytes_written = len(data.encode(encoding, errors=\"replace\"))\n        return f\"OK: Wrote {bytes_written} bytes to {abs_path}\"\n    except PermissionError as e:\n        return f\"ERROR: Permission denied writing to '{file_path}': {e}\"\n    except OSError as e:\n        return f\"ERROR: OS error writing to '{file_path}': {e}\"\n    except Exception as e:\n        return f\"ERROR: Unexpected error: {e}\"\n"
+          }
+        ],
+        "pipeline_id": "",
+        "request_inputs": [
+          {
+            "name": "Content",
+            "value": "{{SRT}}",
+            "description": "Text content to save into the file.",
+            "type": 0,
+            "is_required": true,
+            "locked": true,
+            "index": 0,
+            "is_default": true,
+            "data": null
+          },
+          {
+            "name": "FilePath",
+            "value": "{{WorkingDirectory}}\\sub.srt",
+            "description": "Destination file path where the content should be saved (absolute or relative).",
+            "type": 0,
+            "is_required": true,
+            "locked": true,
+            "index": 1,
+            "is_default": false,
+            "data": null
+          }
+        ],
+        "created_at": "2026-03-03T12:26:54.807926+00:00",
+        "updated_at": "2026-03-03T12:26:54.807926+00:00",
+        "pip_dependencies": [],
+        "env_variables": [],
+        "mcp_servers": [],
+        "max_passes": 5,
+        "endpoint_query": "",
+        "response_structure": [
+          {
+            "key": "status",
+            "type": "string"
+          },
+          {
+            "key": "message",
+            "type": "string"
+          },
+          {
+            "key": "path",
+            "type": "string"
+          },
+          {
+            "key": "bytes_written",
+            "type": "number"
+          }
+        ],
+        "endpoint_timeout": 60
+      }
+    },
+    {
+      "id": "qvrmsdhrc",
+      "name": "Download",
+      "description": "",
+      "next_steps": [
+        "lliamb66e"
+      ],
+      "next_steps_true": [],
+      "next_steps_false": [],
+      "is_start": false,
+      "tool_id": "jiz0j8s72",
+      "status": 0,
+      "inputs": [
+        {
+          "name": "Input",
+          "value": "",
+          "is_required": false,
+          "locked": true,
+          "type": 0,
+          "is_default": true
+        }
+      ],
+      "outputs": [],
+      "call_cost": [],
+      "status_text": "",
+      "pre_process": "function process(input) {\n    return [input];\n}",
+      "post_process": "function process(output) {\n    return output;\n}",
+      "disabled": false,
+      "tool_outputs": [],
+      "pause_after": false,
+      "retry_enabled": false,
+      "max_retries": 1,
+      "validation_enabled": true,
+      "validation_model": "gpt-5.4-mini",
+      "memory_id": "",
+      "pos_x": 395,
+      "pos_y": 376.25,
+      "tool": {
+        "id": "jiz0j8s72",
+        "name": "TikTok/YT Video Downloader",
+        "type": 3,
+        "tag": "Media",
+        "sort_index": 3,
+        "is_enabled": true,
+        "description": "Downloads TikTok videos from a URL using yt-dlp. Validates the URL, creates the output directory if needed, downloads the video file, and returns the file path with metadata (title, uploader, duration, file size). Requires a TikTok video URL and output directory path. Optionally accepts a custom filename to save the video as.",
+        "prompt": "Download the TikTok video from this URL: {{Input}}\nOnce downloaded, save file to {{Output Directory}}\n{{Filename}}",
+        "system_prompt": "You are a TikTok video downloader assistant. When the user provides a TikTok URL, use the download_tiktok_video function to download the video. \n\nInstructions:\n- Extract the TikTok URL from the user's message\n- Call the download function with the URL and the output directory: {{Output Directory}}\n- If the user provided a custom filename, pass it as the `name` parameter. If not, pass an empty string or omit it to use the default video title.\n- Report the result back to the user, including the file path if successful\n- If the user doesn't provide a valid TikTok URL, ask them to provide one\n\nOnly download videos from TikTok URLs (e.g., URLs containing tiktok.com).",
+        "model": "gpt-5-mini",
+        "chatbot_id": "",
+        "endpoint_url": "",
+        "endpoint_method": 0,
+        "endpoint_headers": "",
+        "endpoint_body": "",
+        "agent_functions": [
+          {
+            "uid": "h3awyw9",
+            "name": "tiktok_downloader",
+            "description": "Downloads TikTok videos given a URL and saves them to a specified output directory, with an optional custom filename.",
+            "is_enabled": true,
+            "is_deleted": false,
+            "function_string": "import os\nimport json\n\ndef download_tiktok_video(url: str, output_dir: str, name: str = \"\") -> str:\n    \"\"\"Download a TikTok video from the given URL and save it to the specified directory.\n    \n    Args:\n        url: The TikTok video URL to download.\n        output_dir: The directory path where the downloaded video will be saved.\n        name: Optional custom filename (without extension). If empty, the video title is used.\n    \n    Returns:\n        A string with the result including file path and metadata, or an error message.\n    \"\"\"\n    try:\n        import yt_dlp\n    except ImportError:\n        return \"Error: yt-dlp is not installed. Please install it with 'pip install yt-dlp'.\"\n\n    # Validate URL\n    if not url or not isinstance(url, str):\n        return \"Error: Please provide a valid TikTok video URL.\"\n    \n    url = url.strip()\n    if 'tiktok.com' not in url.lower():\n        return f\"Error: The URL '{url}' does not appear to be a TikTok URL. Please provide a URL containing 'tiktok.com'.\"\n\n    # Create output directory if it doesn't exist\n    try:\n        os.makedirs(output_dir, exist_ok=True)\n    except Exception as e:\n        return f\"Error: Could not create output directory '{output_dir}': {str(e)}\"\n\n    # Determine the output template\n    if name and name.strip():\n        # Use the custom name provided by the user (sanitize basic path separators)\n        safe_name = name.strip().replace('/', '_').replace('\\\\', '_')\n        # Remove .mp4 extension if user included it, we'll add it via format\n        if safe_name.lower().endswith('.mp4'):\n            safe_name = safe_name[:-4]\n        outtmpl = os.path.join(output_dir, f\"{safe_name}.%(ext)s\")\n    else:\n        # Default: use the video title\n        outtmpl = os.path.join(output_dir, '%(title)s.%(ext)s')\n\n    ydl_opts = {\n        'outtmpl': outtmpl,\n        'format': 'best[ext=mp4]/best',\n        'noplaylist': True,\n        'quiet': True,\n        'no_warnings': True,\n        'socket_timeout': 30,\n        'retries': 3,\n        'merge_output_format': 'mp4',\n    }\n\n    try:\n        with yt_dlp.YoutubeDL(ydl_opts) as ydl:\n            # Extract info first to get metadata\n            info = ydl.extract_info(url, download=True)\n            \n            if info is None:\n                return \"Error: Could not extract video information. The URL may be invalid or the video may be unavailable.\"\n\n            # Determine the actual filename that was saved\n            if name and name.strip():\n                safe_name = name.strip().replace('/', '_').replace('\\\\', '_')\n                if safe_name.lower().endswith('.mp4'):\n                    safe_name = safe_name[:-4]\n                filename = os.path.join(output_dir, f\"{safe_name}.mp4\")\n            else:\n                filename = ydl.prepare_filename(info)\n                # Ensure .mp4 extension\n                base, ext = os.path.splitext(filename)\n                if ext != '.mp4':\n                    mp4_path = base + '.mp4'\n                    if os.path.exists(mp4_path):\n                        filename = mp4_path\n\n            # Gather metadata\n            title = info.get('title', 'Unknown')\n            uploader = info.get('uploader', 'Unknown')\n            duration = info.get('duration', 0)\n            \n            # Get file size\n            file_size = 0\n            if os.path.exists(filename):\n                file_size = os.path.getsize(filename)\n                file_size_mb = round(file_size / (1024 * 1024), 2)\n            else:\n                # Try to find the file with a glob pattern\n                import glob\n                pattern = os.path.join(output_dir, '*')\n                files = sorted(glob.glob(pattern), key=os.path.getmtime, reverse=True)\n                if files:\n                    filename = files[0]\n                    file_size = os.path.getsize(filename)\n                    file_size_mb = round(file_size / (1024 * 1024), 2)\n                else:\n                    return \"Error: Download seemed to succeed but the file could not be found.\"\n\n            # Format duration\n            if duration:\n                minutes = int(duration) // 60\n                seconds = int(duration) % 60\n                duration_str = f\"{minutes}m {seconds}s\"\n            else:\n                duration_str = \"Unknown\"\n\n            result = (\n                f\"✅ Video downloaded successfully!\\n\\n\"\n                f\"📁 File Path: {filename}\\n\"\n                f\"📝 Title: {title}\\n\"\n                f\"👤 Uploader: {uploader}\\n\"\n                f\"⏱️ Duration: {duration_str}\\n\"\n                f\"💾 File Size: {file_size_mb} MB\"\n            )\n            return result\n\n    except Exception as e:\n        error_msg = str(e)\n        if 'HTTP Error 404' in error_msg:\n            return \"Error: Video not found (404). The video may have been deleted or the URL is incorrect.\"\n        elif 'Private video' in error_msg or 'private' in error_msg.lower():\n            return \"Error: This video is private and cannot be downloaded.\"\n        elif 'HTTP Error 429' in error_msg:\n            return \"Error: Too many requests. Please wait a moment and try again.\"\n        else:\n            return f\"Error downloading video: {error_msg}\"\n"
+          }
+        ],
+        "pipeline_id": "",
+        "request_inputs": [
+          {
+            "name": "Input",
+            "value": "{{TikTokURL}}",
+            "description": "The TikTok video URL to download",
+            "type": 0,
+            "is_required": true,
+            "locked": true,
+            "index": 0,
+            "is_default": true,
+            "data": null
+          },
+          {
+            "name": "Output Directory",
+            "value": "{{WorkingDirectory}}",
+            "description": "The directory path where the downloaded video will be saved",
+            "type": 0,
+            "is_required": true,
+            "locked": true,
+            "index": 1,
+            "is_default": false,
+            "data": null
+          },
+          {
+            "name": "Filename",
+            "value": "temp3.mp4",
+            "description": "Optional custom filename for the saved video (without extension). If not provided, the video title will be used.",
+            "type": 0,
+            "is_required": false,
+            "locked": true,
+            "index": 2,
+            "is_default": false,
+            "data": null
+          }
+        ],
+        "created_at": "2026-03-02T20:36:26.914157+00:00",
+        "updated_at": "2026-03-24T14:41:30.627425+00:00",
+        "pip_dependencies": [
+          "yt-dlp"
+        ],
+        "env_variables": [],
+        "mcp_servers": [],
+        "max_passes": 5,
+        "endpoint_query": "",
+        "response_structure": [],
+        "endpoint_timeout": 60,
+        "export_uid": "e460al7de",
+        "export_version": 1,
+        "image_url": "https://lsdbstorage1.blob.core.windows.net/claireai/6eab7f52829b419b983f161239b0d24b.png"
+      }
+    },
+    {
+      "id": "gko3t2un3",
+      "name": "TTS",
+      "description": "",
+      "next_steps": [
+        "b69ts8sx2"
+      ],
+      "next_steps_true": [],
+      "next_steps_false": [],
+      "is_start": false,
+      "tool_id": "cctvwfok6",
+      "status": 0,
+      "inputs": [
+        {
+          "name": "Input",
+          "value": "",
+          "is_required": false,
+          "locked": true,
+          "type": 0,
+          "is_default": true
+        }
+      ],
+      "outputs": [],
+      "call_cost": [],
+      "status_text": "",
+      "pre_process": "function process(input) {\n    return [input];\n}",
+      "post_process": "function process(output) {\n    return output;\n}",
+      "disabled": false,
+      "tool_outputs": [],
+      "pause_after": false,
+      "retry_enabled": false,
+      "max_retries": 1,
+      "validation_enabled": false,
+      "validation_model": "",
+      "memory_id": "",
+      "pos_x": 667.5,
+      "pos_y": 151.25,
+      "tool": {
+        "id": "cctvwfok6",
+        "name": "ElevenLabs TTS",
+        "type": 3,
+        "tag": "Audio",
+        "sort_index": 0,
+        "is_enabled": true,
+        "description": "Generate speech audio from text using the ElevenLabs API. Supports voice selection, model choice, and returns the generated audio as a playable file.",
+        "prompt": "generate this text \"{{Input}}\".\nusing this voice id \"{{Voice}}\".\nDo not add pre or post dialog, only return the path to the generated audio file",
+        "system_prompt": "You are an assistant that helps users generate speech audio using the ElevenLabs text-to-speech API. You have access to tools that can:\n\n1. List available voices so the user can pick one\n2. Generate speech from text with a chosen voice\n3. List available models\n\nWhen the user provides text and a voice preference, use the tools to generate audio. If they don't specify a voice, list available voices first and suggest a good default (e.g. \"Rachel\" or the first available voice). If they provide a voice name, search for it in the available voices.\n\nAlways confirm what was generated and provide the output file path. If the user just wants to list voices or models, do that directly.",
+        "model": "gpt-5.4-mini",
+        "chatbot_id": "",
+        "endpoint_url": "",
+        "endpoint_method": 0,
+        "endpoint_headers": "",
+        "endpoint_body": "",
+        "agent_functions": [
+          {
+            "uid": "7vp438a",
+            "name": "elevenlabs_tools",
+            "description": "Functions for interacting with the ElevenLabs text-to-speech API: list voices, list models, and generate speech audio.",
+            "is_enabled": true,
+            "is_deleted": false,
+            "function_string": "import os\nimport json\nimport time\n\ndef list_voices() -> str:\n    \"\"\"List all available ElevenLabs voices with their IDs, names, and descriptions. Use this to find a voice before generating speech.\"\"\"\n    try:\n        import requests\n        api_key = get_var(\"ELEVENLABS_API_KEY\")\n        if not api_key:\n            return \"Error: ELEVENLABS_API_KEY is not configured. Please set it in Environment Variables settings.\"\n        \n        headers = {\n            \"xi-api-key\": api_key,\n            \"Content-Type\": \"application/json\"\n        }\n        resp = requests.get(\"https://api.elevenlabs.io/v1/voices\", headers=headers, timeout=30)\n        if resp.status_code != 200:\n            return f\"Error ({resp.status_code}): {resp.text}\"\n        \n        voices = resp.json().get(\"voices\", [])\n        result = []\n        for v in voices:\n            labels = v.get(\"labels\", {})\n            accent = labels.get(\"accent\", \"\")\n            gender = labels.get(\"gender\", \"\")\n            use_case = labels.get(\"use_case\", \"\")\n            desc = v.get(\"description\", \"\")\n            info = f\"- **{v['name']}** (ID: {v['voice_id']})\"\n            details = []\n            if gender:\n                details.append(f\"Gender: {gender}\")\n            if accent:\n                details.append(f\"Accent: {accent}\")\n            if use_case:\n                details.append(f\"Use case: {use_case}\")\n            if desc:\n                details.append(f\"Description: {desc}\")\n            if details:\n                info += \" | \" + \", \".join(details)\n            result.append(info)\n        \n        if not result:\n            return \"No voices found.\"\n        return f\"Available voices ({len(result)}):\\n\" + \"\\n\".join(result)\n    except Exception as e:\n        return f\"Error listing voices: {str(e)}\"\n\n\ndef list_models() -> str:\n    \"\"\"List all available ElevenLabs TTS models.\"\"\"\n    try:\n        import requests\n        api_key = get_var(\"ELEVENLABS_API_KEY\")\n        if not api_key:\n            return \"Error: ELEVENLABS_API_KEY is not configured. Please set it in Environment Variables settings.\"\n        \n        headers = {\n            \"xi-api-key\": api_key,\n            \"Content-Type\": \"application/json\"\n        }\n        resp = requests.get(\"https://api.elevenlabs.io/v1/models\", headers=headers, timeout=30)\n        if resp.status_code != 200:\n            return f\"Error ({resp.status_code}): {resp.text}\"\n        \n        models = resp.json()\n        result = []\n        for m in models:\n            can_tts = m.get(\"can_do_text_to_speech\", False)\n            if can_tts:\n                result.append(f\"- **{m['name']}** (ID: {m['model_id']}) — {m.get('description', 'No description')}\")\n        \n        if not result:\n            return \"No TTS models found.\"\n        return f\"Available TTS models ({len(result)}):\\n\" + \"\\n\".join(result)\n    except Exception as e:\n        return f\"Error listing models: {str(e)}\"\n\n\ndef generate_speech(text: str, voice_name: str, model_id: str = \"eleven_multilingual_v2\", stability: float = 0.5, similarity_boost: float = 0.75, style: float = 0.0) -> str:\n    \"\"\"Generate speech audio from text using ElevenLabs TTS API.\n    \n    Args:\n        text: The text to convert to speech.\n        voice_name: The name of the voice to use (e.g. 'Rachel', 'Adam'). Will search available voices by name.\n        model_id: The model ID to use. Default is 'eleven_multilingual_v2'. Use 'eleven_monolingual_v1' for English-only.\n        stability: Voice stability (0.0 to 1.0). Lower = more expressive, higher = more consistent. Default 0.5.\n        similarity_boost: Voice clarity/similarity boost (0.0 to 1.0). Default 0.75.\n        style: Style exaggeration (0.0 to 1.0). Higher values add more style. Default 0.0. Only works with v2 models.\n    \"\"\"\n    try:\n        import requests\n        api_key = get_var(\"ELEVENLABS_API_KEY\")\n        if not api_key:\n            return \"Error: ELEVENLABS_API_KEY is not configured. Please set it in Environment Variables settings.\"\n        \n        if not text or not text.strip():\n            return \"Error: Text cannot be empty.\"\n        if not voice_name or not voice_name.strip():\n            return \"Error: Voice name is required. Use list_voices() to see available options.\"\n        \n        headers = {\n            \"xi-api-key\": api_key,\n            \"Content-Type\": \"application/json\"\n        }\n        \n        # Look up voice by name\n        resp = requests.get(\"https://api.elevenlabs.io/v1/voices\", headers=headers, timeout=30)\n        if resp.status_code != 200:\n            return f\"Error fetching voices ({resp.status_code}): {resp.text}\"\n        \n        voices = resp.json().get(\"voices\", [])\n        voice_id = None\n        matched_name = None\n        \n        # Try exact match first (case-insensitive)\n        for v in voices:\n            if v[\"name\"].lower() == voice_name.lower().strip():\n                voice_id = v[\"voice_id\"]\n                matched_name = v[\"name\"]\n                break\n        \n        # Try partial match\n        if not voice_id:\n            for v in voices:\n                if voice_name.lower().strip() in v[\"name\"].lower():\n                    voice_id = v[\"voice_id\"]\n                    matched_name = v[\"name\"]\n                    break\n        \n        # Check if voice_name is already an ID\n        if not voice_id:\n            for v in voices:\n                if v[\"voice_id\"] == voice_name.strip():\n                    voice_id = v[\"voice_id\"]\n                    matched_name = v[\"name\"]\n                    break\n        \n        if not voice_id:\n            available = \", \".join([v[\"name\"] for v in voices[:20]])\n            return f\"Error: Voice '{voice_name}' not found. Available voices include: {available}\"\n        \n        # Generate speech\n        url = f\"https://api.elevenlabs.io/v1/text-to-speech/{voice_id}\"\n        payload = {\n            \"text\": text,\n            \"model_id\": model_id,\n            \"voice_settings\": {\n                \"stability\": max(0.0, min(1.0, stability)),\n                \"similarity_boost\": max(0.0, min(1.0, similarity_boost)),\n                \"style\": max(0.0, min(1.0, style)),\n                \"use_speaker_boost\": True\n            }\n        }\n        \n        resp = requests.post(url, headers=headers, json=payload, timeout=120)\n        if resp.status_code != 200:\n            return f\"Error generating speech ({resp.status_code}): {resp.text}\"\n        \n        # Save audio file\n        timestamp = int(time.time())\n        safe_voice = matched_name.replace(' ', '_').lower()\n        filename = f\"elevenlabs_{safe_voice}_{timestamp}.mp3\"\n        filepath = os.path.join(os.getcwd(), filename)\n        \n        with open(filepath, \"wb\") as f:\n            f.write(resp.content)\n        \n        file_size_kb = len(resp.content) / 1024\n        text_preview = text[:80] + \"...\" if len(text) > 80 else text\n        \n        return (\n            f\"Speech generated successfully!\\n\"\n            f\"- **Voice**: {matched_name}\\n\"\n            f\"- **Model**: {model_id}\\n\"\n            f\"- **Text**: \\\"{text_preview}\\\"\\n\"\n            f\"- **File**: {filepath}\\n\"\n            f\"- **Size**: {file_size_kb:.1f} KB\"\n        )\n    except Exception as e:\n        return f\"Error generating speech: {str(e)}\"\n"
+          }
+        ],
+        "pipeline_id": "",
+        "request_inputs": [
+          {
+            "name": "Input",
+            "value": "{{GenerateStory.story}}}}",
+            "description": "The text you want to convert to speech, or a command like 'list voices'",
+            "type": 0,
+            "is_required": true,
+            "locked": true,
+            "index": 0,
+            "is_default": true,
+            "data": null
+          },
+          {
+            "name": "Voice",
+            "value": "Roger",
+            "description": "Voice name to use (e.g. Rachel, Adam, Bella). Leave empty to use the default or list available voices.",
+            "type": 0,
+            "is_required": false,
+            "locked": true,
+            "index": 1,
+            "is_default": false,
+            "data": null
+          }
+        ],
+        "created_at": "2026-03-24T13:41:07.157922+00:00",
+        "updated_at": "2026-03-24T14:50:07.911360+00:00",
+        "pip_dependencies": [
+          "elevenlabs",
+          "requests"
+        ],
+        "env_variables": [
+          {
+            "name": "ELEVENLABS_API_KEY",
+            "description": "Your ElevenLabs API key. Get it from https://elevenlabs.io/app/settings/api-keys",
+            "type": 5
+          }
+        ],
+        "mcp_servers": [],
+        "max_passes": 5,
+        "endpoint_query": "",
+        "response_structure": [
+          {
+            "key": "path",
+            "type": "string"
+          }
+        ],
+        "endpoint_timeout": 60,
+        "export_uid": "8tzm39e29",
+        "export_version": 1,
+        "image_url": ""
+      }
+    }
+  ],
+  "inputs": [
+    {
+      "name": "TikTokURL",
+      "value": "https://www.tiktok.com/@mcwithwes/video/7281216490391522592?is_from_webapp=1&sender_device=pc",
+      "type": 0,
+      "is_required": true,
+      "is_default": false,
+      "data": null
+    },
+    {
+      "name": "Story",
+      "value": "Cyberpunk crash out in the desert",
+      "type": 0,
+      "is_required": false,
+      "is_default": false
+    },
+    {
+      "name": "WorkingDirectory",
+      "value": "C:\\Temp\\v1",
+      "type": 0,
+      "is_required": false,
+      "is_default": false
+    }
+  ],
+  "edges": [
+    {
+      "id": "sri90mwck",
+      "source": "nj5meweo6",
+      "target": "0h562ugv8",
+      "source_handle": "nj5meweo6_source",
+      "target_handle": "0h562ugv8_target"
+    },
+    {
+      "id": "lliamb66e_6egb3pdwd_lliamb66e_source_6egb3pdwd_target",
+      "source": "lliamb66e",
+      "target": "6egb3pdwd",
+      "source_handle": "lliamb66e_source",
+      "target_handle": "6egb3pdwd_target"
+    },
+    {
+      "id": "6egb3pdwd_jer336v9i_6egb3pdwd_source_jer336v9i_target",
+      "source": "6egb3pdwd",
+      "target": "jer336v9i",
+      "source_handle": "6egb3pdwd_source",
+      "target_handle": "jer336v9i_target"
+    },
+    {
+      "id": "b69ts8sx2_4uvc187ah_b69ts8sx2_source_4uvc187ah_target",
+      "source": "b69ts8sx2",
+      "target": "4uvc187ah",
+      "source_handle": "b69ts8sx2_source",
+      "target_handle": "4uvc187ah_target"
+    },
+    {
+      "id": "4uvc187ah_lliamb66e_4uvc187ah_source_lliamb66e_target",
+      "source": "4uvc187ah",
+      "target": "lliamb66e",
+      "source_handle": "4uvc187ah_source",
+      "target_handle": "lliamb66e_target"
+    },
+    {
+      "id": "nj5meweo6_qvrmsdhrc_nj5meweo6_source_qvrmsdhrc_target",
+      "source": "nj5meweo6",
+      "target": "qvrmsdhrc",
+      "source_handle": "nj5meweo6_source",
+      "target_handle": "qvrmsdhrc_target"
+    },
+    {
+      "id": "qvrmsdhrc_lliamb66e_qvrmsdhrc_source_lliamb66e_target",
+      "source": "qvrmsdhrc",
+      "target": "lliamb66e",
+      "source_handle": "qvrmsdhrc_source",
+      "target_handle": "lliamb66e_target"
+    },
+    {
+      "id": "0h562ugv8_gko3t2un3_0h562ugv8_source_gko3t2un3_target",
+      "source": "0h562ugv8",
+      "target": "gko3t2un3",
+      "source_handle": "0h562ugv8_source",
+      "target_handle": "gko3t2un3_target"
+    },
+    {
+      "id": "gko3t2un3_b69ts8sx2_gko3t2un3_source_b69ts8sx2_target",
+      "source": "gko3t2un3",
+      "target": "b69ts8sx2",
+      "source_handle": "gko3t2un3_source",
+      "target_handle": "b69ts8sx2_target"
+    }
+  ],
+  "guidance": "This pipeline takes a scenario and a TikTok URL as inputs. It generates a creative story from the scenario, downloads the TikTok video, converts the story to speech, then combines the new audio with the downloaded video. Make sure file paths are passed correctly between steps.",
+  "sort_index": 0,
+  "memories": [],
+  "export_uid": "lmzaj4vd3",
+  "export_version": 1,
+  "image_url": "",
+  "validation_model": "",
+  "_export_type": "pipeline",
+  "_export_name": "TikTok/YT Video + AI Story Audio Mashup",
+  "_export_description": "Generates a story from an input scenario using an LLM, downloads a TikTok video, converts the story to audio via TTS, waits for both to complete, then stitches the new audio with the downloaded video using FFmpeg.",
+  "_export_date": "2026-03-25T01:07:59.264Z",
+  "_tools": [
+    {
+      "id": "lcc4a5d61e",
+      "name": "Audio to SRT Transcription",
+      "type": 3,
+      "tag": "Audio",
+      "sort_index": 0,
+      "is_enabled": true,
+      "description": "Converts an audio file into SRT (SubRip Subtitle) formatted text using OpenAI's Whisper speech recognition model. Returns only the SRT string.",
+      "prompt": "{{Input}}",
+      "system_prompt": "You are an audio transcription assistant. The user will provide an audio file. Use the transcribe_audio_to_srt function to convert it to SRT format. Return ONLY the raw SRT string output and nothing else — no explanation, no commentary, no markdown formatting.",
+      "model": "gpt-5-mini",
+      "chatbot_id": "",
+      "endpoint_url": "",
+      "endpoint_method": 0,
+      "endpoint_headers": "",
+      "endpoint_body": "",
+      "agent_functions": [
+        {
+          "uid": "cgzsk12",
+          "name": "transcribe_audio_to_srt",
+          "description": "Transcribes an audio file to SRT subtitle format using OpenAI Whisper",
+          "is_enabled": true,
+          "is_deleted": false,
+          "function_string": "import os\nimport tempfile\n\ndef transcribe_audio_to_srt(file_path: str) -> str:\n    \"\"\"Transcribes an audio file and returns the result as an SRT formatted string.\n\n    Args:\n        file_path: Path to the audio file to transcribe.\n\n    Returns:\n        A string containing the transcription in SRT subtitle format.\n    \"\"\"\n    try:\n        import whisper\n\n        if not os.path.exists(file_path):\n            return f\"Error: File not found at path: {file_path}\"\n\n        model = whisper.load_model(\"base\")\n        result = model.transcribe(file_path)\n\n        segments = result.get(\"segments\", [])\n        if not segments:\n            return \"Error: No speech segments detected in the audio file.\"\n\n        srt_lines = []\n        for i, segment in enumerate(segments, start=1):\n            start_time = segment[\"start\"]\n            end_time = segment[\"end\"]\n            text = segment[\"text\"].strip()\n\n            start_srt = _seconds_to_srt_time(start_time)\n            end_srt = _seconds_to_srt_time(end_time)\n\n            srt_lines.append(f\"{i}\")\n            srt_lines.append(f\"{start_srt} --> {end_srt}\")\n            srt_lines.append(text)\n            srt_lines.append(\"\")\n\n        return \"\\n\".join(srt_lines).strip()\n\n    except Exception as e:\n        return f\"Error during transcription: {str(e)}\"\n\n\ndef _seconds_to_srt_time(seconds: float) -> str:\n    \"\"\"Converts a float of seconds into SRT timestamp format HH:MM:SS,mmm.\n\n    Args:\n        seconds: Time value in seconds.\n\n    Returns:\n        A string in SRT time format (e.g. 00:01:23,456).\n    \"\"\"\n    try:\n        hours = int(seconds // 3600)\n        minutes = int((seconds % 3600) // 60)\n        secs = int(seconds % 60)\n        millis = int(round((seconds - int(seconds)) * 1000))\n        return f\"{hours:02d}:{minutes:02d}:{secs:02d},{millis:03d}\"\n    except Exception as e:\n        return f\"Error converting time: {str(e)}\"\n"
+        }
+      ],
+      "pipeline_id": "",
+      "request_inputs": [
+        {
+          "name": "Input",
+          "value": "{{TTS.path}}",
+          "description": "The audio file to transcribe into SRT format",
+          "type": 3,
+          "is_required": true,
+          "locked": true,
+          "index": 0,
+          "is_default": true,
+          "data": null
+        }
+      ],
+      "pip_dependencies": [
+        "openai-whisper"
+      ],
+      "env_variables": [],
+      "mcp_servers": [],
+      "max_passes": 5,
+      "endpoint_query": "",
+      "response_structure": [],
+      "endpoint_timeout": 60,
+      "export_uid": "jl9a7ek31h"
+    },
+    {
+      "id": "f1ad4dfb",
+      "name": "FFmpeg Tool",
+      "type": 3,
+      "tag": "media",
+      "sort_index": 1,
+      "is_enabled": true,
+      "description": "Process audio and video with FFmpeg. Convert formats, extract audio, trim/cut/concatenate, resize, compress, add subtitles/watermarks, extract frames, apply filters, capture streams, and more. Includes a public command runner so arbitrary ffmpeg/ffprobe commands are executed (not just printed).",
+      "prompt": "Using the file paths provided below, combine the downloaded TikTok video with the generated TTS audio. Replace the original audio in the video with the new TTS audio.\n\nFile information:\nVideo File: {{Download}}}}\nTTS Audio: {{TTS.path}}\nSRT: {{WorkingDirectory}}\\sub.srt\n\nUse FFmpeg to:\n1. Take the video file from above\n2. Replace its audio with the TTS audio file.  Loop or trim video to match audio length\n3. Use the SRT data to add sub titles to the video in a stylistic way. Ensure subtitles fit in video (Font size:24)\n4. Output a final combined video file {{WorkingDirectory}}\\final_output.mp4\n\nComplete requested work with no further   requests or questions.\n",
+      "system_prompt": "You are an expert media processing assistant powered by FFmpeg.\n\nKey requirement: You MUST actually execute ffmpeg/ffprobe commands via the provided public runner function(s). Do not merely print commands or ask the user to run them.\n\nWorkflow rules:\n- Always verify input file paths exist before running ffmpeg.\n- Prefer dedicated functions (convert/trim/etc.) when available.\n- When using generic/escape-hatch commands, use run_ffmpeg/run_ffprobe which MUST execute the command.\n- Always include -y for ffmpeg overwrites.\n- Return clear results: what ran, stdout/stderr summary, and output paths.\n- If a command fails, return the exit code and the last ~50 lines of stderr.\n- Never expose internal/private functions (like _run). Use the public run_command/run_ffmpeg/run_ffprobe utilities.\n",
+      "model": "gpt-5-mini",
+      "chatbot_id": "",
+      "endpoint_url": "",
+      "endpoint_method": 0,
+      "endpoint_headers": "",
+      "endpoint_body": "",
+      "agent_functions": [
+        {
+          "uid": "js6zzlb",
+          "name": "FFmpegAgent",
+          "description": "FFmpeg media processing utilities and robust public command execution helpers.",
+          "is_enabled": true,
+          "is_deleted": false,
+          "function_string": "import os, json, shlex, subprocess, textwrap, re\nfrom typing import List, Optional, Dict, Any\n\n\ndef list_files(path: str = \".\") -> str:\n    \"\"\"List files in a directory. Returns a newline-separated listing.\"\"\"\n    try:\n        if not path:\n            path = \".\"\n        if not os.path.isdir(path):\n            return f\"ERROR: Not a directory: {path}\"\n        entries = sorted(os.listdir(path))\n        lines = []\n        for e in entries:\n            full = os.path.join(path, e)\n            suffix = \"/\" if os.path.isdir(full) else \"\"\n            lines.append(e + suffix)\n        return \"\\n\".join(lines) if lines else \"(empty)\"\n    except Exception as e:\n        return f\"ERROR listing files: {e}\"\n\n\ndef file_exists(path: str) -> str:\n    \"\"\"Check whether a file exists. Returns 'true' or an error message.\"\"\"\n    try:\n        if not path:\n            return \"ERROR: No path provided\"\n        return \"true\" if os.path.exists(path) else f\"false: {path} does not exist\"\n    except Exception as e:\n        return f\"ERROR: {e}\"\n\n\ndef run_command(command: str, timeout_seconds: int = 3600, cwd: Optional[str] = None) -> str:\n    \"\"\"PUBLIC: Execute a shell command safely (no shell). Accepts a full command string and returns JSON with exit_code, stdout, stderr, and command.\n\n    This is the public replacement for any private _run usage.\n    \"\"\"\n    try:\n        if not command or not command.strip():\n            return \"ERROR: command is empty\"\n        args = shlex.split(command)\n        # Basic guardrail: disallow interactive commands that could hang\n        if any(a in args for a in [\"-i:\", \"-stdin\", \"--stdin\"]):\n            pass\n        proc = subprocess.run(\n            args,\n            stdout=subprocess.PIPE,\n            stderr=subprocess.PIPE,\n            text=True,\n            timeout=timeout_seconds,\n            cwd=cwd,\n            check=False,\n        )\n        out = {\n            \"command\": command,\n            \"exit_code\": proc.returncode,\n            \"stdout\": proc.stdout[-20000:],\n            \"stderr\": proc.stderr[-20000:],\n        }\n        return json.dumps(out, indent=2)\n    except subprocess.TimeoutExpired as e:\n        return json.dumps({\"command\": command, \"exit_code\": None, \"stdout\": \"\", \"stderr\": f\"TIMEOUT after {timeout_seconds}s: {e}\"}, indent=2)\n    except FileNotFoundError as e:\n        return json.dumps({\"command\": command, \"exit_code\": 127, \"stdout\": \"\", \"stderr\": f\"NOT FOUND: {e}\"}, indent=2)\n    except Exception as e:\n        return json.dumps({\"command\": command, \"exit_code\": 1, \"stdout\": \"\", \"stderr\": f\"ERROR: {e}\"}, indent=2)\n\n\ndef run_ffmpeg(args: str, timeout_seconds: int = 3600, cwd: Optional[str] = None) -> str:\n    \"\"\"Run an arbitrary ffmpeg argument string (without needing to include the 'ffmpeg' binary). Always prepends 'ffmpeg -y'. Returns JSON.\"\"\"\n    try:\n        if args is None:\n            return \"ERROR: args is None\"\n        cmd = f\"ffmpeg -y {args}\".strip()\n        return run_command(cmd, timeout_seconds=timeout_seconds, cwd=cwd)\n    except Exception as e:\n        return f\"ERROR: {e}\"\n\n\ndef run_ffprobe(args: str, timeout_seconds: int = 3600, cwd: Optional[str] = None) -> str:\n    \"\"\"Run an arbitrary ffprobe argument string (without needing to include the 'ffprobe' binary). Returns JSON.\"\"\"\n    try:\n        if args is None:\n            return \"ERROR: args is None\"\n        cmd = f\"ffprobe {args}\".strip()\n        return run_command(cmd, timeout_seconds=timeout_seconds, cwd=cwd)\n    except Exception as e:\n        return f\"ERROR: {e}\"\n\n\ndef get_media_info(path: str) -> str:\n    \"\"\"Return full media metadata as JSON using ffprobe.\"\"\"\n    try:\n        if not path:\n            return \"ERROR: path is required\"\n        if not os.path.exists(path):\n            return f\"ERROR: file not found: {path}\"\n        args = f\"-v error -print_format json -show_format -show_streams {shlex.quote(path)}\"\n        return run_ffprobe(args)\n    except Exception as e:\n        return f\"ERROR: {e}\"\n\n\ndef get_duration(path: str) -> str:\n    \"\"\"Get media duration in seconds as a string.\"\"\"\n    try:\n        if not path:\n            return \"ERROR: path is required\"\n        if not os.path.exists(path):\n            return f\"ERROR: file not found: {path}\"\n        args = f\"-v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 {shlex.quote(path)}\"\n        result = run_ffprobe(args)\n        try:\n            j = json.loads(result)\n            return result\n        except Exception:\n            # If run_ffprobe returns json wrapper, parse stdout\n            try:\n                wrapped = json.loads(result)\n                return (wrapped.get(\"stdout\") or \"\").strip() or result\n            except Exception:\n                return result\n    except Exception as e:\n        return f\"ERROR: {e}\"\n\n\ndef _quote(p: str) -> str:\n    return shlex.quote(p)\n\n\ndef convert_video(input_path: str, output_path: str, video_codec: str = \"libx264\", crf: int = 23, preset: str = \"medium\", audio_codec: str = \"aac\", audio_bitrate_k: int = 128) -> str:\n    \"\"\"Convert a video to a new format/codec using sensible defaults.\"\"\"\n    try:\n        if not os.path.exists(input_path):\n            return f\"ERROR: input not found: {input_path}\"\n        args = f\"-i {_quote(input_path)} -c:v {video_codec} -preset {preset} -crf {crf} -c:a {audio_codec} -b:a {audio_bitrate_k}k {_quote(output_path)}\"\n        return run_ffmpeg(args)\n    except Exception as e:\n        return f\"ERROR: {e}\"\n\n\ndef convert_audio(input_path: str, output_path: str, audio_codec: str = \"aac\", audio_bitrate_k: int = 192, sample_rate: Optional[int] = None, channels: Optional[int] = None) -> str:\n    \"\"\"Convert an audio file to a new format/codec.\"\"\"\n    try:\n        if not os.path.exists(input_path):\n            return f\"ERROR: input not found: {input_path}\"\n        extra = \"\"\n        if sample_rate:\n            extra += f\" -ar {int(sample_rate)}\"\n        if channels:\n            extra += f\" -ac {int(channels)}\"\n        args = f\"-i {_quote(input_path)} -c:a {audio_codec} -b:a {audio_bitrate_k}k{extra} {_quote(output_path)}\"\n        return run_ffmpeg(args)\n    except Exception as e:\n        return f\"ERROR: {e}\"\n\n\ndef extract_audio(input_video: str, output_audio: str, audio_codec: str = \"aac\", audio_bitrate_k: int = 192) -> str:\n    \"\"\"Extract audio from a video.\"\"\"\n    try:\n        if not os.path.exists(input_video):\n            return f\"ERROR: input not found: {input_video}\"\n        args = f\"-i {_quote(input_video)} -vn -c:a {audio_codec} -b:a {audio_bitrate_k}k {_quote(output_audio)}\"\n        return run_ffmpeg(args)\n    except Exception as e:\n        return f\"ERROR: {e}\"\n\n\ndef trim_media(input_path: str, output_path: str, start_time: str, end_time: Optional[str] = None, duration: Optional[str] = None) -> str:\n    \"\"\"Trim media using stream copy when possible.\"\"\"\n    try:\n        if not os.path.exists(input_path):\n            return f\"ERROR: input not found: {input_path}\"\n        if not start_time:\n            return \"ERROR: start_time is required\"\n        if end_time and duration:\n            return \"ERROR: Provide either end_time or duration, not both\"\n        if end_time:\n            # duration = end - start is harder; use -to with input seeking for simplicity\n            args = f\"-ss {start_time} -to {end_time} -i {_quote(input_path)} -c copy {_quote(output_path)}\"\n        elif duration:\n            args = f\"-ss {start_time} -i {_quote(input_path)} -t {duration} -c copy {_quote(output_path)}\"\n        else:\n            return \"ERROR: end_time or duration is required\"\n        return run_ffmpeg(args)\n    except Exception as e:\n        return f\"ERROR: {e}\"\n\n\ndef compress_video(input_path: str, output_path: str, crf: int = 28, preset: str = \"medium\", video_codec: str = \"libx264\", audio_bitrate_k: int = 128) -> str:\n    \"\"\"Compress a video using CRF-based encoding.\"\"\"\n    try:\n        if not os.path.exists(input_path):\n            return f\"ERROR: input not found: {input_path}\"\n        args = f\"-i {_quote(input_path)} -c:v {video_codec} -preset {preset} -crf {crf} -c:a aac -b:a {audio_bitrate_k}k {_quote(output_path)}\"\n        return run_ffmpeg(args)\n    except Exception as e:\n        return f\"ERROR: {e}\"\n"
+        }
+      ],
+      "pipeline_id": "",
+      "request_inputs": [
+        {
+          "name": "Input",
+          "value": "",
+          "description": "User request describing the media task to perform, including any file paths and desired outputs.",
+          "type": 0,
+          "is_required": true,
+          "locked": true,
+          "index": 0,
+          "is_default": true,
+          "data": null
+        }
+      ],
+      "pip_dependencies": [],
+      "env_variables": [],
+      "mcp_servers": [],
+      "max_passes": 5,
+      "endpoint_query": "",
+      "response_structure": [
+        {
+          "key": "result",
+          "type": "string"
+        }
+      ],
+      "endpoint_timeout": 60,
+      "export_uid": "u0uyt7l91i"
+    },
+    {
+      "id": "jandds156",
+      "name": "Save Text to File Path",
+      "type": 3,
+      "tag": "File Operations",
+      "sort_index": 0,
+      "is_enabled": true,
+      "description": "Receives a text string and a destination file path, then writes the text to that location (creating parent directories if needed).",
+      "prompt": "{{Content}}\n\nDESTINATION_PATH={{FilePath}}",
+      "system_prompt": "You are a file-writing utility. Your job is to save the provided text content to the specified file path safely.\n\nRequirements:\n- Use the provided Content as the full file contents (no extra formatting).\n- Write to FilePath exactly.\n- Create parent directories if they do not exist.\n- If FilePath points to an existing directory, return an error.\n- Use UTF-8 encoding by default.\n- Return a clear success message including the final absolute path and number of bytes written.\n- If an error occurs (permissions, invalid path, etc.), return a clear error message.\n\nCall the provided python function to perform the write operation.",
+      "model": "gpt-5-mini",
+      "chatbot_id": "",
+      "endpoint_url": "",
+      "endpoint_method": 0,
+      "endpoint_headers": "",
+      "endpoint_body": "",
+      "agent_functions": [
+        {
+          "uid": "c42cdj8",
+          "name": "file_writer",
+          "description": "Utilities for safely writing text to disk.",
+          "is_enabled": true,
+          "is_deleted": false,
+          "function_string": "import os\nfrom typing import Optional\n\ndef save_text_to_path(content: str, file_path: str, encoding: str = \"utf-8\") -> str:\n    \"\"\"Write the given text content to the specified file path.\n\n    Creates parent directories if needed. Refuses to write if the path resolves to an existing directory.\n\n    Args:\n        content: The full text to write to the file.\n        file_path: Destination path (absolute or relative).\n        encoding: Text encoding to use (default utf-8).\n\n    Returns:\n        A success or error message.\n    \"\"\"\n    try:\n        if file_path is None or str(file_path).strip() == \"\":\n            return \"ERROR: FilePath is required and cannot be empty.\"\n\n        # Normalize path\n        expanded = os.path.expanduser(str(file_path))\n        abs_path = os.path.abspath(expanded)\n\n        # If path exists and is a directory, refuse\n        if os.path.exists(abs_path) and os.path.isdir(abs_path):\n            return f\"ERROR: The destination path points to an existing directory: {abs_path}\"\n\n        parent_dir = os.path.dirname(abs_path) or \".\"\n        if parent_dir and not os.path.exists(parent_dir):\n            os.makedirs(parent_dir, exist_ok=True)\n\n        # Write file\n        data = \"\" if content is None else str(content)\n        with open(abs_path, \"w\", encoding=encoding, newline=\"\") as f:\n            f.write(data)\n\n        bytes_written = len(data.encode(encoding, errors=\"replace\"))\n        return f\"OK: Wrote {bytes_written} bytes to {abs_path}\"\n    except PermissionError as e:\n        return f\"ERROR: Permission denied writing to '{file_path}': {e}\"\n    except OSError as e:\n        return f\"ERROR: OS error writing to '{file_path}': {e}\"\n    except Exception as e:\n        return f\"ERROR: Unexpected error: {e}\"\n"
+        }
+      ],
+      "pipeline_id": "",
+      "request_inputs": [
+        {
+          "name": "Content",
+          "value": "{{SRT}}",
+          "description": "Text content to save into the file.",
+          "type": 0,
+          "is_required": true,
+          "locked": true,
+          "index": 0,
+          "is_default": true,
+          "data": null
+        },
+        {
+          "name": "FilePath",
+          "value": "{{WorkingDirectory}}\\sub.srt",
+          "description": "Destination file path where the content should be saved (absolute or relative).",
+          "type": 0,
+          "is_required": true,
+          "locked": true,
+          "index": 1,
+          "is_default": false,
+          "data": null
+        }
+      ],
+      "pip_dependencies": [],
+      "env_variables": [],
+      "mcp_servers": [],
+      "max_passes": 5,
+      "endpoint_query": "",
+      "response_structure": [
+        {
+          "key": "status",
+          "type": "string"
+        },
+        {
+          "key": "message",
+          "type": "string"
+        },
+        {
+          "key": "path",
+          "type": "string"
+        },
+        {
+          "key": "bytes_written",
+          "type": "number"
+        }
+      ],
+      "endpoint_timeout": 60,
+      "export_uid": "pr6vu4pr1j"
+    },
+    {
+      "id": "jiz0j8s72",
+      "name": "TikTok/YT Video Downloader",
+      "type": 3,
+      "tag": "Media",
+      "sort_index": 3,
+      "is_enabled": true,
+      "description": "Downloads TikTok videos from a URL using yt-dlp. Validates the URL, creates the output directory if needed, downloads the video file, and returns the file path with metadata (title, uploader, duration, file size). Requires a TikTok video URL and output directory path. Optionally accepts a custom filename to save the video as.",
+      "prompt": "Download the TikTok video from this URL: {{Input}}\nOnce downloaded, save file to {{Output Directory}}\n{{Filename}}",
+      "system_prompt": "You are a TikTok video downloader assistant. When the user provides a TikTok URL, use the download_tiktok_video function to download the video. \n\nInstructions:\n- Extract the TikTok URL from the user's message\n- Call the download function with the URL and the output directory: {{Output Directory}}\n- If the user provided a custom filename, pass it as the `name` parameter. If not, pass an empty string or omit it to use the default video title.\n- Report the result back to the user, including the file path if successful\n- If the user doesn't provide a valid TikTok URL, ask them to provide one\n\nOnly download videos from TikTok URLs (e.g., URLs containing tiktok.com).",
+      "model": "gpt-5-mini",
+      "chatbot_id": "",
+      "endpoint_url": "",
+      "endpoint_method": 0,
+      "endpoint_headers": "",
+      "endpoint_body": "",
+      "agent_functions": [
+        {
+          "uid": "h3awyw9",
+          "name": "tiktok_downloader",
+          "description": "Downloads TikTok videos given a URL and saves them to a specified output directory, with an optional custom filename.",
+          "is_enabled": true,
+          "is_deleted": false,
+          "function_string": "import os\nimport json\n\ndef download_tiktok_video(url: str, output_dir: str, name: str = \"\") -> str:\n    \"\"\"Download a TikTok video from the given URL and save it to the specified directory.\n    \n    Args:\n        url: The TikTok video URL to download.\n        output_dir: The directory path where the downloaded video will be saved.\n        name: Optional custom filename (without extension). If empty, the video title is used.\n    \n    Returns:\n        A string with the result including file path and metadata, or an error message.\n    \"\"\"\n    try:\n        import yt_dlp\n    except ImportError:\n        return \"Error: yt-dlp is not installed. Please install it with 'pip install yt-dlp'.\"\n\n    # Validate URL\n    if not url or not isinstance(url, str):\n        return \"Error: Please provide a valid TikTok video URL.\"\n    \n    url = url.strip()\n    if 'tiktok.com' not in url.lower():\n        return f\"Error: The URL '{url}' does not appear to be a TikTok URL. Please provide a URL containing 'tiktok.com'.\"\n\n    # Create output directory if it doesn't exist\n    try:\n        os.makedirs(output_dir, exist_ok=True)\n    except Exception as e:\n        return f\"Error: Could not create output directory '{output_dir}': {str(e)}\"\n\n    # Determine the output template\n    if name and name.strip():\n        # Use the custom name provided by the user (sanitize basic path separators)\n        safe_name = name.strip().replace('/', '_').replace('\\\\', '_')\n        # Remove .mp4 extension if user included it, we'll add it via format\n        if safe_name.lower().endswith('.mp4'):\n            safe_name = safe_name[:-4]\n        outtmpl = os.path.join(output_dir, f\"{safe_name}.%(ext)s\")\n    else:\n        # Default: use the video title\n        outtmpl = os.path.join(output_dir, '%(title)s.%(ext)s')\n\n    ydl_opts = {\n        'outtmpl': outtmpl,\n        'format': 'best[ext=mp4]/best',\n        'noplaylist': True,\n        'quiet': True,\n        'no_warnings': True,\n        'socket_timeout': 30,\n        'retries': 3,\n        'merge_output_format': 'mp4',\n    }\n\n    try:\n        with yt_dlp.YoutubeDL(ydl_opts) as ydl:\n            # Extract info first to get metadata\n            info = ydl.extract_info(url, download=True)\n            \n            if info is None:\n                return \"Error: Could not extract video information. The URL may be invalid or the video may be unavailable.\"\n\n            # Determine the actual filename that was saved\n            if name and name.strip():\n                safe_name = name.strip().replace('/', '_').replace('\\\\', '_')\n                if safe_name.lower().endswith('.mp4'):\n                    safe_name = safe_name[:-4]\n                filename = os.path.join(output_dir, f\"{safe_name}.mp4\")\n            else:\n                filename = ydl.prepare_filename(info)\n                # Ensure .mp4 extension\n                base, ext = os.path.splitext(filename)\n                if ext != '.mp4':\n                    mp4_path = base + '.mp4'\n                    if os.path.exists(mp4_path):\n                        filename = mp4_path\n\n            # Gather metadata\n            title = info.get('title', 'Unknown')\n            uploader = info.get('uploader', 'Unknown')\n            duration = info.get('duration', 0)\n            \n            # Get file size\n            file_size = 0\n            if os.path.exists(filename):\n                file_size = os.path.getsize(filename)\n                file_size_mb = round(file_size / (1024 * 1024), 2)\n            else:\n                # Try to find the file with a glob pattern\n                import glob\n                pattern = os.path.join(output_dir, '*')\n                files = sorted(glob.glob(pattern), key=os.path.getmtime, reverse=True)\n                if files:\n                    filename = files[0]\n                    file_size = os.path.getsize(filename)\n                    file_size_mb = round(file_size / (1024 * 1024), 2)\n                else:\n                    return \"Error: Download seemed to succeed but the file could not be found.\"\n\n            # Format duration\n            if duration:\n                minutes = int(duration) // 60\n                seconds = int(duration) % 60\n                duration_str = f\"{minutes}m {seconds}s\"\n            else:\n                duration_str = \"Unknown\"\n\n            result = (\n                f\"✅ Video downloaded successfully!\\n\\n\"\n                f\"📁 File Path: {filename}\\n\"\n                f\"📝 Title: {title}\\n\"\n                f\"👤 Uploader: {uploader}\\n\"\n                f\"⏱️ Duration: {duration_str}\\n\"\n                f\"💾 File Size: {file_size_mb} MB\"\n            )\n            return result\n\n    except Exception as e:\n        error_msg = str(e)\n        if 'HTTP Error 404' in error_msg:\n            return \"Error: Video not found (404). The video may have been deleted or the URL is incorrect.\"\n        elif 'Private video' in error_msg or 'private' in error_msg.lower():\n            return \"Error: This video is private and cannot be downloaded.\"\n        elif 'HTTP Error 429' in error_msg:\n            return \"Error: Too many requests. Please wait a moment and try again.\"\n        else:\n            return f\"Error downloading video: {error_msg}\"\n"
+        }
+      ],
+      "pipeline_id": "",
+      "request_inputs": [
+        {
+          "name": "Input",
+          "value": "{{TikTokURL}}",
+          "description": "The TikTok video URL to download",
+          "type": 0,
+          "is_required": true,
+          "locked": true,
+          "index": 0,
+          "is_default": true,
+          "data": null
+        },
+        {
+          "name": "Output Directory",
+          "value": "{{WorkingDirectory}}",
+          "description": "The directory path where the downloaded video will be saved",
+          "type": 0,
+          "is_required": true,
+          "locked": true,
+          "index": 1,
+          "is_default": false,
+          "data": null
+        },
+        {
+          "name": "Filename",
+          "value": "temp3.mp4",
+          "description": "Optional custom filename for the saved video (without extension). If not provided, the video title will be used.",
+          "type": 0,
+          "is_required": false,
+          "locked": true,
+          "index": 2,
+          "is_default": false,
+          "data": null
+        }
+      ],
+      "pip_dependencies": [
+        "yt-dlp"
+      ],
+      "env_variables": [],
+      "mcp_servers": [],
+      "max_passes": 5,
+      "endpoint_query": "",
+      "response_structure": [],
+      "endpoint_timeout": 60,
+      "export_uid": "e460al7de",
+      "export_version": 1,
+      "image_url": "data:image/png;base64,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"
+    },
+    {
+      "id": "cctvwfok6",
+      "name": "ElevenLabs TTS",
+      "type": 3,
+      "tag": "Audio",
+      "sort_index": 0,
+      "is_enabled": true,
+      "description": "Generate speech audio from text using the ElevenLabs API. Supports voice selection, model choice, and returns the generated audio as a playable file.",
+      "prompt": "generate this text \"{{Input}}\".\nusing this voice id \"{{Voice}}\".\nDo not add pre or post dialog, only return the path to the generated audio file",
+      "system_prompt": "You are an assistant that helps users generate speech audio using the ElevenLabs text-to-speech API. You have access to tools that can:\n\n1. List available voices so the user can pick one\n2. Generate speech from text with a chosen voice\n3. List available models\n\nWhen the user provides text and a voice preference, use the tools to generate audio. If they don't specify a voice, list available voices first and suggest a good default (e.g. \"Rachel\" or the first available voice). If they provide a voice name, search for it in the available voices.\n\nAlways confirm what was generated and provide the output file path. If the user just wants to list voices or models, do that directly.",
+      "model": "gpt-5.4-mini",
+      "chatbot_id": "",
+      "endpoint_url": "",
+      "endpoint_method": 0,
+      "endpoint_headers": "",
+      "endpoint_body": "",
+      "agent_functions": [
+        {
+          "uid": "7vp438a",
+          "name": "elevenlabs_tools",
+          "description": "Functions for interacting with the ElevenLabs text-to-speech API: list voices, list models, and generate speech audio.",
+          "is_enabled": true,
+          "is_deleted": false,
+          "function_string": "import os\nimport json\nimport time\n\ndef list_voices() -> str:\n    \"\"\"List all available ElevenLabs voices with their IDs, names, and descriptions. Use this to find a voice before generating speech.\"\"\"\n    try:\n        import requests\n        api_key = get_var(\"ELEVENLABS_API_KEY\")\n        if not api_key:\n            return \"Error: ELEVENLABS_API_KEY is not configured. Please set it in Environment Variables settings.\"\n        \n        headers = {\n            \"xi-api-key\": api_key,\n            \"Content-Type\": \"application/json\"\n        }\n        resp = requests.get(\"https://api.elevenlabs.io/v1/voices\", headers=headers, timeout=30)\n        if resp.status_code != 200:\n            return f\"Error ({resp.status_code}): {resp.text}\"\n        \n        voices = resp.json().get(\"voices\", [])\n        result = []\n        for v in voices:\n            labels = v.get(\"labels\", {})\n            accent = labels.get(\"accent\", \"\")\n            gender = labels.get(\"gender\", \"\")\n            use_case = labels.get(\"use_case\", \"\")\n            desc = v.get(\"description\", \"\")\n            info = f\"- **{v['name']}** (ID: {v['voice_id']})\"\n            details = []\n            if gender:\n                details.append(f\"Gender: {gender}\")\n            if accent:\n                details.append(f\"Accent: {accent}\")\n            if use_case:\n                details.append(f\"Use case: {use_case}\")\n            if desc:\n                details.append(f\"Description: {desc}\")\n            if details:\n                info += \" | \" + \", \".join(details)\n            result.append(info)\n        \n        if not result:\n            return \"No voices found.\"\n        return f\"Available voices ({len(result)}):\\n\" + \"\\n\".join(result)\n    except Exception as e:\n        return f\"Error listing voices: {str(e)}\"\n\n\ndef list_models() -> str:\n    \"\"\"List all available ElevenLabs TTS models.\"\"\"\n    try:\n        import requests\n        api_key = get_var(\"ELEVENLABS_API_KEY\")\n        if not api_key:\n            return \"Error: ELEVENLABS_API_KEY is not configured. Please set it in Environment Variables settings.\"\n        \n        headers = {\n            \"xi-api-key\": api_key,\n            \"Content-Type\": \"application/json\"\n        }\n        resp = requests.get(\"https://api.elevenlabs.io/v1/models\", headers=headers, timeout=30)\n        if resp.status_code != 200:\n            return f\"Error ({resp.status_code}): {resp.text}\"\n        \n        models = resp.json()\n        result = []\n        for m in models:\n            can_tts = m.get(\"can_do_text_to_speech\", False)\n            if can_tts:\n                result.append(f\"- **{m['name']}** (ID: {m['model_id']}) — {m.get('description', 'No description')}\")\n        \n        if not result:\n            return \"No TTS models found.\"\n        return f\"Available TTS models ({len(result)}):\\n\" + \"\\n\".join(result)\n    except Exception as e:\n        return f\"Error listing models: {str(e)}\"\n\n\ndef generate_speech(text: str, voice_name: str, model_id: str = \"eleven_multilingual_v2\", stability: float = 0.5, similarity_boost: float = 0.75, style: float = 0.0) -> str:\n    \"\"\"Generate speech audio from text using ElevenLabs TTS API.\n    \n    Args:\n        text: The text to convert to speech.\n        voice_name: The name of the voice to use (e.g. 'Rachel', 'Adam'). Will search available voices by name.\n        model_id: The model ID to use. Default is 'eleven_multilingual_v2'. Use 'eleven_monolingual_v1' for English-only.\n        stability: Voice stability (0.0 to 1.0). Lower = more expressive, higher = more consistent. Default 0.5.\n        similarity_boost: Voice clarity/similarity boost (0.0 to 1.0). Default 0.75.\n        style: Style exaggeration (0.0 to 1.0). Higher values add more style. Default 0.0. Only works with v2 models.\n    \"\"\"\n    try:\n        import requests\n        api_key = get_var(\"ELEVENLABS_API_KEY\")\n        if not api_key:\n            return \"Error: ELEVENLABS_API_KEY is not configured. Please set it in Environment Variables settings.\"\n        \n        if not text or not text.strip():\n            return \"Error: Text cannot be empty.\"\n        if not voice_name or not voice_name.strip():\n            return \"Error: Voice name is required. Use list_voices() to see available options.\"\n        \n        headers = {\n            \"xi-api-key\": api_key,\n            \"Content-Type\": \"application/json\"\n        }\n        \n        # Look up voice by name\n        resp = requests.get(\"https://api.elevenlabs.io/v1/voices\", headers=headers, timeout=30)\n        if resp.status_code != 200:\n            return f\"Error fetching voices ({resp.status_code}): {resp.text}\"\n        \n        voices = resp.json().get(\"voices\", [])\n        voice_id = None\n        matched_name = None\n        \n        # Try exact match first (case-insensitive)\n        for v in voices:\n            if v[\"name\"].lower() == voice_name.lower().strip():\n                voice_id = v[\"voice_id\"]\n                matched_name = v[\"name\"]\n                break\n        \n        # Try partial match\n        if not voice_id:\n            for v in voices:\n                if voice_name.lower().strip() in v[\"name\"].lower():\n                    voice_id = v[\"voice_id\"]\n                    matched_name = v[\"name\"]\n                    break\n        \n        # Check if voice_name is already an ID\n        if not voice_id:\n            for v in voices:\n                if v[\"voice_id\"] == voice_name.strip():\n                    voice_id = v[\"voice_id\"]\n                    matched_name = v[\"name\"]\n                    break\n        \n        if not voice_id:\n            available = \", \".join([v[\"name\"] for v in voices[:20]])\n            return f\"Error: Voice '{voice_name}' not found. Available voices include: {available}\"\n        \n        # Generate speech\n        url = f\"https://api.elevenlabs.io/v1/text-to-speech/{voice_id}\"\n        payload = {\n            \"text\": text,\n            \"model_id\": model_id,\n            \"voice_settings\": {\n                \"stability\": max(0.0, min(1.0, stability)),\n                \"similarity_boost\": max(0.0, min(1.0, similarity_boost)),\n                \"style\": max(0.0, min(1.0, style)),\n                \"use_speaker_boost\": True\n            }\n        }\n        \n        resp = requests.post(url, headers=headers, json=payload, timeout=120)\n        if resp.status_code != 200:\n            return f\"Error generating speech ({resp.status_code}): {resp.text}\"\n        \n        # Save audio file\n        timestamp = int(time.time())\n        safe_voice = matched_name.replace(' ', '_').lower()\n        filename = f\"elevenlabs_{safe_voice}_{timestamp}.mp3\"\n        filepath = os.path.join(os.getcwd(), filename)\n        \n        with open(filepath, \"wb\") as f:\n            f.write(resp.content)\n        \n        file_size_kb = len(resp.content) / 1024\n        text_preview = text[:80] + \"...\" if len(text) > 80 else text\n        \n        return (\n            f\"Speech generated successfully!\\n\"\n            f\"- **Voice**: {matched_name}\\n\"\n            f\"- **Model**: {model_id}\\n\"\n            f\"- **Text**: \\\"{text_preview}\\\"\\n\"\n            f\"- **File**: {filepath}\\n\"\n            f\"- **Size**: {file_size_kb:.1f} KB\"\n        )\n    except Exception as e:\n        return f\"Error generating speech: {str(e)}\"\n"
+        }
+      ],
+      "pipeline_id": "",
+      "request_inputs": [
+        {
+          "name": "Input",
+          "value": "{{GenerateStory.story}}}}",
+          "description": "The text you want to convert to speech, or a command like 'list voices'",
+          "type": 0,
+          "is_required": true,
+          "locked": true,
+          "index": 0,
+          "is_default": true,
+          "data": null
+        },
+        {
+          "name": "Voice",
+          "value": "Roger",
+          "description": "Voice name to use (e.g. Rachel, Adam, Bella). Leave empty to use the default or list available voices.",
+          "type": 0,
+          "is_required": false,
+          "locked": true,
+          "index": 1,
+          "is_default": false,
+          "data": null
+        }
+      ],
+      "pip_dependencies": [
+        "elevenlabs",
+        "requests"
+      ],
+      "env_variables": [
+        {
+          "name": "ELEVENLABS_API_KEY",
+          "description": "Your ElevenLabs API key. Get it from https://elevenlabs.io/app/settings/api-keys",
+          "type": 5
+        }
+      ],
+      "mcp_servers": [],
+      "max_passes": 5,
+      "endpoint_query": "",
+      "response_structure": [
+        {
+          "key": "path",
+          "type": "string"
+        }
+      ],
+      "endpoint_timeout": 60,
+      "export_uid": "8tzm39e29",
+      "export_version": 1,
+      "image_url": ""
+    }
+  ],
+  "_pip_packages": [
+    "openai-whisper",
+    "yt-dlp",
+    "elevenlabs",
+    "requests"
+  ]
+}

@@ -1,0 +1,83 @@
+{
+  "name": "ElevenLabs TTS",
+  "type": 3,
+  "tag": "Audio",
+  "sort_index": 0,
+  "is_enabled": true,
+  "description": "Generate speech audio from text using the ElevenLabs API. Supports voice selection, model choice, and returns the generated audio as a playable file.",
+  "prompt": "generate this text \"{{Input}}\".\nusing this voice id \"{{Voice}}\".\nDo not add pre or post dialog, only return the path to the generated audio file",
+  "system_prompt": "You are an assistant that helps users generate speech audio using the ElevenLabs text-to-speech API. You have access to tools that can:\n\n1. List available voices so the user can pick one\n2. Generate speech from text with a chosen voice\n3. List available models\n\nWhen the user provides text and a voice preference, use the tools to generate audio. If they don't specify a voice, list available voices first and suggest a good default (e.g. \"Rachel\" or the first available voice). If they provide a voice name, search for it in the available voices.\n\nAlways confirm what was generated and provide the output file path. If the user just wants to list voices or models, do that directly.",
+  "model": "gpt-5.4-mini",
+  "chatbot_id": "",
+  "endpoint_url": "",
+  "endpoint_method": 0,
+  "endpoint_headers": "",
+  "endpoint_body": "",
+  "agent_functions": [
+    {
+      "uid": "7vp438a",
+      "name": "elevenlabs_tools",
+      "description": "Functions for interacting with the ElevenLabs text-to-speech API: list voices, list models, and generate speech audio.",
+      "is_enabled": true,
+      "is_deleted": false,
+      "function_string": "import os\nimport json\nimport time\n\ndef list_voices() -> str:\n    \"\"\"List all available ElevenLabs voices with their IDs, names, and descriptions. Use this to find a voice before generating speech.\"\"\"\n    try:\n        import requests\n        api_key = get_var(\"ELEVENLABS_API_KEY\")\n        if not api_key:\n            return \"Error: ELEVENLABS_API_KEY is not configured. Please set it in Environment Variables settings.\"\n        \n        headers = {\n            \"xi-api-key\": api_key,\n            \"Content-Type\": \"application/json\"\n        }\n        resp = requests.get(\"https://api.elevenlabs.io/v1/voices\", headers=headers, timeout=30)\n        if resp.status_code != 200:\n            return f\"Error ({resp.status_code}): {resp.text}\"\n        \n        voices = resp.json().get(\"voices\", [])\n        result = []\n        for v in voices:\n            labels = v.get(\"labels\", {})\n            accent = labels.get(\"accent\", \"\")\n            gender = labels.get(\"gender\", \"\")\n            use_case = labels.get(\"use_case\", \"\")\n            desc = v.get(\"description\", \"\")\n            info = f\"- **{v['name']}** (ID: {v['voice_id']})\"\n            details = []\n            if gender:\n                details.append(f\"Gender: {gender}\")\n            if accent:\n                details.append(f\"Accent: {accent}\")\n            if use_case:\n                details.append(f\"Use case: {use_case}\")\n            if desc:\n                details.append(f\"Description: {desc}\")\n            if details:\n                info += \" | \" + \", \".join(details)\n            result.append(info)\n        \n        if not result:\n            return \"No voices found.\"\n        return f\"Available voices ({len(result)}):\\n\" + \"\\n\".join(result)\n    except Exception as e:\n        return f\"Error listing voices: {str(e)}\"\n\n\ndef list_models() -> str:\n    \"\"\"List all available ElevenLabs TTS models.\"\"\"\n    try:\n        import requests\n        api_key = get_var(\"ELEVENLABS_API_KEY\")\n        if not api_key:\n            return \"Error: ELEVENLABS_API_KEY is not configured. Please set it in Environment Variables settings.\"\n        \n        headers = {\n            \"xi-api-key\": api_key,\n            \"Content-Type\": \"application/json\"\n        }\n        resp = requests.get(\"https://api.elevenlabs.io/v1/models\", headers=headers, timeout=30)\n        if resp.status_code != 200:\n            return f\"Error ({resp.status_code}): {resp.text}\"\n        \n        models = resp.json()\n        result = []\n        for m in models:\n            can_tts = m.get(\"can_do_text_to_speech\", False)\n            if can_tts:\n                result.append(f\"- **{m['name']}** (ID: {m['model_id']}) — {m.get('description', 'No description')}\")\n        \n        if not result:\n            return \"No TTS models found.\"\n        return f\"Available TTS models ({len(result)}):\\n\" + \"\\n\".join(result)\n    except Exception as e:\n        return f\"Error listing models: {str(e)}\"\n\n\ndef generate_speech(text: str, voice_name: str, model_id: str = \"eleven_multilingual_v2\", stability: float = 0.5, similarity_boost: float = 0.75, style: float = 0.0) -> str:\n    \"\"\"Generate speech audio from text using ElevenLabs TTS API.\n    \n    Args:\n        text: The text to convert to speech.\n        voice_name: The name of the voice to use (e.g. 'Rachel', 'Adam'). Will search available voices by name.\n        model_id: The model ID to use. Default is 'eleven_multilingual_v2'. Use 'eleven_monolingual_v1' for English-only.\n        stability: Voice stability (0.0 to 1.0). Lower = more expressive, higher = more consistent. Default 0.5.\n        similarity_boost: Voice clarity/similarity boost (0.0 to 1.0). Default 0.75.\n        style: Style exaggeration (0.0 to 1.0). Higher values add more style. Default 0.0. Only works with v2 models.\n    \"\"\"\n    try:\n        import requests\n        api_key = get_var(\"ELEVENLABS_API_KEY\")\n        if not api_key:\n            return \"Error: ELEVENLABS_API_KEY is not configured. Please set it in Environment Variables settings.\"\n        \n        if not text or not text.strip():\n            return \"Error: Text cannot be empty.\"\n        if not voice_name or not voice_name.strip():\n            return \"Error: Voice name is required. Use list_voices() to see available options.\"\n        \n        headers = {\n            \"xi-api-key\": api_key,\n            \"Content-Type\": \"application/json\"\n        }\n        \n        # Look up voice by name\n        resp = requests.get(\"https://api.elevenlabs.io/v1/voices\", headers=headers, timeout=30)\n        if resp.status_code != 200:\n            return f\"Error fetching voices ({resp.status_code}): {resp.text}\"\n        \n        voices = resp.json().get(\"voices\", [])\n        voice_id = None\n        matched_name = None\n        \n        # Try exact match first (case-insensitive)\n        for v in voices:\n            if v[\"name\"].lower() == voice_name.lower().strip():\n                voice_id = v[\"voice_id\"]\n                matched_name = v[\"name\"]\n                break\n        \n        # Try partial match\n        if not voice_id:\n            for v in voices:\n                if voice_name.lower().strip() in v[\"name\"].lower():\n                    voice_id = v[\"voice_id\"]\n                    matched_name = v[\"name\"]\n                    break\n        \n        # Check if voice_name is already an ID\n        if not voice_id:\n            for v in voices:\n                if v[\"voice_id\"] == voice_name.strip():\n                    voice_id = v[\"voice_id\"]\n                    matched_name = v[\"name\"]\n                    break\n        \n        if not voice_id:\n            available = \", \".join([v[\"name\"] for v in voices[:20]])\n            return f\"Error: Voice '{voice_name}' not found. Available voices include: {available}\"\n        \n        # Generate speech\n        url = f\"https://api.elevenlabs.io/v1/text-to-speech/{voice_id}\"\n        payload = {\n            \"text\": text,\n            \"model_id\": model_id,\n            \"voice_settings\": {\n                \"stability\": max(0.0, min(1.0, stability)),\n                \"similarity_boost\": max(0.0, min(1.0, similarity_boost)),\n                \"style\": max(0.0, min(1.0, style)),\n                \"use_speaker_boost\": True\n            }\n        }\n        \n        resp = requests.post(url, headers=headers, json=payload, timeout=120)\n        if resp.status_code != 200:\n            return f\"Error generating speech ({resp.status_code}): {resp.text}\"\n        \n        # Save audio file\n        timestamp = int(time.time())\n        safe_voice = matched_name.replace(' ', '_').lower()\n        filename = f\"elevenlabs_{safe_voice}_{timestamp}.mp3\"\n        filepath = os.path.join(os.getcwd(), filename)\n        \n        with open(filepath, \"wb\") as f:\n            f.write(resp.content)\n        \n        file_size_kb = len(resp.content) / 1024\n        text_preview = text[:80] + \"...\" if len(text) > 80 else text\n        \n        return (\n            f\"Speech generated successfully!\\n\"\n            f\"- **Voice**: {matched_name}\\n\"\n            f\"- **Model**: {model_id}\\n\"\n            f\"- **Text**: \\\"{text_preview}\\\"\\n\"\n            f\"- **File**: {filepath}\\n\"\n            f\"- **Size**: {file_size_kb:.1f} KB\"\n        )\n    except Exception as e:\n        return f\"Error generating speech: {str(e)}\"\n"
+    }
+  ],
+  "pipeline_id": "",
+  "request_inputs": [
+    {
+      "name": "Input",
+      "value": "",
+      "description": "The text you want to convert to speech, or a command like 'list voices'",
+      "type": 0,
+      "is_required": true,
+      "locked": true,
+      "index": 0,
+      "is_default": true,
+      "data": null
+    },
+    {
+      "name": "Voice",
+      "value": "",
+      "description": "Voice name to use (e.g. Rachel, Adam, Bella). Leave empty to use the default or list available voices.",
+      "type": 0,
+      "is_required": false,
+      "locked": true,
+      "index": 1,
+      "is_default": false,
+      "data": null
+    }
+  ],
+  "pip_dependencies": [
+    "elevenlabs",
+    "requests"
+  ],
+  "env_variables": [
+    {
+      "name": "ELEVENLABS_API_KEY",
+      "description": "Your ElevenLabs API key. Get it from https://elevenlabs.io/app/settings/api-keys",
+      "type": 5
+    }
+  ],
+  "mcp_servers": [],
+  "max_passes": 5,
+  "endpoint_query": "",
+  "response_structure": [
+    {
+      "key": "path",
+      "type": "string"
+    }
+  ],
+  "endpoint_timeout": 60,
+  "export_uid": "8tzm39e29",
+  "export_version": 1,
+  "image_url": "data:image/jpeg;base64,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",
+  "_export_type": "tool",
+  "_export_name": "ElevenLabs TTS",
+  "_export_description": "Generate speech audio from text using the ElevenLabs API. Supports voice selection, model choice, and returns the generated audio as a playable file.",
+  "_export_date": "2026-03-25T00:55:38.578Z",
+  "_pip_packages": [
+    "elevenlabs",
+    "requests"
+  ]
+}

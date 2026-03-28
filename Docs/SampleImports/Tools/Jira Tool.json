@@ -1,0 +1,71 @@
+{
+  "name": "Jira Tool",
+  "type": 3,
+  "tag": "Jira, Project Planning",
+  "sort_index": 6,
+  "is_enabled": true,
+  "description": "A agent tool with access to Jira API",
+  "prompt": "Create the project found in the below request.\n\nDo not create Epics or Stories, you job is to create the Project.\n\nRequest:\n{{Input}}",
+  "system_prompt": "You are an assistant in charge of calling functions to create items in a Jira software project",
+  "model": "gpt-5-mini",
+  "chatbot_id": "",
+  "endpoint_url": "",
+  "endpoint_method": 0,
+  "endpoint_headers": "",
+  "endpoint_body": "",
+  "agent_functions": [
+    {
+      "uid": "u0ormt3",
+      "name": "JiraTools",
+      "description": "",
+      "is_enabled": true,
+      "is_deleted": false,
+      "function_string": "import os\nimport requests\nfrom dotenv import load_dotenv\nfrom jira import JIRA\n\n# Load environment variables from .env\nload_dotenv()\n\nJIRA_SITE = os.getenv(\"JIRA_SITE\")   # e.g. 'https://your-domain.atlassian.net'\nJIRA_EMAIL = os.getenv(\"JIRA_EMAIL\") # your Jira account email\nJIRA_TOKEN = os.getenv(\"JIRA_TOKEN\") # your Jira API token\n\n# Reasonable defaults for cloud calls\n_HTTP_TIMEOUT = 30\n\n\ndef _require_env():\n    missing = [k for k, v in {\n        \"JIRA_SITE\": JIRA_SITE,\n        \"JIRA_EMAIL\": JIRA_EMAIL,\n        \"JIRA_TOKEN\": JIRA_TOKEN,\n    }.items() if not v]\n    if missing:\n        raise RuntimeError(f\"Missing required environment variables: {', '.join(missing)}\")\n\n\ndef _rest_v3_url(path: str) -> str:\n    # path like \"/project\" or \"/myself\"\n    base = JIRA_SITE.rstrip(\"/\")\n    return f\"{base}/rest/api/3{path}\"\n\n\ndef _requests_session() -> requests.Session:\n    \"\"\"\n    Jira Cloud basic auth for REST: email + API token.\n    \"\"\"\n    _require_env()\n    s = requests.Session()\n    s.auth = (JIRA_EMAIL, JIRA_TOKEN)\n    s.headers.update({\n        \"Accept\": \"application/json\",\n        \"Content-Type\": \"application/json\",\n    })\n    return s\n\n\ndef _get_my_account_id() -> str:\n    \"\"\"\n    Needed for create project payload (leadAccountId).\n    \"\"\"\n    sess = _requests_session()\n    r = sess.get(_rest_v3_url(\"/myself\"), timeout=_HTTP_TIMEOUT)\n    if r.status_code >= 400:\n        raise RuntimeError(f\"Failed to fetch /myself ({r.status_code}): {r.text}\")\n    data = r.json()\n    account_id = data.get(\"accountId\")\n    if not account_id:\n        raise RuntimeError(\"Could not determine accountId from /myself response.\")\n    return account_id\n\n\ndef _adf_doc_from_text(text: str) -> dict:\n    \"\"\"\n    Minimal Atlassian Document Format for a plain text description.\n    Jira Cloud REST v3 supports ADF in description. :contentReference[oaicite:3]{index=3}\n    \"\"\"\n    # Split into paragraphs to preserve newlines reasonably\n    paragraphs = []\n    for line in (text or \"\").splitlines():\n        if line.strip() == \"\":\n            continue\n        paragraphs.append({\n            \"type\": \"paragraph\",\n            \"content\": [{\"type\": \"text\", \"text\": line}],\n        })\n    if not paragraphs:\n        paragraphs = [{\"type\": \"paragraph\", \"content\": []}]\n    return {\"type\": \"doc\", \"version\": 1, \"content\": paragraphs}\n\n\ndef get_jira_client():\n    \"\"\"\n    Instantiate and return a JIRA client using credentials from environment variables.\n    \"\"\"\n    try:\n        _require_env()\n        options = {\"server\": JIRA_SITE,\n            \"rest_api_version\": \"3\"}  # <-- critical}\n        # python-jira is still fine for many issue operations, but project creation is safer via REST v3.\n        return JIRA(options, basic_auth=(JIRA_EMAIL, JIRA_TOKEN))\n    except Exception as e:\n        print(f\"Error creating Jira client: {e}\")\n        return None\n\n\ndef create_issue(project_key: str,\n                 summary: str,\n                 parent: str = None,\n                 description: str = \"\",\n                 issue_type: str = 'Story'):\n    \"\"\"\n    Create a new issue in the specified project.\n    :param project_key: Key of the project\n    :param summary: Summary/title of the issue\n    :param description: Detailed description\n    :param issue_type: Type of issue (e.g., 'Epic', 'Story', 'Task', 'Bug')\n    :return: Created Issue resource\n    \"\"\"\n    jira = get_jira_client()\n    if jira is None:\n        return None\n\n    print(f\"Creating [{issue_type}] {summary} in project {project_key}...\")\n    try:\n        # Jira summary limit is ~255 chars in many configs; keep your 220 rule\n        sum_text = summary or \"\"\n        if len(sum_text) > 220:\n            sum_text = sum_text[:220] + \"...\"\n\n        # Build a combined description (use params correctly)\n        full_desc = (summary or \"\").strip()\n        if description:\n            full_desc = (full_desc + \"\\n\\n---\\n\\n\" + description.strip()).strip()\n\n        # Use ADF for cloud v3 compatibility; python-jira will pass it through for Cloud.\n        # If your instance rejects ADF (unlikely on Cloud), change to plain string.\n        fields = {\n            \"project\": {\"key\": project_key},\n            \"summary\": sum_text,\n            \"issuetype\": {\"name\": issue_type},\n            \"description\": _adf_doc_from_text(full_desc),\n        }\n\n        if parent:\n            # Works for subtasks; for “epic link” / hierarchy you may need a different field depending on project type.\n            fields[\"parent\"] = {\"key\": parent}\n\n        issue = jira.create_issue(fields=fields)\n        return issue.raw\n    except Exception as e:\n        print(f\"Error creating issue: {e}\")\n        return None\n\n\ndef create_project(key: str,\n                   name: str,\n                   project_type: str = 'software',\n                   template_key: str = \"com.pyxis.greenhopper.jira:gh-simplified-scrum-classic\"):\n    \"\"\"\n    Create a new Jira project.\n\n    :param name: Project name\n    :param project_type: Type of project ('software', 'business', 'service_desk')\n    :param template_key: Template identifier\n    :return: Created Project resource\n    \"\"\"\n    print(f\"Creating project {name} with key {key}...\")\n\n    try:\n        _require_env()\n\n        # Jira Cloud create project: POST /rest/api/3/project\n        # Permissions required: Administer Jira. :contentReference[oaicite:4]{index=4}\n        lead_account_id = _get_my_account_id()\n\n        payload = {\n            \"key\": key,\n            \"name\": name,\n            \"projectTypeKey\": project_type,         # 'software' | 'business' | 'service_desk' :contentReference[oaicite:5]{index=5}\n            \"projectTemplateKey\": template_key,     # e.g. scrum classic :contentReference[oaicite:6]{index=6}\n            \"leadAccountId\": lead_account_id,       # shown in Atlassian sample payload :contentReference[oaicite:7]{index=7}\n            # IMPORTANT: do NOT include permissionScheme / notificationScheme / issueSecurityScheme\n            # unless you intentionally pick valid IDs from THIS site.\n        }\n\n        sess = _requests_session()\n        r = sess.post(_rest_v3_url(\"/project\"), json=payload, timeout=_HTTP_TIMEOUT)\n\n        if r.status_code >= 400:\n            # Bubble up the server's message—this is usually the fastest way to fix config/perms.\n            raise RuntimeError(f\"Create project failed ({r.status_code}): {r.text}\")\n\n        # Response is ProjectIdentifiers (id, key, self) :contentReference[oaicite:8]{index=8}\n        return r.json()\n\n    except Exception as e:\n        print(f\"Error creating project: {e}\")\n        return None\n\n\ndef get_project_key_by_name(project_name: str):\n    \"\"\"\n    Get the project Key by its name.\n    :param project_name: Name of the project\n    :return: Project Key\n    \"\"\"\n    try:\n        jira = get_jira_client()\n        if jira is None:\n            return None\n\n        projects = jira.projects()\n        for project in projects:\n            if project.name == project_name:\n                print(f\"Project {project_name} found with ID: {project.key}\")\n                return project.key\n        print(f\"Project {project_name} not found.\")\n        return None\n    except Exception as e:\n        print(f\"Error getting projects: {e}\")\n        return None\n\n\ndef get_issues_by_project(project_key: str, issue_type: str = \"\"):\n    \"\"\"\n    Get all issues in a project.\n    :param project_key: Key of the project\n    :issue_type:\n    :return: List of issues\n    \"\"\"\n    jira = get_jira_client()\n    if jira is None:\n        return None\n    try:\n        if issue_type:\n            jql = f'project=\"{project_key}\" AND issuetype=\"{issue_type}\"'\n        else:\n            jql = f'project=\"{project_key}\"'\n        issues = jira.search_issues(jql)\n        return issues\n    except Exception as e:\n        print(f\"Error getting issues [{project_key}][{issue_type}]: {e}\")\n        return None\n"
+    }
+  ],
+  "pipeline_id": "",
+  "request_inputs": [
+    {
+      "name": "Input",
+      "value": "{{Create Development Plan}}",
+      "is_required": true,
+      "locked": true,
+      "type": 0,
+      "is_default": true
+    }
+  ],
+  "pip_dependencies": [
+    "jira"
+  ],
+  "env_variables": [
+    {
+      "name": "JIRA_SITE",
+      "description": "",
+      "type": 5
+    },
+    {
+      "name": "JIRA_TOKEN",
+      "description": "",
+      "type": 5
+    },
+    {
+      "name": "JIRA_EMAIL",
+      "description": "",
+      "type": 0
+    }
+  ],
+  "mcp_servers": [],
+  "max_passes": 5,
+  "endpoint_query": "",
+  "response_structure": [],
+  "endpoint_timeout": 60,
+  "export_uid": "13w88oq24",
+  "export_version": 1,
+  "_export_type": "tool",
+  "_export_name": "Jira Tool",
+  "_export_description": "A agent tool with access to Jira API",
+  "_export_date": "2026-03-04T02:55:14.716Z",
+  "_pip_packages": [
+    "jira"
+  ]
+}
