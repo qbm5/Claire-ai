@@ -75,6 +75,7 @@ class AiTool(BaseModel):
     claude_code_timeout: int = 600
     claude_code_json_schema: str = ""
     claude_code_system_prompt_mode: str = "append"
+    claude_code_model: str = ""
     response_structure: list = []
     request_inputs: list[Property] = []
     image_url: str = ""

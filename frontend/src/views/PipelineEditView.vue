@@ -415,6 +415,15 @@ function removeStepInput(idx: number) {
   selectedStep.value.tool.request_inputs.splice(idx, 1)
 }
 
+function toggleStepClaudeCodeTool(toolName: string) {
+  if (!selectedStep.value?.tool) return
+  if (!selectedStep.value.tool.claude_code_allowed_tools) selectedStep.value.tool.claude_code_allowed_tools = []
+  const arr = selectedStep.value.tool.claude_code_allowed_tools
+  const idx = arr.indexOf(toolName)
+  if (idx >= 0) arr.splice(idx, 1)
+  else arr.push(toolName)
+}
+
 const stepToolType = computed(() => selectedStep.value?.tool?.type ?? null)
 function isType(t: ToolType) { return stepToolType.value === t }
 const isStepLLM = computed(() => isType(ToolType.LLM))
@@ -433,19 +442,19 @@ const isStepParallel = computed(() => isType(ToolType.Parallel))
 
 const showStepToolConfig = computed(() => {
   if (!selectedStep.value?.tool) return false
-  const hidden = new Set([ToolType.End, ToolType.Start, ToolType.LoopCounter, ToolType.Wait, ToolType.FileUpload, ToolType.ClaudeCode])
+  const hidden = new Set([ToolType.End, ToolType.Start, ToolType.LoopCounter, ToolType.Wait, ToolType.FileUpload])
   return !hidden.has(stepToolType.value!)
 })
 
 const showStepRetry = computed(() => {
   if (!selectedStep.value?.tool) return false
-  const hidden = new Set([ToolType.End, ToolType.Start, ToolType.If, ToolType.LoopCounter, ToolType.Wait, ToolType.FileUpload, ToolType.ClaudeCode])
+  const hidden = new Set([ToolType.End, ToolType.Start, ToolType.If, ToolType.LoopCounter, ToolType.Wait, ToolType.FileUpload])
   return !hidden.has(stepToolType.value!)
 })
 
 const showStepValidation = computed(() => {
   if (!selectedStep.value?.tool) return false
-  const hidden = new Set([ToolType.End, ToolType.Start, ToolType.If, ToolType.LoopCounter, ToolType.Wait, ToolType.FileUpload, ToolType.ClaudeCode, ToolType.Parallel])
+  const hidden = new Set([ToolType.End, ToolType.Start, ToolType.If, ToolType.LoopCounter, ToolType.Wait, ToolType.FileUpload, ToolType.Parallel])
   return !hidden.has(stepToolType.value!)
 })
 
@@ -1442,21 +1451,6 @@ function applyAiPipelineResult() {
           </div>
         </div>
 
-        <!-- Claude Code step info + settings -->
-        <div v-if="isStepClaudeCode" class="text-xs text-cyan-400 p-2 bg-cyan-500/10 rounded border border-cyan-500/20">
-          Runs Claude Code CLI in headless mode. Provide a prompt describing what to accomplish — Claude Code will use its tools (Read, Edit, Bash, etc.) to complete the task.
-        </div>
-        <div v-if="isStepClaudeCode && selectedStep.tool" class="space-y-3">
-          <div>
-            <label class="block text-xs text-gray-400 mb-1">Prompt</label>
-            <TemplateInput v-model="selectedStep.tool.prompt" :variables="pipelineTemplateVariables" mode="textarea" :rows="4" placeholder="Describe what Claude Code should do..." inputClass="w-full px-2 py-1.5 bg-gray-800 border border-gray-700 rounded text-xs font-mono focus:outline-none focus:border-blue-500" />
-          </div>
-          <div>
-            <label class="block text-xs text-gray-400 mb-1">System Prompt (optional)</label>
-            <TemplateInput v-model="selectedStep.tool.system_prompt" :variables="pipelineTemplateVariables" mode="textarea" :rows="2" placeholder="Additional instructions..." inputClass="w-full px-2 py-1.5 bg-gray-800 border border-gray-700 rounded text-xs font-mono focus:outline-none focus:border-blue-500" />
-          </div>
-        </div>
-
         <!-- Loop Counter settings -->
         <div v-if="isStepLoopCounter && selectedStep.tool" class="space-y-3">
           <div>
@@ -1467,17 +1461,20 @@ function applyAiPipelineResult() {
 
         <!-- Tabs for tool-specific properties -->
         <div v-if="selectedStep.tool && showStepToolConfig" class="space-y-4">
-          <div class="flex gap-1 border-b border-gray-800">
+          <div class="flex flex-wrap gap-1 border-b border-gray-800">
             <button @click="propertiesTab = 'inputs'" class="px-3 py-1 text-xs rounded-t transition-colors" :class="propertiesTab === 'inputs' ? 'bg-gray-800 text-gray-50' : 'text-gray-500 hover:text-gray-300'">
               Inputs
             </button>
-            <button v-if="isStepLLM || isStepAgent || isStepIf || isStepAskUser" @click="propertiesTab = 'prompt'" class="px-3 py-1 text-xs rounded-t transition-colors" :class="propertiesTab === 'prompt' ? 'bg-gray-800 text-gray-50' : 'text-gray-500 hover:text-gray-300'">
+            <button v-if="isStepLLM || isStepAgent || isStepIf || isStepAskUser || isStepClaudeCode" @click="propertiesTab = 'prompt'" class="px-3 py-1 text-xs rounded-t transition-colors" :class="propertiesTab === 'prompt' ? 'bg-gray-800 text-gray-50' : 'text-gray-500 hover:text-gray-300'">
               Prompt
+            </button>
+            <button v-if="isStepClaudeCode" @click="propertiesTab = 'cc-settings'" class="px-3 py-1 text-xs rounded-t transition-colors" :class="propertiesTab === 'cc-settings' ? 'bg-gray-800 text-gray-50' : 'text-gray-500 hover:text-gray-300'">
+              Settings
             </button>
             <button v-if="isStepEndpoint" @click="propertiesTab = 'endpoint'" class="px-3 py-1 text-xs rounded-t transition-colors" :class="propertiesTab === 'endpoint' ? 'bg-gray-800 text-gray-50' : 'text-gray-500 hover:text-gray-300'">
               Endpoint
             </button>
-            <button v-if="isStepLLM || isStepEndpoint || isStepAgent" @click="propertiesTab = 'structure'" class="px-3 py-1 text-xs rounded-t transition-colors" :class="propertiesTab === 'structure' ? 'bg-gray-800 text-gray-50' : 'text-gray-500 hover:text-gray-300'">
+            <button v-if="isStepLLM || isStepEndpoint || isStepAgent || isStepClaudeCode" @click="propertiesTab = 'structure'" class="px-3 py-1 text-xs rounded-t transition-colors" :class="propertiesTab === 'structure' ? 'bg-gray-800 text-gray-50' : 'text-gray-500 hover:text-gray-300'">
               Structure
             </button>
             <button v-if="!isStepIf" @click="propertiesTab = 'process'" class="px-3 py-1 text-xs rounded-t transition-colors" :class="propertiesTab === 'process' ? 'bg-gray-800 text-gray-50' : 'text-gray-500 hover:text-gray-300'">
@@ -1506,19 +1503,108 @@ function applyAiPipelineResult() {
             <div v-else class="text-xs text-gray-500">No inputs defined. Click + Add to create one.</div>
           </div>
 
-          <!-- Prompt tab (LLM / Agent / If) -->
-          <div v-if="propertiesTab === 'prompt' && (isStepLLM || isStepAgent || isStepIf || isStepAskUser)" class="space-y-3">
+          <!-- Prompt tab (LLM / Agent / If / Claude Code) -->
+          <div v-if="propertiesTab === 'prompt' && (isStepLLM || isStepAgent || isStepIf || isStepAskUser || isStepClaudeCode)" class="space-y-3">
             <div v-if="isStepAgent || isStepIf || isStepAskUser">
               <label class="block text-xs text-gray-400 mb-1">System Prompt</label>
               <TemplateInput v-model="selectedStep.tool.system_prompt" :variables="pipelineTemplateVariables" mode="textarea" :rows="3" inputClass="w-full px-2 py-1.5 bg-gray-800 border border-gray-700 rounded text-xs font-mono focus:outline-none focus:border-blue-500" />
             </div>
-            <div>
-              <label class="block text-xs text-gray-400 mb-1">Prompt</label>
-              <TemplateInput v-model="selectedStep.tool.prompt" :variables="pipelineTemplateVariables" mode="textarea" :rows="6" inputClass="w-full px-2 py-1.5 bg-gray-800 border border-gray-700 rounded text-xs font-mono focus:outline-none focus:border-blue-500" />
+            <div v-if="isStepClaudeCode">
+              <label class="block text-xs text-gray-400 mb-1">System Prompt</label>
+              <TemplateInput v-model="selectedStep.tool.system_prompt" :variables="pipelineTemplateVariables" mode="textarea" :rows="3" placeholder="Additional instructions for Claude Code..." inputClass="w-full px-2 py-1.5 bg-gray-800 border border-gray-700 rounded text-xs font-mono focus:outline-none focus:border-blue-500" />
+              <div class="flex items-center gap-3 mt-1.5">
+                <label class="flex items-center gap-1.5 text-xs text-gray-500 cursor-pointer">
+                  <input type="radio" v-model="selectedStep.tool.claude_code_system_prompt_mode" value="append" class="text-cyan-500" />
+                  Append to default
+                </label>
+                <label class="flex items-center gap-1.5 text-xs text-gray-500 cursor-pointer">
+                  <input type="radio" v-model="selectedStep.tool.claude_code_system_prompt_mode" value="replace" class="text-cyan-500" />
+                  Replace entirely
+                </label>
+              </div>
             </div>
             <div>
+              <label class="block text-xs text-gray-400 mb-1">Prompt</label>
+              <TemplateInput v-model="selectedStep.tool.prompt" :variables="pipelineTemplateVariables" mode="textarea" :rows="6" :placeholder="isStepClaudeCode ? 'Describe what Claude Code should do...' : ''" inputClass="w-full px-2 py-1.5 bg-gray-800 border border-gray-700 rounded text-xs font-mono focus:outline-none focus:border-blue-500" />
+            </div>
+            <div v-if="!isStepClaudeCode">
               <label class="block text-xs text-gray-400 mb-1">Model</label>
               <ModelSelectDropdown v-model="selectedStep.tool.model" :models="models" />
+            </div>
+            <div v-if="isStepClaudeCode">
+              <label class="block text-xs text-gray-400 mb-1">Model</label>
+              <input v-model="selectedStep.tool.claude_code_model" list="cc-step-model-options" placeholder="Leave blank for CLI default" class="w-full px-2 py-1.5 bg-gray-800 border border-gray-700 rounded text-xs font-mono focus:outline-none focus:border-blue-500" />
+              <datalist id="cc-step-model-options">
+                <option value="claude-opus-4-7" />
+                <option value="claude-opus-4-6" />
+                <option value="claude-opus-4-5" />
+                <option value="claude-sonnet-4-6" />
+                <option value="claude-sonnet-4-5" />
+                <option value="claude-haiku-4-5" />
+              </datalist>
+            </div>
+          </div>
+
+          <!-- Claude Code Settings tab -->
+          <div v-if="propertiesTab === 'cc-settings' && isStepClaudeCode" class="space-y-3">
+            <!-- Allowed Tools -->
+            <div>
+              <label class="block text-xs text-gray-400 mb-1.5">Allowed Tools</label>
+              <div class="grid grid-cols-2 gap-1.5">
+                <label
+                  v-for="t in ['Bash', 'Read', 'Edit', 'Write', 'Glob', 'Grep', 'WebFetch', 'WebSearch', 'TodoRead', 'TodoWrite', 'NotebookEdit']"
+                  :key="t"
+                  class="flex items-center gap-1.5 px-2 py-1.5 rounded cursor-pointer text-[11px] transition-colors border"
+                  :class="selectedStep.tool.claude_code_allowed_tools?.includes(t) ? 'bg-cyan-500/10 border-cyan-500/40 text-cyan-300' : 'bg-gray-800/50 border-gray-700/50 text-gray-400 hover:bg-gray-800'"
+                >
+                  <input type="checkbox" :checked="selectedStep.tool.claude_code_allowed_tools?.includes(t)" @change="toggleStepClaudeCodeTool(t)" class="rounded" />
+                  {{ t }}
+                </label>
+              </div>
+            </div>
+            <!-- Permission Mode -->
+            <div>
+              <label class="block text-xs text-gray-400 mb-1">Permission Mode</label>
+              <select v-model="selectedStep.tool.claude_code_permission_mode" class="w-full px-2 py-1.5 bg-gray-800 border border-gray-700 rounded text-xs focus:outline-none focus:border-blue-500">
+                <option value="default">Default</option>
+                <option value="acceptEdits">Accept Edits</option>
+                <option value="dontAsk">Don't Ask (full auto)</option>
+              </select>
+            </div>
+            <!-- Working Directory -->
+            <div>
+              <label class="block text-xs text-gray-400 mb-1">Working Directory</label>
+              <TemplateInput v-model="selectedStep.tool.claude_code_working_dir" :variables="pipelineTemplateVariables" mode="input" placeholder="/path/to/project" inputClass="w-full px-2 py-1.5 bg-gray-800 border border-gray-700 rounded text-xs font-mono focus:outline-none focus:border-blue-500" />
+            </div>
+            <!-- Bare Mode -->
+            <div class="flex items-center justify-between">
+              <label class="text-xs text-gray-400">Bare Mode (no config files)</label>
+              <button @click="selectedStep.tool.claude_code_bare = !selectedStep.tool.claude_code_bare"
+                class="relative w-8 h-4 rounded-full transition-colors"
+                :class="selectedStep.tool.claude_code_bare ? 'bg-cyan-600' : 'bg-gray-700'">
+                <span class="absolute top-0.5 left-0.5 w-3 h-3 rounded-full bg-white transition-transform"
+                  :class="selectedStep.tool.claude_code_bare ? 'translate-x-4' : ''"></span>
+              </button>
+            </div>
+            <!-- Max Turns -->
+            <div>
+              <label class="block text-xs text-gray-400 mb-1">Max Turns <span class="text-gray-600">(0 = unlimited)</span></label>
+              <input type="number" v-model.number="selectedStep.tool.claude_code_max_turns" min="0" class="w-full px-2 py-1.5 bg-gray-800 border border-gray-700 rounded text-xs focus:outline-none focus:border-blue-500" />
+            </div>
+            <!-- Timeout -->
+            <div>
+              <label class="block text-xs text-gray-400 mb-1">Timeout (seconds)</label>
+              <input type="number" v-model.number="selectedStep.tool.claude_code_timeout" min="10" class="w-full px-2 py-1.5 bg-gray-800 border border-gray-700 rounded text-xs focus:outline-none focus:border-blue-500" />
+            </div>
+            <!-- MCP Config -->
+            <div>
+              <label class="block text-xs text-gray-400 mb-1">MCP Config <span class="text-gray-600">(path to JSON)</span></label>
+              <input v-model="selectedStep.tool.claude_code_mcp_config" placeholder="/path/to/mcp-config.json" class="w-full px-2 py-1.5 bg-gray-800 border border-gray-700 rounded text-xs font-mono focus:outline-none focus:border-blue-500" />
+            </div>
+            <!-- JSON Schema -->
+            <div>
+              <label class="block text-xs text-gray-400 mb-1">JSON Schema <span class="text-gray-600">(structured output)</span></label>
+              <textarea v-model="selectedStep.tool.claude_code_json_schema" rows="3" placeholder='{"type": "object", "properties": {...}}' class="w-full px-2 py-1.5 bg-gray-800 border border-gray-700 rounded text-xs font-mono focus:outline-none focus:border-blue-500 resize-y"></textarea>
             </div>
           </div>
 
@@ -1548,8 +1634,8 @@ function applyAiPipelineResult() {
             </div>
           </div>
 
-          <!-- Structure tab (LLM / Endpoint / Agent) -->
-          <div v-if="propertiesTab === 'structure' && (isStepLLM || isStepEndpoint || isStepAgent)" class="space-y-2">
+          <!-- Structure tab (LLM / Endpoint / Agent / Claude Code) -->
+          <div v-if="propertiesTab === 'structure' && (isStepLLM || isStepEndpoint || isStepAgent || isStepClaudeCode)" class="space-y-2">
             <p class="text-xs text-gray-600">Define expected output fields for dot-notation access and structured LLM output.</p>
             <ResponseStructureEditor v-model="selectedStep.tool.response_structure" />
           </div>

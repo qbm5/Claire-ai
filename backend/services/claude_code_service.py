@@ -170,6 +170,10 @@ def _build_command(prompt: str, tool: dict) -> list[str]:
     if json_schema:
         cmd.extend(["--output-format", "json", "--json-schema", json_schema])
 
+    model = tool.get("claude_code_model", "").strip()
+    if model:
+        cmd.extend(["--model", model])
+
     mcp_config = tool.get("claude_code_mcp_config", "").strip()
     if mcp_config:
         cmd.extend(["--mcp-config", mcp_config])

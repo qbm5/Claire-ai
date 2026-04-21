@@ -225,4 +225,5 @@ MIGRATIONS = [
     ("tools", "claude_code_timeout", "INTEGER DEFAULT 600"),
     ("tools", "claude_code_json_schema", "TEXT DEFAULT ''"),
     ("tools", "claude_code_system_prompt_mode", "TEXT DEFAULT 'append'"),
+    ("tools", "claude_code_model", "TEXT DEFAULT ''"),
 ]

@@ -135,6 +135,7 @@ export interface AiTool {
   claude_code_timeout: number
   claude_code_json_schema: string
   claude_code_system_prompt_mode: string
+  claude_code_model: string
   pipeline_id: string
   max_passes: number
   image_url: string
@@ -509,6 +510,7 @@ export function createTool(): AiTool {
     claude_code_timeout: 600,
     claude_code_json_schema: '',
     claude_code_system_prompt_mode: 'append',
+    claude_code_model: '',
     pipeline_id: '',
     max_passes: 5,
     image_url: '',

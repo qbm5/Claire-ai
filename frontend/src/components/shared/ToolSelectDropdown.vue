@@ -225,6 +225,7 @@ onBeforeUnmount(() => {
             <span class="w-1.5 h-1.5 rounded-full bg-indigo-400 shrink-0" v-else-if="opt.id === '-7'"></span>
             <span class="w-1.5 h-1.5 rounded-full bg-sky-400 shrink-0" v-else-if="opt.id === '-8'"></span>
             <span class="w-1.5 h-1.5 rounded-full bg-sky-400 shrink-0" v-else-if="opt.id === '-9'"></span>
+            <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 shrink-0" v-else-if="opt.id === '-11'"></span>
             {{ opt.label }}
             <span v-if="modelValue === opt.id" class="ml-auto text-blue-400 text-xs">&#10003;</span>
           </button>

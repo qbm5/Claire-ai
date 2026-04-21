@@ -713,6 +713,19 @@ function mergeAiResult(config: Record<string, any>) {
           <!-- Claude Code-specific settings -->
           <template v-if="isClaudeCode">
             <div>
+              <label class="block text-xs text-gray-400 mb-1">Model</label>
+              <input v-model="tool.claude_code_model" list="cc-model-options" placeholder="Leave blank for CLI default" class="input-sm font-mono" />
+              <datalist id="cc-model-options">
+                <option value="claude-opus-4-7" />
+                <option value="claude-opus-4-6" />
+                <option value="claude-opus-4-5" />
+                <option value="claude-sonnet-4-6" />
+                <option value="claude-sonnet-4-5" />
+                <option value="claude-haiku-4-5" />
+              </datalist>
+            </div>
+
+            <div>
               <label class="block text-xs text-gray-400 mb-1">Permission Mode</label>
               <select v-model="tool.claude_code_permission_mode" class="input-sm">
                 <option value="default">Default</option>
