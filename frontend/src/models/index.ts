@@ -15,7 +15,7 @@ export enum ToolType {
   AskUser = 11,
   FileUpload = 12,
   FileDownload = 13,
-  Task = 14,
+  ClaudeCode = 15,
 }
 
 export enum EndpointMethod {
@@ -125,6 +125,16 @@ export interface AiTool {
   pip_dependencies: string[]
   env_variables: EnvVariable[]
   mcp_servers: McpServer[]
+  // Claude Code Agent fields
+  claude_code_allowed_tools: string[]
+  claude_code_permission_mode: string
+  claude_code_working_dir: string
+  claude_code_bare: boolean
+  claude_code_mcp_config: string
+  claude_code_max_turns: number
+  claude_code_timeout: number
+  claude_code_json_schema: string
+  claude_code_system_prompt_mode: string
   pipeline_id: string
   max_passes: number
   image_url: string
@@ -437,74 +447,6 @@ export interface UserResourceAccess {
   [resource_type: string]: string[]
 }
 
-// ── Task Plans (Auto Execute) ──────────────────────────────────────
-
-export interface TaskPlanStep {
-  id: string
-  name: string
-  type: 'reasoning' | 'tool' | 'ask_user'
-  tool_id?: string
-  tool_name?: string
-  tool_image?: string
-  tool_inputs?: Record<string, string>
-  output_format?: 'raw' | 'markdown' | 'json'
-  instructions: string
-  questions?: { id: string; text: string; type?: 'text' | 'choice'; options?: string[] }[]
-  status?: 'pending' | 'running' | 'completed' | 'failed' | 'skipped'
-  output?: string
-  cost?: { detail: string; model: string; input_tokens: number; output_tokens: number; total_cost: number }
-  duration_s?: number
-  model?: string
-  tool_model?: string
-}
-
-export interface TaskPlan {
-  id: string
-  name: string
-  description: string
-  tag: string
-  sort_index: number
-  is_enabled: boolean
-  request: string
-  inputs: Property[]
-  plan: TaskPlanStep[]
-  model: string
-  auto_run: boolean
-  created_at?: string
-  updated_at?: string
-}
-
-export interface TaskRun {
-  id: string
-  task_plan_id: string
-  request: string
-  input_values: Record<string, any>
-  plan: TaskPlanStep[]
-  status: number  // 0=pending, 1=running, 2=completed, 3=failed, 4=waiting
-  output: string
-  model: string
-  total_cost: any
-  created_at?: string
-  updated_at?: string
-}
-
-export function createTaskPlan(): TaskPlan {
-  const uid = getUid()
-  return {
-    id: uid,
-    name: '',
-    description: '',
-    tag: '',
-    sort_index: 0,
-    is_enabled: true,
-    request: '',
-    inputs: [],
-    plan: [],
-    model: '',
-    auto_run: true,
-  }
-}
-
 // ── Run Log ────────────────────────────────────────────────────────
 
 export interface RunLogEntry {
@@ -558,6 +500,15 @@ export function createTool(): AiTool {
     pip_dependencies: [],
     env_variables: [],
     mcp_servers: [],
+    claude_code_allowed_tools: [],
+    claude_code_permission_mode: 'default',
+    claude_code_working_dir: '',
+    claude_code_bare: true,
+    claude_code_mcp_config: '',
+    claude_code_max_turns: 0,
+    claude_code_timeout: 600,
+    claude_code_json_schema: '',
+    claude_code_system_prompt_mode: 'append',
     pipeline_id: '',
     max_passes: 5,
     image_url: '',
@@ -737,7 +688,7 @@ export const ToolTypeLabels: Record<ToolType, string> = {
   [ToolType.AskUser]: 'Ask User',
   [ToolType.FileUpload]: 'File Upload',
   [ToolType.FileDownload]: 'File Download',
-  [ToolType.Task]: 'Task',
+  [ToolType.ClaudeCode]: 'Claude Code',
 }
 
 /** Magic IDs used for built-in pipeline step types (not saved tools). */
@@ -752,7 +703,7 @@ export const BASE_TOOL_ID = {
   FILE_UPLOAD: '-8',
   START: '-9',
   AI_TOOL: '-10',
-  TASK: '-11',
+  CLAUDE_CODE: '-11',
 } as const
 
 export type BaseToolId = typeof BASE_TOOL_ID[keyof typeof BASE_TOOL_ID]
@@ -768,7 +719,7 @@ export function getBaseToolDefaults(typeId: string): { type: ToolType; name: str
     case BASE_TOOL_ID.END: return { type: ToolType.End, name: 'End' }
     case BASE_TOOL_ID.ASK_USER: return { type: ToolType.AskUser, name: 'Ask User', prompt: '{{Input}}' }
     case BASE_TOOL_ID.FILE_UPLOAD: return { type: ToolType.FileUpload, name: 'File Upload', prompt: 'Upload your files' }
-    case BASE_TOOL_ID.TASK: return { type: ToolType.Task, name: 'Task', prompt: '{{Input}}' }
+    case BASE_TOOL_ID.CLAUDE_CODE: return { type: ToolType.ClaudeCode, name: 'Claude Code', prompt: '{{Input}}' }
     case BASE_TOOL_ID.AI_TOOL: return { type: ToolType.LLM, name: 'Step' }
     case BASE_TOOL_ID.START: return { type: ToolType.Start, name: 'Start' }
     default: return null
@@ -786,7 +737,7 @@ export function getBaseToolPrefix(typeId: string): string {
     case BASE_TOOL_ID.END: return 'End'
     case BASE_TOOL_ID.ASK_USER: return 'Ask'
     case BASE_TOOL_ID.FILE_UPLOAD: return 'Upload'
-    case BASE_TOOL_ID.TASK: return 'Task'
+    case BASE_TOOL_ID.CLAUDE_CODE: return 'CC'
     case BASE_TOOL_ID.AI_TOOL: return 'Step'
     default: return 'Step'
   }

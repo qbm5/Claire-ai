@@ -6,6 +6,7 @@ from database import get_all, get_by_id, upsert, delete_by_id, now_iso, get_uid
 from services.template_engine import parse_text
 from services.llm import chat_stream, chat_with_tools, chat_stream_with_tools
 from services.agent_service import save_agent_functions, run_agent_loop
+from services.claude_code_service import run_claude_code
 from services.pipeline_engine import _build_json_schema
 from services.pipeline_engine import run_pipeline
 from services.pip_utils import install_packages
@@ -724,6 +725,12 @@ async def ws_tool_test(ws: WebSocket):
                     "input_tokens": usage.get("input_tokens", 0),
                     "output_tokens": usage.get("output_tokens", 0),
                 }))
+
+        elif tool_type == ToolType.ClaudeCode:
+            prompt = parse_text(tool.get("prompt", ""), request_inputs)
+            tool["system_prompt"] = parse_text(system_prompt, request_inputs)
+            async for chunk in run_claude_code(prompt, tool):
+                await ws.send_text(json.dumps(chunk))
 
         else:
             await ws.send_text(json.dumps({"type": "text", "text": f"Tool type {tool_type} executed"}))

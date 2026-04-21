@@ -4,9 +4,7 @@ from database import get_by_id, get_all, upsert, now_iso, count, query_rows
 from config import get_model_pricing, MILLION
 from services.subprocess_manager import get_status as proc_status, kill_process as proc_kill
 from services.pipeline_engine import stop_pipeline, stop_commands
-from services.task_execution_service import stop_task as _stop_task_fn, stop_commands as _task_stop_commands
 from api.auth_deps import CurrentUser, get_current_user, get_accessible_resource_ids
-from api.task_routes import active_tasks as _active_tasks
 from config import TOOL_RUNS_PIPELINE_ID
 from models.enums import PipelineStatusType, TriggerType
 
@@ -180,76 +178,6 @@ async def get_dashboard(since: str = "", user_id: str = "", user: CurrentUser = 
     for r in recent_runs:
         r["run_type"] = "pipeline"
 
-    # ── Task runs ────────────────────────────────────────────────
-    # Fetch recent task runs and merge into recent_runs
-    if since_iso and since_iso != "all":
-        recent_task_rows = query_rows(
-            "task_runs",
-            where="created_at >= ?",
-            params=(since_iso,),
-            order_by="created_at DESC",
-            limit=recent_limit,
-        )
-    else:
-        recent_task_rows = query_rows("task_runs", order_by="created_at DESC", limit=recent_limit)
-
-    def _task_run_to_dict(row):
-        d = dict(row)
-        plan = _parse_json(d.get("plan", "[]"), [])
-        total_cost_data = _parse_json(d.get("total_cost", "{}"), {})
-        cost = total_cost_data.get("total_cost", 0) if isinstance(total_cost_data, dict) else 0
-        total_steps = len(plan)
-        completed_steps = sum(1 for s in plan if s.get("status") in ("completed", "failed", "skipped"))
-
-        # Determine task name: look up task_plan name, fall back to request
-        task_name = ""
-        task_plan_id = d.get("task_plan_id", "")
-        if task_plan_id:
-            tp = get_by_id("task_plans", task_plan_id)
-            if tp:
-                task_name = tp.get("name", "")
-        if not task_name:
-            req = d.get("request", "")
-            task_name = req[:60] + ("..." if len(req) > 60 else "") if req else "Quick Task"
-
-        # Duration: for completed/failed tasks, use created_at to updated_at
-        completed_at = d.get("updated_at", "") if d.get("status") in (2, 3) else ""
-
-        return {
-            "id": d["id"],
-            "pipeline_name": task_name,
-            "pipeline_id": "",
-            "task_plan_id": task_plan_id,
-            "status": d.get("status", 0),
-            "current_step": completed_steps,
-            "total_steps": total_steps,
-            "created_at": d.get("created_at", ""),
-            "completed_at": completed_at,
-            "duration_s": _duration_seconds(d.get("created_at", ""), completed_at),
-            "cost": cost,
-            "tool_id": "",
-            "user_id": d.get("user_id", ""),
-            "run_type": "task",
-        }
-
-    task_recent = [_task_run_to_dict(r) for r in recent_task_rows]
-    # Merge and sort by created_at DESC
-    recent_runs = sorted(recent_runs + task_recent, key=lambda x: x.get("created_at", ""), reverse=True)
-    if not since_iso:
-        recent_runs = recent_runs[:20]
-
-    # ── Active tasks (in-memory) ─────────────────────────────────
-    active_task_list = []
-    for run_id, info in list(_active_tasks.items()):
-        active_task_list.append({
-            "id": run_id,
-            "task_plan_id": info.get("task_plan_id", ""),
-            "task_name": info.get("task_name", "Task"),
-            "request": info.get("request", ""),
-            "current_step_name": info.get("current_step_name", ""),
-            "total_steps": info.get("total_steps", 0),
-            "created_at": info.get("created_at", ""),
-        })
 
     # Active (enabled) triggers
     type_names = {
@@ -291,10 +219,8 @@ async def get_dashboard(since: str = "", user_id: str = "", user: CurrentUser = 
             "active_runs": len(active_runs),
             "active_processes": proc_info["active_count"],
             "active_triggers": len(active_triggers),
-            "active_tasks": len(active_task_list),
         },
         "active_runs": active_runs,
-        "active_tasks": active_task_list,
         "active_triggers": active_triggers,
         "processes": proc_info["processes"],
         "recent_runs": recent_runs,
@@ -332,32 +258,6 @@ async def force_stop_run(run_id: str, user: CurrentUser = Depends(get_current_us
     return {"success": True, "forced": False}
 
 
-@router.post("/task-runs/{run_id}/stop")
-async def force_stop_task_run(run_id: str, user: CurrentUser = Depends(get_current_user)):
-    """Force-stop a task run from the dashboard."""
-    _stop_task_fn(run_id)
-
-    if run_id in _active_tasks:
-        info = _active_tasks[run_id]
-        atask = info.get("asyncio_task")
-        if atask and not atask.done():
-            atask.cancel()
-        _active_tasks.pop(run_id, None)
-
-    # Update DB status
-    run = get_by_id("task_runs", run_id)
-    if run and run.get("status") in ACTIVE_STATUSES:
-        run["status"] = PipelineStatusType.Failed
-        run["updated_at"] = now_iso()
-        for step in (run.get("plan") or []):
-            if step.get("status") == "running":
-                step["status"] = "failed"
-                step["output"] = "Force-stopped from dashboard"
-        upsert("task_runs", run)
-        _task_stop_commands.discard(run_id)
-        return {"success": True, "forced": True}
-
-    return {"success": True, "forced": False}
 
 
 @router.post("/processes/{pid}/kill")

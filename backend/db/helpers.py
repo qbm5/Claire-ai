@@ -15,9 +15,8 @@ def now_iso() -> str:
 
 BOOL_COLS = {
     "chatbots": ["is_enabled"],
-    "tools": ["is_enabled"],
+    "tools": ["is_enabled", "claude_code_bare"],
     "triggers": ["is_enabled"],
-    "task_plans": ["is_enabled", "auto_run"],
     "users": ["is_active", "must_change_password"],
     "role_permissions": ["can_create", "can_edit", "can_delete", "can_use"],
     "user_permissions": ["can_create", "can_edit", "can_delete"],
@@ -26,13 +25,11 @@ BOOL_COLS = {
 JSON_COLS = {
     "chatbots": ["source_texts"],
     "chat_histories": ["messages"],
-    "tools": ["agent_functions", "request_inputs", "pip_dependencies", "env_variables", "mcp_servers", "endpoint_headers", "endpoint_body", "endpoint_query", "response_structure"],
+    "tools": ["agent_functions", "request_inputs", "pip_dependencies", "env_variables", "mcp_servers", "endpoint_headers", "endpoint_body", "endpoint_query", "response_structure", "claude_code_allowed_tools"],
     "pipelines": ["steps", "inputs", "edges", "memories"],
     "pipeline_runs": ["pipeline_snapshot", "steps", "inputs", "outputs", "rerun_from", "memories", "log_entries"],
     "pipeline_memories": ["messages"],
     "triggers": ["watch_events", "pip_dependencies", "env_variables", "outputs", "connections"],
-    "task_plans": ["inputs", "plan"],
-    "task_runs": ["input_values", "plan", "total_cost"],
 }
 
 

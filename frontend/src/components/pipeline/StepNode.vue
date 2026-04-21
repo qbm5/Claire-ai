@@ -32,7 +32,7 @@ const typeColors: Record<number, { border: string; bg: string; label: string }> 
   [ToolType.LoopCounter]: { border: 'border-teal-500', bg: 'bg-teal-500/10', label: 'Loop Counter' },
   [ToolType.AskUser]:     { border: 'border-indigo-500', bg: 'bg-indigo-500/10', label: 'Ask User' },
   [ToolType.FileUpload]:  { border: 'border-sky-500',    bg: 'bg-sky-500/10',    label: 'File Upload' },
-  [ToolType.Task]:        { border: 'border-violet-500', bg: 'bg-violet-500/10', label: 'Task' },
+  [ToolType.ClaudeCode]:  { border: 'border-cyan-500',   bg: 'bg-cyan-500/10',   label: 'Claude Code' },
 }
 
 const colors = computed(() => typeColors[toolType.value] || typeColors[ToolType.LLM])

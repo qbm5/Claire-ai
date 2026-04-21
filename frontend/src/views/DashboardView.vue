@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, computed, watch } from 'vue'
 import { useRouter } from 'vue-router'
-import { getDashboard, killProcess, forceStopRun, stopTaskRun, type DashboardData } from '@/services/dashboardService'
+import { getDashboard, killProcess, forceStopRun, type DashboardData } from '@/services/dashboardService'
 import { onEvent } from '@/services/eventBus'
 import { useAuth } from '@/composables/useAuth'
 import { get } from '@/services/api'
@@ -62,27 +62,16 @@ async function handleStopRun(runId: string) {
   await load()
 }
 
-async function handleStopTask(runId: string) {
-  await stopTaskRun(runId)
-  await load()
-}
-
-function navigateToRun(run: { id: string; run_type?: string; task_plan_id?: string }) {
-  if (run.run_type === 'task') {
-    router.push(`/task-run/${run.id}`)
-    return
-  }
+function navigateToRun(run: { id: string; run_type?: string }) {
   router.push(`/pipeline-run/${run.id}`)
 }
 
 function runTypeLabel(run: { pipeline_id: string; tool_id?: string; run_type?: string }): string {
-  if (run.run_type === 'task') return 'Task'
   if (isToolRun(run)) return 'Tool'
   return 'Pipeline'
 }
 
 function runTypeBadgeClass(run: { pipeline_id: string; tool_id?: string; run_type?: string }): string {
-  if (run.run_type === 'task') return 'bg-teal-900/50 text-teal-400'
   if (isToolRun(run)) return 'bg-purple-900/50 text-purple-400'
   return 'bg-blue-900/50 text-blue-400'
 }
@@ -207,18 +196,6 @@ onUnmounted(() => {
           </div>
         </div>
 
-        <!-- Active Tasks -->
-        <div class="card-base">
-          <div class="flex items-center justify-between mb-2">
-            <span class="text-sm text-gray-400">Active Tasks</span>
-            <svg class="w-5 h-5 text-teal-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" /></svg>
-          </div>
-          <div class="text-2xl font-bold flex items-center gap-2">
-            {{ stats?.active_tasks ?? 0 }}
-            <span v-if="(stats?.active_tasks ?? 0) > 0" class="w-2 h-2 rounded-full bg-teal-500 animate-pulse"></span>
-          </div>
-        </div>
-
         <!-- Active Processes -->
         <div class="card-base">
           <div class="flex items-center justify-between mb-2">
@@ -233,7 +210,7 @@ onUnmounted(() => {
 
       </div>
 
-      <!-- Active Runs + Tasks + Processes + Triggers Row -->
+      <!-- Active Runs + Processes + Triggers Row -->
       <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-4">
         <!-- Active Runs Widget -->
         <div class="card-base">
@@ -266,39 +243,6 @@ onUnmounted(() => {
               </div>
               <button
                 @click.stop="handleStopRun(run.id)"
-                class="px-2 py-1 text-xs bg-red-900/40 text-red-400 rounded hover:bg-red-900/70 transition-colors shrink-0"
-              >Stop</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Active Tasks Widget -->
-        <div class="card-base">
-          <div class="flex items-center gap-2 mb-3">
-            <h2 class="text-sm font-semibold text-gray-300">Active Tasks</h2>
-            <span v-if="data.active_tasks?.length" class="text-xs px-1.5 py-0.5 bg-teal-900/60 text-teal-400 rounded-full">{{ data.active_tasks.length }}</span>
-          </div>
-          <div v-if="!data.active_tasks?.length" class="text-sm text-gray-600 py-6 text-center">No active tasks</div>
-          <div v-else class="space-y-2">
-            <div
-              v-for="task in data.active_tasks"
-              :key="task.id"
-              class="flex items-center gap-3 px-3 py-2 rounded-lg bg-gray-800/50 hover:bg-gray-800 transition-colors cursor-pointer"
-              @click="task.task_plan_id ? router.push(`/task/${task.task_plan_id}`) : undefined"
-            >
-              <div class="flex-1 min-w-0">
-                <div class="flex items-center gap-2">
-                  <span class="text-[10px] font-semibold uppercase px-1.5 py-0.5 rounded shrink-0 bg-teal-900/50 text-teal-400">Task</span>
-                  <span class="text-sm font-medium text-gray-50 truncate">{{ task.task_name }}</span>
-                </div>
-                <div class="flex items-center gap-2 mt-0.5">
-                  <span class="text-xs px-1.5 py-0.5 rounded bg-blue-900/60 text-blue-400">Running</span>
-                  <span v-if="task.current_step_name" class="text-xs text-gray-500 truncate">{{ task.current_step_name }}</span>
-                  <span class="text-xs text-gray-600">{{ timeAgo(task.created_at) }}</span>
-                </div>
-              </div>
-              <button
-                @click.stop="handleStopTask(task.id)"
                 class="px-2 py-1 text-xs bg-red-900/40 text-red-400 rounded hover:bg-red-900/70 transition-colors shrink-0"
               >Stop</button>
             </div>

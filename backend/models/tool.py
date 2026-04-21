@@ -65,6 +65,16 @@ class AiTool(BaseModel):
     pip_dependencies: list[str] = []
     env_variables: list[EnvVariable] = []
     mcp_servers: list[McpServer] = []
+    # Claude Code Agent fields
+    claude_code_allowed_tools: list[str] = []
+    claude_code_permission_mode: str = "default"
+    claude_code_working_dir: str = ""
+    claude_code_bare: bool = True
+    claude_code_mcp_config: str = ""
+    claude_code_max_turns: int = 0
+    claude_code_timeout: int = 600
+    claude_code_json_schema: str = ""
+    claude_code_system_prompt_mode: str = "append"
     response_structure: list = []
     request_inputs: list[Property] = []
     image_url: str = ""

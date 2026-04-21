@@ -9,7 +9,6 @@ export interface DashboardData {
     active_runs: number
     active_processes: number
     active_triggers: number
-    active_tasks: number
   }
   active_runs: {
     id: string
@@ -25,15 +24,6 @@ export interface DashboardData {
     tool_id?: string
     user_id?: string
     run_type?: string
-  }[]
-  active_tasks: {
-    id: string
-    task_plan_id: string
-    task_name: string
-    request: string
-    current_step_name: string
-    total_steps: number
-    created_at: string
   }[]
   active_triggers: {
     id: string
@@ -62,7 +52,6 @@ export interface DashboardData {
     tool_id?: string
     user_id?: string
     run_type?: string
-    task_plan_id?: string
   }[]
   job_object_active: boolean
 }
@@ -75,5 +64,4 @@ export const getDashboard = (since?: string, userId?: string) => {
   return get<DashboardData>(`/dashboard${qs ? `?${qs}` : ''}`)
 }
 export const forceStopRun = (runId: string) => post<{ success: boolean; forced: boolean }>(`/dashboard/runs/${runId}/stop`, {})
-export const stopTaskRun = (runId: string) => post<{ success: boolean; forced: boolean }>(`/dashboard/task-runs/${runId}/stop`, {})
 export const killProcess = (pid: number) => post<{ success: boolean }>(`/dashboard/processes/${pid}/kill`, {})

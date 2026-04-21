@@ -428,24 +428,24 @@ const isStepLoopCounter = computed(() => isType(ToolType.LoopCounter))
 const isStepWait = computed(() => isType(ToolType.Wait))
 const isStepAskUser = computed(() => isType(ToolType.AskUser))
 const isStepFileUpload = computed(() => isType(ToolType.FileUpload))
-const isStepTask = computed(() => isType(ToolType.Task))
+const isStepClaudeCode = computed(() => isType(ToolType.ClaudeCode))
 const isStepParallel = computed(() => isType(ToolType.Parallel))
 
 const showStepToolConfig = computed(() => {
   if (!selectedStep.value?.tool) return false
-  const hidden = new Set([ToolType.End, ToolType.Start, ToolType.LoopCounter, ToolType.Wait, ToolType.FileUpload, ToolType.Task])
+  const hidden = new Set([ToolType.End, ToolType.Start, ToolType.LoopCounter, ToolType.Wait, ToolType.FileUpload, ToolType.ClaudeCode])
   return !hidden.has(stepToolType.value!)
 })
 
 const showStepRetry = computed(() => {
   if (!selectedStep.value?.tool) return false
-  const hidden = new Set([ToolType.End, ToolType.Start, ToolType.If, ToolType.LoopCounter, ToolType.Wait, ToolType.FileUpload, ToolType.Task])
+  const hidden = new Set([ToolType.End, ToolType.Start, ToolType.If, ToolType.LoopCounter, ToolType.Wait, ToolType.FileUpload, ToolType.ClaudeCode])
   return !hidden.has(stepToolType.value!)
 })
 
 const showStepValidation = computed(() => {
   if (!selectedStep.value?.tool) return false
-  const hidden = new Set([ToolType.End, ToolType.Start, ToolType.If, ToolType.LoopCounter, ToolType.Wait, ToolType.FileUpload, ToolType.Task, ToolType.Parallel])
+  const hidden = new Set([ToolType.End, ToolType.Start, ToolType.If, ToolType.LoopCounter, ToolType.Wait, ToolType.FileUpload, ToolType.ClaudeCode, ToolType.Parallel])
   return !hidden.has(stepToolType.value!)
 })
 
@@ -532,7 +532,7 @@ const minimapNodeColors: Record<number, string> = {
   [ToolType.LoopCounter]: 'rgba(20, 184, 166, 0.45)',
   [ToolType.AskUser]: 'rgba(99, 102, 241, 0.45)',
   [ToolType.FileUpload]: 'rgba(56, 189, 248, 0.45)',
-  [ToolType.Task]: 'rgba(139, 92, 246, 0.45)',
+  [ToolType.ClaudeCode]: 'rgba(6, 182, 212, 0.45)',
 }
 
 function minimapNodeColor(node: any): string {
@@ -923,7 +923,7 @@ function applyAiPipelineResult() {
       10: { type: ToolType.LoopCounter,  defaultId: '-4' },
       11: { type: ToolType.AskUser,      defaultId: '-7' },
       12: { type: ToolType.FileUpload,   defaultId: '-8' },
-      14: { type: ToolType.Task,         defaultId: '-11' },
+      15: { type: ToolType.ClaudeCode,  defaultId: '-11' },
     }
     const mapped = typeMap[toolType] || { type: ToolType.LLM, defaultId: '-1' }
     tool.type = mapped.type
@@ -1186,9 +1186,9 @@ function applyAiPipelineResult() {
           </div>
           <div
             draggable="true" @dragstart="onDragStart($event, '-11')"
-            class="flex items-center gap-2 px-2 py-1.5 text-sm text-violet-300 bg-violet-500/10 border border-violet-500/30 rounded cursor-grab hover:bg-violet-500/20 transition-colors"
+            class="flex items-center gap-2 px-2 py-1.5 text-sm text-cyan-300 bg-cyan-500/10 border border-cyan-500/30 rounded cursor-grab hover:bg-cyan-500/20 transition-colors"
           >
-            <span class="w-2 h-2 rounded-full bg-violet-400"></span> Task
+            <span class="w-2 h-2 rounded-full bg-cyan-400"></span> Claude Code
           </div>
           <div
             draggable="true" @dragstart="onDragStart($event, '-1')"
@@ -1442,18 +1442,18 @@ function applyAiPipelineResult() {
           </div>
         </div>
 
-        <!-- Task step info + settings -->
-        <div v-if="isStepTask" class="text-xs text-violet-400 p-2 bg-violet-500/10 rounded border border-violet-500/20">
-          AI plans and executes a multi-step task. Provide a request describing what to accomplish — the LLM will generate a plan using available tools, then execute each step sequentially.
+        <!-- Claude Code step info + settings -->
+        <div v-if="isStepClaudeCode" class="text-xs text-cyan-400 p-2 bg-cyan-500/10 rounded border border-cyan-500/20">
+          Runs Claude Code CLI in headless mode. Provide a prompt describing what to accomplish — Claude Code will use its tools (Read, Edit, Bash, etc.) to complete the task.
         </div>
-        <div v-if="isStepTask && selectedStep.tool" class="space-y-3">
+        <div v-if="isStepClaudeCode && selectedStep.tool" class="space-y-3">
           <div>
-            <label class="block text-xs text-gray-400 mb-1">Request (Task Prompt)</label>
-            <TemplateInput v-model="selectedStep.tool.prompt" :variables="pipelineTemplateVariables" mode="textarea" :rows="4" placeholder="Describe the task to accomplish..." inputClass="w-full px-2 py-1.5 bg-gray-800 border border-gray-700 rounded text-xs font-mono focus:outline-none focus:border-blue-500" />
+            <label class="block text-xs text-gray-400 mb-1">Prompt</label>
+            <TemplateInput v-model="selectedStep.tool.prompt" :variables="pipelineTemplateVariables" mode="textarea" :rows="4" placeholder="Describe what Claude Code should do..." inputClass="w-full px-2 py-1.5 bg-gray-800 border border-gray-700 rounded text-xs font-mono focus:outline-none focus:border-blue-500" />
           </div>
           <div>
-            <label class="block text-xs text-gray-400 mb-1">Model</label>
-            <ModelSelectDropdown v-model="selectedStep.tool.model" :models="models" />
+            <label class="block text-xs text-gray-400 mb-1">System Prompt (optional)</label>
+            <TemplateInput v-model="selectedStep.tool.system_prompt" :variables="pipelineTemplateVariables" mode="textarea" :rows="2" placeholder="Additional instructions..." inputClass="w-full px-2 py-1.5 bg-gray-800 border border-gray-700 rounded text-xs font-mono focus:outline-none focus:border-blue-500" />
           </div>
         </div>
 

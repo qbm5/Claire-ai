@@ -11,7 +11,6 @@ const allLinks = [
   { path: '/tools', label: 'Tools', resource: 'tools', icon: 'M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.573-1.066zM15 12a3 3 0 11-6 0 3 3 0 016 0z', prefixes: ['/tools', '/tool/', '/tool-runner/'] },
   { path: '/pipelines', label: 'Pipelines', resource: 'pipelines', icon: 'M13 10V3L4 14h7v7l9-11h-7z', prefixes: ['/pipelines', '/pipeline/', '/pipeline-runner/', '/pipeline-run/'] },
   { path: '/triggers', label: 'Triggers', resource: 'triggers', icon: 'M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9', prefixes: ['/triggers', '/trigger/'] },
-  { path: '/tasks', label: 'Tasks', resource: '', icon: 'M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z', prefixes: ['/tasks', '/task/'], beta: true },
 ]
 
 const links = computed(() =>
@@ -84,7 +83,6 @@ function handleLogout() {
           <path :d="link.icon" />
         </svg>
         <span>{{ link.label }}</span>
-        <span v-if="link.beta" class="px-1.5 py-0.5 text-[9px] font-semibold rounded bg-amber-900/40 text-amber-400 border border-amber-800/60 leading-none">BETA</span>
       </router-link>
     </nav>
 

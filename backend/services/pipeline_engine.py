@@ -752,6 +752,52 @@ async def _execute_step(pipeline_run: dict, step: dict, tool: dict, sem: asyncio
                 else:
                     full_output += agent_raw_output
 
+            elif tool_type == ToolType.ClaudeCode:
+                from services.claude_code_service import run_claude_code
+                import copy as _copy
+
+                cc_input, cc_system = _resolve_prompt_and_system(
+                    tool, inp, iter_props, output_props, other_inputs, idx)
+
+                cc_tool = _copy.deepcopy(tool)
+                cc_tool["system_prompt"] = cc_system
+                step["prompt_used"] = {"system": cc_system, "user": cc_input}
+
+                run_log(run_id, "agent", f"Starting Claude Code: {tool.get('name', '')}",
+                        step_id=step_id)
+
+                cc_text = ""
+                async for chunk in run_claude_code(
+                    cc_input, cc_tool,
+                    run_id=run_id, step_id=step_id,
+                    stop_check=lambda: run_id in stop_commands,
+                ):
+                    if run_id in stop_commands:
+                        break
+                    if chunk.get("type") == "text":
+                        cc_text += chunk["text"]
+                        broadcast("step_stream", {"run_id": run_id, "step_id": step_id, "text": chunk["text"]})
+                    elif chunk.get("type") == "tool_call":
+                        step.setdefault("tool_outputs", []).append(
+                            f"Called {chunk['name']} with {json.dumps(chunk.get('input', {}))}"
+                        )
+                    elif chunk.get("type") == "tool_result":
+                        step.setdefault("tool_outputs", []).append(
+                            f"{chunk['name']} returned: {chunk.get('result', '')[:200]}"
+                        )
+                    elif chunk.get("type") == "usage":
+                        step.setdefault("call_cost", []).append({
+                            "detail": step.get("name", ""),
+                            "model": chunk.get("model", "claude-code"),
+                            "input_token_count": chunk.get("input_tokens", 0),
+                            "output_token_count": chunk.get("output_tokens", 0),
+                        })
+                    elif chunk.get("type") == "error":
+                        broadcast("step_stream", {"run_id": run_id, "step_id": step_id,
+                                                   "text": f"\n[ERROR: {chunk.get('text', '')}]\n"})
+
+                full_output += cc_text
+
             elif tool_type == ToolType.Pipeline:
                 # Nested pipeline execution
                 nested_pipeline_id = tool.get("pipeline_id", "")
@@ -1013,98 +1059,6 @@ async def _execute_step(pipeline_run: dict, step: dict, tool: dict, sem: asyncio
                 )
                 step["status_text"] = f"All {incoming_count} branch{'es' if incoming_count != 1 else ''} arrived"
                 full_output = str(inp)
-
-            elif tool_type == ToolType.Task:
-                # Task step: AI plans + executes a multi-step task
-                from services.task_execution_service import generate_plan, execute_plan as exec_task_plan
-                from database import get_all as db_get_all
-
-                task_model = tool.get("model", "") or ""
-                task_request = _resolve_template(
-                    tool.get("prompt", "") or "", iter_props, output_props, other_inputs, idx
-                ) or str(inp)
-
-                run_log(run_id, "pipeline", f"Task step: planning for request ({len(task_request)} chars)", step_id=step_id)
-
-                # Build tool catalog from saved tools
-                all_tools = db_get_all("tools")
-                tool_catalog = [t for t in all_tools if t.get("is_enabled") and t.get("type") in (0, 1, 3)]
-
-                # Generate plan
-                plan_result, plan_cost = await generate_plan(task_request, task_model, tool_catalog)
-                if plan_cost:
-                    step.setdefault("call_cost", []).append({
-                        "detail": "Task Planning",
-                        "model": plan_cost.get("model", ""),
-                        "input_token_count": plan_cost.get("input_tokens", 0),
-                        "output_token_count": plan_cost.get("output_tokens", 0),
-                    })
-
-                plan_steps = plan_result.get("steps", [])
-                if not plan_steps:
-                    full_output += f"Task planning returned no steps for: {task_request}"
-                    run_log(run_id, "pipeline", "Task planning returned no steps", step_id=step_id, level="warn")
-                else:
-                    # Stream plan info
-                    plan_summary = f"**Task Plan** ({len(plan_steps)} steps): {plan_result.get('goal', '')}\n"
-                    for ps in plan_steps:
-                        plan_summary += f"  - {ps.get('name', ps['id'])}: {ps.get('type', '?')}\n"
-                    broadcast("step_stream", {"run_id": run_id, "step_id": step_id, "text": plan_summary + "\n---\n"})
-
-                    # Build a task run dict for execute_plan
-                    task_run = {
-                        "id": f"task_{run_id}_{step_id}",
-                        "task_plan_id": "",
-                        "request": task_request,
-                        "input_values": {},
-                        "plan": plan_steps,
-                        "status": 1,
-                        "output": "",
-                        "model": task_model,
-                        "total_cost": None,
-                    }
-
-                    # Populate input_values from step inputs context
-                    for p in other_inputs:
-                        if p.get("name") and p.get("value"):
-                            task_run["input_values"][p["name"]] = p["value"]
-                    # Also add pipeline outputs as context
-                    for p in pipeline_run.get("outputs", []):
-                        if p.get("name") and p.get("value"):
-                            task_run["input_values"][p["name"]] = p["value"]
-
-                    # ws_send adapter: convert task events to pipeline broadcast events
-                    async def _task_ws_send(msg: dict):
-                        msg_type = msg.get("type", "")
-                        if msg_type == "step_delta":
-                            broadcast("step_stream", {"run_id": run_id, "step_id": step_id, "text": msg.get("text", "")})
-                        elif msg_type == "step_start":
-                            broadcast("step_stream", {"run_id": run_id, "step_id": step_id,
-                                                       "text": f"\n**[{msg.get('name', '')}]** "})
-                        elif msg_type == "step_complete":
-                            broadcast("step_stream", {"run_id": run_id, "step_id": step_id, "text": "\n"})
-                        elif msg_type == "step_error":
-                            broadcast("step_stream", {"run_id": run_id, "step_id": step_id,
-                                                       "text": f"\n[ERROR: {msg.get('error', '')}]\n"})
-
-                    # wait_for_answer stub — task steps in pipelines don't support ask_user
-                    async def _task_wait_for_answer(sid: str):
-                        return []
-
-                    result_run = await exec_task_plan(task_run, task_model, _task_ws_send, _task_wait_for_answer, plan_cost)
-
-                    # Aggregate costs from task execution
-                    task_total_cost = result_run.get("total_cost") or {}
-                    for sc in task_total_cost.get("steps", []):
-                        step.setdefault("call_cost", []).append({
-                            "detail": sc.get("detail", ""),
-                            "model": sc.get("model", ""),
-                            "input_token_count": sc.get("input_tokens", 0),
-                            "output_token_count": sc.get("output_tokens", 0),
-                        })
-
-                    full_output += result_run.get("output", "")
-                    run_log(run_id, "pipeline", f"Task completed with status {result_run.get('status')}", step_id=step_id)
 
             elif tool_type in (ToolType.Pause, ToolType.End):
                 full_output = inp

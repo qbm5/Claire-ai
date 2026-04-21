@@ -16,7 +16,7 @@ const builtins: BuiltinOption[] = [
   { id: '-5', label: 'End', group: 'Special' },
   { id: '-7', label: 'Ask User', group: 'Special' },
   { id: '-8', label: 'File Upload', group: 'Special' },
-  { id: '-11', label: 'Task', group: 'Special' },
+  { id: '-11', label: 'Claude Code', group: 'Special' },
   { id: '-1', label: 'Base LLM', group: 'Base' },
   { id: '-2', label: 'Base Endpoint', group: 'Base' },
 ]

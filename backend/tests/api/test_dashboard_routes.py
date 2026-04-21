@@ -48,11 +48,3 @@ class TestForceStop:
         resp = test_client.post("/api/dashboard/runs/run-stop/stop")
         assert resp.status_code == 200
 
-    def test_stop_task_run(self, test_client, in_memory_db):
-        database.upsert("task_runs", {
-            "id": "task-stop",
-            "task_plan_id": "plan-1",
-            "status": 1,
-        })
-        resp = test_client.post("/api/dashboard/task-runs/task-stop/stop")
-        assert resp.status_code == 200

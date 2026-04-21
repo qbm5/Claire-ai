@@ -62,6 +62,7 @@ const aiAssistUsage = ref<{ input_tokens: number; output_tokens: number; cost: n
 const isLLM = computed(() => tool.value.type === ToolType.LLM)
 const isEndpoint = computed(() => tool.value.type === ToolType.Endpoint)
 const isAgent = computed(() => tool.value.type === ToolType.Agent)
+const isClaudeCode = computed(() => tool.value.type === ToolType.ClaudeCode)
 
 const templateVariables = computed(() =>
   tool.value.request_inputs.map(inp => inp.name).filter(Boolean)
@@ -194,6 +195,13 @@ function addEnvVar() {
 }
 function removeEnvVar(idx: number) {
   tool.value.env_variables.splice(idx, 1)
+}
+
+function toggleClaudeCodeTool(toolName: string) {
+  const arr = tool.value.claude_code_allowed_tools
+  const idx = arr.indexOf(toolName)
+  if (idx >= 0) arr.splice(idx, 1)
+  else arr.push(toolName)
 }
 
 // Inline env var value editing
@@ -543,6 +551,7 @@ function mergeAiResult(config: Record<string, any>) {
               <option :value="ToolType.LLM">LLM</option>
               <option :value="ToolType.Endpoint">Endpoint</option>
               <option :value="ToolType.Agent">Agent</option>
+              <option :value="ToolType.ClaudeCode">Claude Code</option>
             </select>
           </div>
 
@@ -698,6 +707,89 @@ function mergeAiResult(config: Record<string, any>) {
                   </div>
                 </div>
               </div>
+            </div>
+          </template>
+
+          <!-- Claude Code-specific settings -->
+          <template v-if="isClaudeCode">
+            <div>
+              <label class="block text-xs text-gray-400 mb-1">Permission Mode</label>
+              <select v-model="tool.claude_code_permission_mode" class="input-sm">
+                <option value="default">Default</option>
+                <option value="acceptEdits">Accept Edits</option>
+                <option value="dontAsk">Don't Ask</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-xs text-gray-400 mb-1">Working Directory</label>
+              <input v-model="tool.claude_code_working_dir" placeholder="/path/to/project" class="input-sm font-mono" />
+            </div>
+
+            <div class="flex items-center gap-2">
+              <input type="checkbox" v-model="tool.claude_code_bare" id="cc-bare" />
+              <label for="cc-bare" class="text-xs text-gray-400">Bare Mode (faster, no hooks/plugins)</label>
+            </div>
+
+            <div>
+              <label class="block text-xs text-gray-400 mb-1">Max Turns (0 = unlimited)</label>
+              <input v-model.number="tool.claude_code_max_turns" type="number" min="0" class="input-sm" />
+            </div>
+
+            <div>
+              <label class="block text-xs text-gray-400 mb-1">Timeout (seconds)</label>
+              <input v-model.number="tool.claude_code_timeout" type="number" min="30" class="input-sm" />
+            </div>
+
+            <!-- Env Variables (reuse same pattern as Agent) -->
+            <div>
+              <div class="flex items-center justify-between mb-1">
+                <label class="block text-xs text-gray-400">Env Variables</label>
+                <button @click="addEnvVar" class="text-xs text-blue-400 hover:text-blue-300">+ Add</button>
+              </div>
+              <div class="space-y-1">
+                <div v-for="(v, idx) in tool.env_variables" :key="idx" class="p-1.5 bg-gray-800/50 rounded border border-gray-800 space-y-1">
+                  <div class="flex items-center gap-1">
+                    <input v-model="v.name" placeholder="VAR_NAME" class="flex-1 px-1.5 py-0.5 bg-gray-800 border border-gray-700 rounded text-xs font-mono focus:outline-none focus:border-blue-500" />
+                    <select v-model.number="v.type" class="px-1 py-0.5 bg-gray-800 border border-gray-700 rounded text-xs focus:outline-none focus:border-blue-500">
+                      <option :value="0">Text</option>
+                      <option :value="5">Secret</option>
+                    </select>
+                    <button @click="removeEnvVar(idx)" class="text-red-400 hover:text-red-300 text-xs">&times;</button>
+                  </div>
+                  <input v-model="v.description" placeholder="Description" class="w-full px-1.5 py-0.5 bg-gray-800 border border-gray-700 rounded text-xs focus:outline-none focus:border-blue-500" />
+                </div>
+              </div>
+              <div v-if="tool.env_variables.length && tool.id" class="mt-2">
+                <button v-if="!showEnvValues" @click="loadEnvVarValues" class="text-xs text-blue-400 hover:text-blue-300 transition-colors">Set Values</button>
+                <div v-else class="p-2 bg-gray-800/70 rounded border border-gray-700 space-y-1.5">
+                  <div class="flex items-center justify-between">
+                    <span class="text-xs text-gray-400 font-medium">Variable Values</span>
+                    <button @click="showEnvValues = false" class="text-xs text-gray-500 hover:text-gray-300">&times;</button>
+                  </div>
+                  <div v-for="v in tool.env_variables" :key="v.name" class="space-y-0.5">
+                    <label class="text-xs text-gray-500 font-mono">{{ v.name }}</label>
+                    <input
+                      v-if="v.type !== PropertyType.PASSWORD"
+                      v-model="envVarValues[v.name]"
+                      :placeholder="v.description || v.name"
+                      class="w-full px-1.5 py-0.5 bg-gray-900 border border-gray-700 rounded text-xs font-mono focus:outline-none focus:border-blue-500"
+                    />
+                    <input
+                      v-else
+                      v-model="envVarValues[v.name]"
+                      type="password"
+                      :placeholder="envVarValues[v.name] ? '••••••••' : v.description || v.name"
+                      class="w-full px-1.5 py-0.5 bg-gray-900 border border-gray-700 rounded text-xs font-mono focus:outline-none focus:border-blue-500"
+                    />
+                  </div>
+                  <button @click="saveEnvVarValues" :disabled="envVarSaving" class="w-full px-2 py-1 bg-blue-600 hover:bg-blue-700 text-white disabled:opacity-50 rounded text-xs font-medium transition-colors">
+                    {{ envVarSaving ? 'Saving...' : 'Save Values' }}
+                  </button>
+                </div>
+              </div>
+              <p v-if="tool.env_variables.length && !tool.id" class="text-xs text-gray-600 mt-1">Save the tool first to set variable values.</p>
+              <p v-if="tool.env_variables.length" class="text-xs text-gray-600 mt-1">Variables are injected into the CLI subprocess environment.</p>
             </div>
           </template>
 
@@ -933,6 +1025,87 @@ function mergeAiResult(config: Record<string, any>) {
               <div v-else class="flex-1 flex items-center justify-center text-gray-600 text-sm">
                 Select or create a function
               </div>
+            </div>
+          </div>
+        </div>
+      </template>
+
+      <!-- Claude Code: Prompt + System Prompt + Allowed Tools -->
+      <template v-if="isClaudeCode && !loading">
+        <div class="flex-1 p-6 overflow-auto">
+          <div class="max-w-5xl mx-auto space-y-6">
+            <!-- Header -->
+            <div class="flex items-center gap-3 mb-2">
+              <div class="w-8 h-8 rounded-lg bg-cyan-500/20 flex items-center justify-center">
+                <svg class="w-4 h-4 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5"><path d="M6.75 7.5l3 2.25-3 2.25m4.5 0h3m-9 8.25h13.5A2.25 2.25 0 0021 18V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v12a2.25 2.25 0 002.25 2.25z" /></svg>
+              </div>
+              <div>
+                <h2 class="text-lg font-semibold text-gray-100">Claude Code Agent</h2>
+                <p class="text-xs text-gray-500">Runs Claude Code CLI in headless mode to perform agentic coding tasks</p>
+              </div>
+            </div>
+
+            <!-- Prompts (two columns) -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-medium text-gray-400 mb-1.5">System Prompt</label>
+                <TemplateInput v-model="tool.system_prompt" :variables="templateVariables" mode="textarea" :rows="6" placeholder="Additional instructions for Claude Code..." inputClass="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-sm font-mono focus:outline-none focus:border-cyan-500" />
+                <div class="flex items-center gap-3 mt-2">
+                  <label class="flex items-center gap-1.5 text-xs text-gray-500 cursor-pointer">
+                    <input type="radio" v-model="tool.claude_code_system_prompt_mode" value="append" class="text-cyan-500" />
+                    Append to default
+                  </label>
+                  <label class="flex items-center gap-1.5 text-xs text-gray-500 cursor-pointer">
+                    <input type="radio" v-model="tool.claude_code_system_prompt_mode" value="replace" class="text-cyan-500" />
+                    Replace entirely
+                  </label>
+                </div>
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-gray-400 mb-1.5">Prompt</label>
+                <TemplateInput v-model="tool.prompt" :variables="templateVariables" mode="textarea" :rows="6" placeholder="Describe what Claude Code should do...&#10;&#10;Use {{Input}} for template variables." inputClass="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-sm font-mono focus:outline-none focus:border-cyan-500" />
+              </div>
+            </div>
+
+            <!-- Allowed Tools -->
+            <div>
+              <label class="block text-xs font-medium text-gray-400 mb-2">Allowed Tools</label>
+              <p class="text-xs text-gray-600 mb-2">Select which tools Claude Code can use without permission prompts.</p>
+              <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-1.5">
+                <label
+                  v-for="t in ['Bash', 'Read', 'Edit', 'Write', 'Glob', 'Grep', 'WebFetch', 'WebSearch', 'TodoRead', 'TodoWrite', 'NotebookEdit']"
+                  :key="t"
+                  class="flex items-center gap-2 px-2.5 py-2 rounded-lg cursor-pointer text-xs transition-colors border"
+                  :class="tool.claude_code_allowed_tools.includes(t) ? 'bg-cyan-500/10 border-cyan-500/40 text-cyan-300' : 'bg-gray-800/50 border-gray-700/50 text-gray-400 hover:bg-gray-800'"
+                >
+                  <input
+                    type="checkbox"
+                    :checked="tool.claude_code_allowed_tools.includes(t)"
+                    @change="toggleClaudeCodeTool(t)"
+                    class="rounded"
+                  />
+                  <span class="font-mono">{{ t }}</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Optional: MCP Config -->
+            <div>
+              <label class="block text-xs font-medium text-gray-400 mb-1.5">MCP Config (optional JSON)</label>
+              <textarea v-model="tool.claude_code_mcp_config" rows="3" placeholder='{"mcpServers": {...}}' class="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-xs font-mono focus:outline-none focus:border-cyan-500 resize-y"></textarea>
+            </div>
+
+            <!-- Optional: JSON Schema -->
+            <div>
+              <label class="block text-xs font-medium text-gray-400 mb-1.5">Output JSON Schema (optional)</label>
+              <textarea v-model="tool.claude_code_json_schema" rows="3" placeholder='{"type":"object","properties":{...},"required":[...]}' class="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-xs font-mono focus:outline-none focus:border-cyan-500 resize-y"></textarea>
+              <p class="text-xs text-gray-600 mt-1">If set, forces structured output conforming to this schema.</p>
+            </div>
+
+            <!-- Response Structure -->
+            <div>
+              <label class="block text-xs font-medium text-gray-400 mb-1.5">Response Structure (optional, for pipeline output formatting)</label>
+              <ResponseStructureEditor v-model="tool.response_structure" />
             </div>
           </div>
         </div>

@@ -27,7 +27,7 @@ from api.file_routes import router as file_router
 from api.trigger_routes import router as trigger_router, ws_ai_assist_trigger
 from api.reorder_routes import router as reorder_router
 from api.dashboard_routes import router as dashboard_router
-from api.task_routes import router as task_router, ws_task_execute
+
 from api.artifact_routes import router as artifact_router
 from api.auth_routes import router as auth_router
 from api.community_routes import router as community_router
@@ -155,7 +155,6 @@ app.include_router(file_router, prefix="/api", tags=["files"], dependencies=auth
 app.include_router(trigger_router, prefix="/api/triggers", tags=["triggers"], dependencies=auth_dep)
 app.include_router(reorder_router, prefix="/api", tags=["reorder"], dependencies=auth_dep)
 app.include_router(dashboard_router, prefix="/api/dashboard", tags=["dashboard"], dependencies=auth_dep)
-app.include_router(task_router, prefix="/api/tasks", tags=["tasks"], dependencies=auth_dep)
 app.include_router(artifact_router, prefix="/api", tags=["artifacts"])
 
 
@@ -166,7 +165,6 @@ app.websocket("/ws/lsp")(ws_lsp)
 app.websocket("/ws/ai-assist")(ws_ai_assist)
 app.websocket("/ws/ai-assist-pipeline")(ws_ai_assist_pipeline)
 app.websocket("/ws/ai-assist-trigger")(ws_ai_assist_trigger)
-app.websocket("/ws/task-execute")(ws_task_execute)
 
 
 @app.get("/api/events")

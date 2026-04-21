@@ -29,9 +29,9 @@ const sections = [
     { id: 'triggers-code', label: 'Trigger Code' },
     { id: 'triggers-connections', label: 'Pipeline Connections' },
   ]},
-  { id: 'tasks', label: 'Tasks (Beta)', children: [
-    { id: 'tasks-overview', label: 'How Tasks Work' },
-    { id: 'tasks-steps', label: 'Task Step Types' },
+  { id: 'claude-code', label: 'Claude Code Agent', children: [
+    { id: 'claude-code-overview', label: 'How It Works' },
+    { id: 'claude-code-config', label: 'Configuration' },
   ]},
   { id: 'settings', label: 'Settings', children: [
     { id: 'settings-general', label: 'General Settings' },
@@ -151,7 +151,7 @@ watch(() => route.hash, (hash) => {
         <!-- OVERVIEW -->
         <section id="overview" class="mb-16">
           <h1 class="text-2xl font-bold text-gray-50 mb-2">Claire Documentation</h1>
-          <p class="text-gray-400 mb-6">An AI orchestration platform for building tools, pipelines, triggers, and tasks powered by Claude and other LLMs.</p>
+          <p class="text-gray-400 mb-6">An AI orchestration platform for building tools, pipelines, and triggers powered by Claude.</p>
 
           <div class="grid grid-cols-2 gap-3 mb-6">
             <div class="bg-gray-900 border border-gray-800 rounded-lg p-4">
@@ -167,13 +167,13 @@ watch(() => route.hash, (hash) => {
               <p class="text-xs text-gray-500">Event sources &mdash; cron schedules, webhooks, file watchers, RSS feeds &mdash; that automatically fire pipelines.</p>
             </div>
             <div class="bg-gray-900 border border-gray-800 rounded-lg p-4">
-              <div class="text-sm font-semibold text-green-400 mb-1">Tasks <span class="px-1.5 py-0.5 text-[9px] font-semibold rounded bg-amber-900/40 text-amber-400 border border-amber-800/60 leading-none">BETA</span></div>
-              <p class="text-xs text-gray-500">AI-planned executions: describe what you want and the LLM builds and runs a multi-step plan using your tools. This feature is in beta.</p>
+              <div class="text-sm font-semibold text-cyan-400 mb-1">Claude Code Agent</div>
+              <p class="text-xs text-gray-500">Run Claude Code CLI in headless mode to perform coding tasks: file editing, code generation, analysis, and more with real-time streaming.</p>
             </div>
           </div>
 
           <div class="bg-gray-900/50 border border-gray-800 rounded-lg p-4 text-xs text-gray-500">
-            <span class="text-gray-400 font-medium">How it fits together:</span> You create <strong class="text-gray-300">Tools</strong> as individual capabilities. You wire them into <strong class="text-gray-300">Pipelines</strong> for repeatable workflows. <strong class="text-gray-300">Triggers</strong> automate when those pipelines run. <strong class="text-gray-300">Tasks</strong> let the AI decide which tools to use and in what order.
+            <span class="text-gray-400 font-medium">How it fits together:</span> You create <strong class="text-gray-300">Tools</strong> as individual capabilities (including Claude Code agents). You wire them into <strong class="text-gray-300">Pipelines</strong> for repeatable workflows. <strong class="text-gray-300">Triggers</strong> automate when those pipelines run.
           </div>
 
           <div class="mt-6 rounded-lg overflow-hidden border border-gray-800">
@@ -563,9 +563,9 @@ watch(() => route.hash, (hash) => {
               </div>
 
               <div class="bg-gray-900 border border-gray-800 rounded-lg p-3">
-                <span class="px-1.5 py-0.5 text-[10px] font-medium rounded bg-cyan-900/40 text-cyan-400 border border-cyan-800">Task</span>
-                <span class="text-xs text-gray-300 ml-2">AI-planned multi-step execution</span>
-                <p class="text-xs text-gray-500 mt-1">An LLM analyzes the request and available tools, generates a plan, then executes it step by step. See the <button @click="scrollTo('tasks')" class="text-blue-400 hover:underline">Tasks</button> section for details.</p>
+                <span class="px-1.5 py-0.5 text-[10px] font-medium rounded bg-cyan-900/40 text-cyan-400 border border-cyan-800">Claude Code</span>
+                <span class="text-xs text-gray-300 ml-2">Claude Code CLI agent step</span>
+                <p class="text-xs text-gray-500 mt-1">Runs Claude Code in headless mode with a prompt. It uses its built-in tools (Bash, Read, Edit, etc.) to complete coding tasks. See the <button @click="scrollTo('claude-code')" class="text-blue-400 hover:underline">Claude Code Agent</button> section for details.</p>
               </div>
             </div>
           </div>
@@ -703,55 +703,55 @@ watch(() => route.hash, (hash) => {
         </section>
 
         <!-- TASKS -->
-        <section id="tasks" class="mb-16">
-          <h2 class="text-xl font-bold text-gray-50 mb-1">Tasks <span class="px-1.5 py-0.5 text-[10px] font-semibold rounded bg-amber-900/40 text-amber-400 border border-amber-800/60 leading-none align-middle">BETA</span></h2>
-          <p class="text-gray-400 text-sm mb-4">Tasks let the AI plan and execute multi-step workflows autonomously. Instead of designing a pipeline, you describe what you want and the LLM figures out which tools to use and in what order. <span class="text-amber-400/80">This feature is in beta — behavior and capabilities may change.</span></p>
+        <section id="claude-code" class="mb-16">
+          <h2 class="text-xl font-bold text-gray-50 mb-1">Claude Code Agent</h2>
+          <p class="text-gray-400 text-sm mb-4">A tool type that runs the Claude Code CLI in headless mode. It can read, write, and execute code using Claude's built-in tools — Bash, Read, Edit, Write, Glob, Grep, and more.</p>
 
-          <div class="mb-6 rounded-lg overflow-hidden border border-gray-800">
-            <img src="/docs/tasks.png" alt="Tasks view" class="w-full" />
-            <div class="bg-gray-900 px-3 py-1.5 text-[10px] text-gray-500">The Tasks page: Quick Run for one-off execution, or create reusable task plans.</div>
-          </div>
-
-          <div id="tasks-overview" class="mb-10">
-            <h3 class="text-base font-semibold text-gray-50 mb-3">How Tasks Work</h3>
+          <div id="claude-code-overview" class="mb-10">
+            <h3 class="text-base font-semibold text-gray-50 mb-3">How It Works</h3>
 
             <div class="space-y-3 mb-4">
               <div class="bg-gray-900 border border-gray-800 rounded-lg p-4">
-                <div class="text-xs font-semibold text-blue-400 mb-1">1. Planning Phase</div>
-                <p class="text-xs text-gray-500">The LLM receives your request along with a catalog of all available tools (names, descriptions, input requirements). It generates an ordered execution plan with specific steps.</p>
+                <div class="text-xs font-semibold text-cyan-400 mb-1">1. Configuration</div>
+                <p class="text-xs text-gray-500">Create a Claude Code tool, set a prompt (with template variables), choose which tools to allow, set a working directory and permission mode.</p>
               </div>
               <div class="bg-gray-900 border border-gray-800 rounded-lg p-4">
-                <div class="text-xs font-semibold text-purple-400 mb-1">2. Execution Phase</div>
-                <p class="text-xs text-gray-500">Each planned step executes sequentially. Outputs from earlier steps are available as context for later steps. The plan can include pauses for user input.</p>
+                <div class="text-xs font-semibold text-blue-400 mb-1">2. Execution</div>
+                <p class="text-xs text-gray-500">The tool spawns <code class="bg-gray-800 px-1 rounded text-gray-400">claude -p</code> as a subprocess with streaming JSON output. The CLI uses its agentic loop to complete the task, calling tools as needed.</p>
               </div>
               <div class="bg-gray-900 border border-gray-800 rounded-lg p-4">
-                <div class="text-xs font-semibold text-green-400 mb-1">3. Results</div>
-                <p class="text-xs text-gray-500">Each step's output is recorded with cost tracking (model, tokens, USD). The full execution trace is viewable in the task run detail view.</p>
+                <div class="text-xs font-semibold text-green-400 mb-1">3. Streaming</div>
+                <p class="text-xs text-gray-500">Output streams in real-time: text responses, tool calls (Bash commands, file edits), and results are all displayed as they happen. The UI updates live.</p>
               </div>
+            </div>
+
+            <div class="bg-gray-900/50 border border-gray-800 rounded-lg p-3 text-xs text-gray-500">
+              <span class="text-gray-400 font-medium">Requirements:</span> The <code class="bg-gray-800 px-1 rounded text-gray-400">claude</code> CLI must be installed globally (<code class="bg-gray-800 px-1 rounded text-gray-400">npm install -g @anthropic-ai/claude-code</code>). An <code class="bg-gray-800 px-1 rounded text-gray-400">ANTHROPIC_API_KEY</code> must be available — either from the app settings or set as an env variable on the tool.
             </div>
           </div>
 
-          <div id="tasks-steps" class="mb-10">
-            <h3 class="text-base font-semibold text-gray-50 mb-3">Task Step Types</h3>
+          <div id="claude-code-config" class="mb-10">
+            <h3 class="text-base font-semibold text-gray-50 mb-3">Configuration</h3>
 
-            <div class="space-y-3">
-              <div class="bg-gray-900 border border-gray-800 rounded-lg p-3">
-                <span class="px-1.5 py-0.5 text-[10px] font-medium rounded bg-blue-900/40 text-blue-400 border border-blue-800">reasoning</span>
-                <span class="text-xs text-gray-300 ml-2">LLM analyzes, synthesizes, or plans based on instructions</span>
-                <p class="text-xs text-gray-500 mt-1">Output formats: <code class="bg-gray-800 px-1 rounded text-gray-400">raw</code> (plain text, best for piping into tools), <code class="bg-gray-800 px-1 rounded text-gray-400">markdown</code> (formatted, for user-facing output), <code class="bg-gray-800 px-1 rounded text-gray-400">json</code> (structured data).</p>
-              </div>
-
-              <div class="bg-gray-900 border border-gray-800 rounded-lg p-3">
-                <span class="px-1.5 py-0.5 text-[10px] font-medium rounded bg-green-900/40 text-green-400 border border-green-800">tool</span>
-                <span class="text-xs text-gray-300 ml-2">Execute a saved tool from the catalog</span>
-                <p class="text-xs text-gray-500 mt-1">The planner specifies which tool to use and maps inputs. Values can reference previous step outputs: <code class="bg-gray-800 px-1 rounded text-gray-400" v-pre>{{step_name}}</code></p>
-              </div>
-
-              <div class="bg-gray-900 border border-gray-800 rounded-lg p-3">
-                <span class="px-1.5 py-0.5 text-[10px] font-medium rounded bg-amber-900/40 text-amber-400 border border-amber-800">ask_user</span>
-                <span class="text-xs text-gray-300 ml-2">Pause and ask the user for input</span>
-                <p class="text-xs text-gray-500 mt-1">Presents questions to the user. Execution pauses until they respond. Supports text and multiple-choice question types.</p>
-              </div>
+            <div class="bg-gray-950 border border-gray-800 rounded-lg overflow-hidden">
+              <table class="w-full text-xs">
+                <thead><tr class="border-b border-gray-800 text-gray-500">
+                  <th class="text-left px-3 py-2 font-medium">Setting</th>
+                  <th class="text-left px-3 py-2 font-medium">Description</th>
+                </tr></thead>
+                <tbody class="text-gray-400">
+                  <tr class="border-b border-gray-800/50"><td class="px-3 py-1.5 text-gray-300">Prompt</td><td class="px-3 py-1.5">The main instruction. Supports template variables like <code class="bg-gray-800 px-1 rounded" v-pre>{{Input}}</code></td></tr>
+                  <tr class="border-b border-gray-800/50"><td class="px-3 py-1.5 text-gray-300">System Prompt</td><td class="px-3 py-1.5">Optional. Append to or replace Claude Code's default system prompt.</td></tr>
+                  <tr class="border-b border-gray-800/50"><td class="px-3 py-1.5 text-gray-300">Allowed Tools</td><td class="px-3 py-1.5">Which tools Claude Code can use without prompting (Bash, Read, Edit, Write, etc.)</td></tr>
+                  <tr class="border-b border-gray-800/50"><td class="px-3 py-1.5 text-gray-300">Permission Mode</td><td class="px-3 py-1.5"><code class="bg-gray-800 px-1 rounded">default</code>, <code class="bg-gray-800 px-1 rounded">acceptEdits</code> (auto-approve file writes), or <code class="bg-gray-800 px-1 rounded">dontAsk</code> (deny unlisted)</td></tr>
+                  <tr class="border-b border-gray-800/50"><td class="px-3 py-1.5 text-gray-300">Working Directory</td><td class="px-3 py-1.5">The directory where Claude Code runs. Should point to a project/repo.</td></tr>
+                  <tr class="border-b border-gray-800/50"><td class="px-3 py-1.5 text-gray-300">Bare Mode</td><td class="px-3 py-1.5">Skip auto-discovery of hooks, plugins, and MCP servers. Recommended for automation.</td></tr>
+                  <tr class="border-b border-gray-800/50"><td class="px-3 py-1.5 text-gray-300">Max Turns</td><td class="px-3 py-1.5">Limit the number of agentic turns. 0 = unlimited.</td></tr>
+                  <tr class="border-b border-gray-800/50"><td class="px-3 py-1.5 text-gray-300">Timeout</td><td class="px-3 py-1.5">Maximum seconds before the process is killed.</td></tr>
+                  <tr class="border-b border-gray-800/50"><td class="px-3 py-1.5 text-gray-300">MCP Config</td><td class="px-3 py-1.5">Optional JSON for additional MCP servers the CLI should connect to.</td></tr>
+                  <tr><td class="px-3 py-1.5 text-gray-300">JSON Schema</td><td class="px-3 py-1.5">Optional. Forces structured output conforming to the given schema.</td></tr>
+                </tbody>
+              </table>
             </div>
           </div>
         </section>
@@ -791,7 +791,7 @@ watch(() => route.hash, (hash) => {
           <div id="settings-models" class="mb-10">
             <h3 class="text-base font-semibold text-gray-50 mb-3">Models</h3>
             <p class="text-xs text-gray-400 mb-3">Manage available LLM models. Add, remove, or reorder models. Each model has a provider (Anthropic, OpenAI, Google, xAI, or Local), pricing per million tokens (input and output), and a display name.</p>
-            <p class="text-xs text-gray-500">Models appear in dropdowns throughout the app wherever a model can be selected (tool config, pipeline steps, tasks).</p>
+            <p class="text-xs text-gray-500">Models appear in dropdowns throughout the app wherever a model can be selected (tool config, pipeline steps).</p>
           </div>
 
           <div id="settings-custom" class="mb-10">

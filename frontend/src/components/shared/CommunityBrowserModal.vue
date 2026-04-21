@@ -30,7 +30,7 @@ const subtypeLabels: Record<string, Record<string, string>> = {
     LLM: 'LLM', Endpoint: 'Endpoint', Agent: 'Agent', Pipeline: 'Pipeline',
     If: 'If', Parallel: 'Parallel', End: 'End', Wait: 'Wait', Start: 'Start',
     LoopCounter: 'Loop', AskUser: 'Ask User', FileUpload: 'File Upload',
-    FileDownload: 'File Download', Task: 'Task', Pause: 'Pause',
+    FileDownload: 'File Download', ClaudeCode: 'Claude Code', Pause: 'Pause',
   },
   trigger: {
     Cron: 'Cron', FileWatcher: 'File Watcher', Webhook: 'Webhook', RSS: 'RSS', Custom: 'Custom',

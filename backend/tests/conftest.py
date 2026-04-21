@@ -156,18 +156,6 @@ def sample_trigger(in_memory_db):
     return database.upsert("triggers", trigger_data)
 
 
-@pytest.fixture()
-def sample_task_plan(in_memory_db):
-    """Pre-inserted test task plan."""
-    plan_data = {
-        "id": "test-plan-1",
-        "name": "Test Task Plan",
-        "request": "Do something useful",
-        "plan": [],
-        "model": "claude-sonnet-4-6",
-    }
-    return database.upsert("task_plans", plan_data)
-
 
 @pytest.fixture()
 def sample_pipeline_run(in_memory_db, sample_pipeline):

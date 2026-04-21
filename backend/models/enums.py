@@ -16,7 +16,7 @@ class ToolType(IntEnum):
     AskUser = 11
     FileUpload = 12
     FileDownload = 13
-    Task = 14
+    ClaudeCode = 15
 
 
 class PropertyType(IntEnum):
